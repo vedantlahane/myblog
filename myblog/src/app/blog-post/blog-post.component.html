@@ -1,0 +1,24 @@
+<div class="container">  
+  <div class="row">
+    <div class="col-md-8">
+      <!-- Main content area -->
+      <div class="card mb-3" *ngFor="let post of blogPosts" (click)="navigateToArticle(post.id)">
+        <div class="card-body">
+          <h5 class="card-title">{{ post.title }}</h5>
+          <p class="card-text">{{ post.description }}</p>
+          <p class="card-text">{{ post.date }}</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4 d-md-block d-none">
+      <!-- Sidebar content -->
+      <app-featured-post></app-featured-post>
+      
+      <!-- Recommended topics container -->
+      <app-recommended-topics></app-recommended-topics>
+    </div>
+  </div>
+</div>
+  <!-- Recommended topics container -->
+  <!-- <app-recommended-topics></app-recommended-topics> -->
+  <!--  -->

@@ -1,0 +1,5 @@
+@media (max-width: 768px) {
+    .sidebar-col {
+      display: none !important; /* Hide the sidebar for screens smaller than 768px */
+    }
+  }
