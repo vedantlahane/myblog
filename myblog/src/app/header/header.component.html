@@ -1,4 +1,4 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
+<nav class="navbar navbar-expand-lg navbar-light bg-light px-5 py-2">
   <div class="container-fluid">
     <a class="navbar-brand" href="/home">myBlog</a> <!-- Update the href attribute to "/" to refresh the page -->
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
@@ -10,11 +10,11 @@
           <a class="nav-link" routerLink="/about" href="/about">About</a> <!-- Link to the About page -->
         </li>
       </ul>
-      <form class="d-flex">
-        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-        <button class="btn btn-outline-success" type="submit">Search</button>
-      </form>
-      <button class="btn btn-primary ms-2">Write Post</button> <!-- Button for writing a new post -->
+      <ul class="navbar-nav ms-auto mb-2 mb-lg-0"> <!-- Move the "Write" link to the right-hand side -->
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/writeblog" href="/writeblog">Write</a> <!-- Link to the Write page -->
+        </li>
+      </ul>
     </div>
   </div>
 </nav>
