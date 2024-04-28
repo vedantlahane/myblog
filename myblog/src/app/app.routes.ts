@@ -6,10 +6,12 @@ import { BlogPostComponent } from './blog-post/blog-post.component';
 import { ArticleComponent } from './article/article.component';
 import { LoginFormComponent } from './login-form/login-form.component';
 import { WriteblogComponent } from './writeblog/writeblog.component';
+import { RegisterComponent } from './register/register.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' }, // Redirect to home page if no path is provided
   {path:'login',component:LoginFormComponent},
+  {path:'register',component:RegisterComponent},
   { path: 'home', component: HomeComponent },
   { path: 'about', component: AboutComponent },
   { path: 'blog', component: BlogPostComponent },

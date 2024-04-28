@@ -29,7 +29,7 @@ export class BlogPostComponent {
     },
     {
       id: 2,
-      title: 'The April of Poppies',
+      title: '90% of designers are unhirable?',
       description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
       content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
       date: 'April 1, 2024'

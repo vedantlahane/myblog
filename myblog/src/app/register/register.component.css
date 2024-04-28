@@ -1,0 +1,8 @@
+.register-section{
+    height: 90vh;
+    align-items: center;
+    justify-content: center;
+}
+.register-card{
+    width:500px;
+}
