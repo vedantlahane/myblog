@@ -1,5 +1,6 @@
 <div class="container-fluid register-section d-flex justify-content-center align-items-center">
-    <div class="card register-card shadow-lg">
+  <div class="blur-overlay"></div>
+    <div class="card register-card">
         <!-- Card header -->
         <div class="card-header">
           <h3>Sign-up</h3>
@@ -64,7 +65,7 @@
           <!-- <a routerLink="/register">
             Clicl here to register
           </a> -->
-          <button class="btn btn-primary float-end" (click)="register()" [disabled]="!this.userRegForm.valid">
+          <button class="btn btn-primary float-end" (click)="register()" [disabled]="!this.userRegForm.valid" routerLink="/home">
             SignUp
           </button>
         </div>

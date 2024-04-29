@@ -1,5 +1,7 @@
-<div class="container-fluid login-section d-flex justify-content-center align-items-center">
-  <div class="card login-card shadow-lg">
+<div class="container-fluid d-flex justify-content-center align-items-center loginsection">
+  <div class="blur-overlay"></div>
+
+  <div class="card login-card">
       <!-- Card header -->
       <div class="card-header">
         <h3>Sign-in</h3>
@@ -30,9 +32,11 @@
         <a routerLink="/register">
           Clicl here to register
         </a>
-        <button class="btn btn-primary float-end" (click)="submit()" [disabled]="!this.loginForm.valid">
+        <button class="btn btn-primary float-end" (click)="submit()" [disabled]="!this.loginForm.valid" routerLink="/home">
           SignIn
         </button>
       </div>
   </div> 
+  
+  <!-- </div> -->
 </div>
