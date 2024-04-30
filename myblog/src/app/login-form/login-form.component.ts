@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
 import { HomeComponent } from '../home/home.component';
-import { RouterOutlet } from '@angular/router';
+import { Router, RouterOutlet } from '@angular/router';
 import { RouterLink } from '@angular/router';
 import { CommonModule, NgIf } from '@angular/common';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { RegisterService } from '../services/register.service';
+import { LoginService } from '../services/login.service';
 @Component({
   selector: 'app-login-form',
   standalone: true,
@@ -13,12 +13,22 @@ import { RegisterService } from '../services/register.service';
   styleUrl: './login-form.component.css'
 })
 export class LoginFormComponent {
+
+
   loginForm!:FormGroup;
+
+
   ngOnInit(): void {
     this.setForm();
 
   }
-  constructor(private _regiter:RegisterService) { }
+
+
+  constructor(private _router:Router,
+    private _login:LoginService
+
+  ) { }
+
 
   setForm(){
     this.loginForm = new FormGroup({
@@ -31,8 +41,19 @@ export class LoginFormComponent {
     console.log(this.loginForm.value);
 
     if(this.loginForm.valid){
+
+      this._login.loginUser(this.loginForm.value).subscribe({
+        next: (resp) => {
+          console.log(resp);
+          alert('Login Successfull!');
+          this._router.navigate(['/home']);
+        },
+        error: (err) => {
+          console.log(err);
+        }, // Add a comma here
+      });
       console.log('Form is valid');
-      alert('Login Successfull!');
+      
     }
     else{
       console.log('Form is invalid');

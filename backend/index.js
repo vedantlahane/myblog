@@ -1,21 +1,15 @@
+// Import required modules
 const express = require('express'); // Express framework for building web applications
 const bodyParser = require('body-parser'); // Middleware for parsing request bodies
 const mongoose = require('mongoose'); // MongoDB object modeling tool
 const cors = require('cors'); // Middleware for enabling cross-origin resource sharing
-//const socketIo = require('socket.io'); // Real-time bidirectional event-based communication library
 const http = require('http'); // HTTP server module
-const path = require('path'); // Module for working with file paths
-const { title } = require('process');
-const { get } = require('jquery');
 
-// backend/server.js
+// Create an instance of the Express application
+const app = express(); 
 
-// Import required modules
-
-const app = express(); // Create an instance of the Express application
-const server = http.createServer(app); // Create an HTTP server using the Express application
-//const io = socketIo(server); // Create a Socket.IO server instance
-
+// Create an HTTP server using the Express application
+const server = http.createServer(app); 
 
 // Middleware
 app.use(bodyParser.urlencoded({ extended: true })); // Parse URL-encoded bodies
@@ -30,53 +24,19 @@ mongoose.connect('mongodb://localhost:27017/myblog').then(() => {
     process.exit();
 });
 
-// Socket.io logic can be implemented here
+// Define schemas
+const { Schema } = mongoose;
 
-// Start the server
-/*API root*/
-//app.use('/api', require('./routes/api'));
-const PORT = process.env.PORT || 9000; // Set the port number
-server.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+// Define user schema
+const userSchema = new Schema({
+    firstName: String,
+    lastName: String,
+    email: String,
+    password: String,
+    confirmPassword: String,
 });
 
-app.get('/',(req,res)=>{
-    res.send("hello world");
-});
-
-
-app.post('/login',(req,res)=>{
-    console.log('body data: ',req.body);
-
-    const{email,password}=req.body;
-
-    res.send("login");
-})
-
-app.post('/register',(req,res)=>{
-    console.log("register API");
-
-    res.send("register API");
-    const{
-        firstName,lastName,email,password,confirmPassword
-    }=req.body;
-
-    const createnewUser = new user({
-        firstName:firstName,
-        lastName:lastName,
-        email:email,
-        password:password,
-        confirmPassword:confirmPassword
-    });
-createnewUser.save().then((result)=>{
-    res.status(200).json({message:"User Created Successfully",result});
-}).catch((err)=>{
-    console.log(err);
-})
-
-})
-
-const {Schema} = mongoose;
+// Define blog schema
 const blogSchema = new Schema({
     title: String,
     author: String,
@@ -87,12 +47,95 @@ const blogSchema = new Schema({
     }
 });
 
-const userSchema = new Schema({
-    firstName: String,
-    lastName: String,
-    email: String,
-    password: String,
-    confirmPassword: String,
+// Create models
+const User = mongoose.model('User', userSchema);
+const Blog = mongoose.model('Blog', blogSchema);
+
+// Define routes
+
+// Root route
+app.get('/', (req, res) => {
+    res.send("hello world");
 });
 
-const user = mongoose.model('User', userSchema);
+// Register endpoint
+app.post('/register', (req, res) => {
+    console.log("register API");
+
+    const {
+        firstName, lastName, email, password, confirmPassword
+    } = req.body;
+
+    const createUser = new User({
+        firstName: firstName,
+        lastName: lastName,
+        email: email,
+        password: password,
+        confirmPassword: confirmPassword
+    });
+    createUser.save().then((result) => {
+        res.status(200).json({ message: "User Created Successfully", result });
+    }).catch((err) => {
+        console.log(err);
+    });
+});
+
+// Create blog endpoint
+app.post('/createblog', (req, res) => {
+    console.log("Create Blog API");
+
+    const { title, body } = req.body;
+    const author = "Vedant"; // Assuming the user's first name is available in the request object
+    
+    // Check if title and body are provided
+   //
+
+    // Create a new blog instance with the author's first name
+    const newBlog = new Blog({
+        title: title,
+        author: author,
+        body: body
+    });
+
+    // Save the new blog entry to the database
+    newBlog.save().then((result) => {
+        // Send success response with the created blog entry
+        res.status(201).json({ message: "Blog Created Successfully", result });
+    }).catch((err) => {
+        // Handle database errors
+        console.error("Error creating blog:", err);
+        res.status(500).json({ error: "Failed to create blog" });
+    });
+});
+
+
+// Login endpoint
+app.post('/login',(req, res) => {
+    console.log(req.body);
+
+    const { email, password } = req.body;
+
+    User.findOne({email:email}).then((result) => {
+        console.log(result);
+        if(result){
+            if(result.password === password){
+                res.status(200).send({message:"Login Successful", result});
+            }else{
+                res.status(500).send({message:"Please enter valid password", result});
+            }
+        }
+        else{
+            res.status(500).send({message:"Please enter valid email", result});
+        }
+    });
+
+    console.log('body data: ', req.body);
+
+    res.status(201).send({ msg: "Login Successful" });
+});
+
+// Start the server
+const PORT = process.env.PORT || 9000; // Set the port number
+server.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+});
