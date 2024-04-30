@@ -108,30 +108,40 @@ app.post('/createblog', (req, res) => {
     });
 });
 
+// Endpoint to fetch all blogs
+app.get('/blogs', (req, res) => {
+    // Query the database to find all blogs
+    Blog.find({})
+    .then(blogs => {
+        res.status(200).json(blogs);
+    })
+    .catch(err => {
+        console.error("Error fetching blogs:", err);
+        res.status(500).json({ error: "Failed to fetch blogs" });
+    });
+});
 
 // Login endpoint
-app.post('/login',(req, res) => {
+app.post('/login', (req, res) => {
     console.log(req.body);
 
     const { email, password } = req.body;
 
-    User.findOne({email:email}).then((result) => {
+    User.findOne({ email: email }).then((result) => {
         console.log(result);
-        if(result){
-            if(result.password === password){
-                res.status(200).send({message:"Login Successful", result});
-            }else{
-                res.status(500).send({message:"Please enter valid password", result});
+        if (result) {
+            if (result.password === password) {
+                res.status(200).send({ message: "Login Successful", result });
+            } else {
+                res.status(500).send({ message: "Please enter valid password", result });
             }
+        } else {
+            res.status(500).send({ message: "Please enter valid email", result });
         }
-        else{
-            res.status(500).send({message:"Please enter valid email", result});
-        }
+    }).catch((err) => {
+        console.error("Error in login:", err);
+        res.status(500).send({ error: "Internal Server Error" }); // Handle internal server errors
     });
-
-    console.log('body data: ', req.body);
-
-    res.status(201).send({ msg: "Login Successful" });
 });
 
 // Start the server

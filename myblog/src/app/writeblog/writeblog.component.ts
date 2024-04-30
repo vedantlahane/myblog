@@ -23,7 +23,7 @@ export class WriteblogComponent {
   setForm(): void {
     this.blogForm = new FormGroup({
       title: new FormControl('', [Validators.required]),
-      content: new FormControl('', [Validators.required]),
+      body: new FormControl('', [Validators.required]),
     });
   }
 
