@@ -1,23 +1,26 @@
 .write-section{
-    height: 90vh;
+    height: 93vh;
     display: flex;
     align-items: center;
     justify-content: center;
+    padding: 0%;
+    margin: 0%;
     background-image: url('/assets/images/vectorbackgroung.jpg');
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
+    font-family: Arial, Helvetica, sans-serif;
 }
 .home{
     width: 100vh;
     position: absolute;
     /* height: 70vh; */
-    box-shadow: 0 0 10px 2px rgba(0,0,0,0.9);
+    box-shadow: 0 0 10px 2px #589bff;
 }
 .blur-overlay {
     position: relative;
-    top: 0; 
-    left: 0;
+    /* top: 0; 
+    left: 0; */
     width: 100%;   
     height: 100%;
     background-color: rgba(255, 255, 255, 0.861); /* Adjust the opacity as needed */

@@ -6,7 +6,7 @@
         <div class="card mb-3" *ngFor="let post of blogs" (click)="navigateToPost(post._id)">
           <div class="card-body">
             <h5 class="card-title">{{ post.title }}</h5>
-            <p class="card-text">{{ post.body }}</p>
+            <!-- <p class="card-text">{{ post.body }}</p> -->
             <p class="card-text">{{ post.date | date:'medium' }}</p>
             <!-- <button (click)="navigateToPost(post._id)">Open</button> -->
           </div>

@@ -5,8 +5,9 @@
     /* --font-one:"Jost",sans-serif; */
 
 }
-body{
-    background-color: var(--bg-body);
-    font-family:var(--font-one);
-    font-family:"Jost",sans-serif;
-}
+/* body{ */
+    /* background-color: var(--bg-body); */
+    /* font-family:var(--font-one);
+    font-family:"Jost",sans-serif; */
+    /* font-family: Arial, Helvetica, sans-serif; */
+/* } */

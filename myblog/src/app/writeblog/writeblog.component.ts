@@ -31,7 +31,7 @@ export class WriteblogComponent {
     if (this.blogForm.valid) {
       this._writeblog.writeBlog(this.blogForm.value).subscribe((data: any) => {
         console.log(data);
-        alert(data.msg);
+        // alert(data.msg);
         this.blogForm.reset();
         this._router.navigate(['home']);
       });

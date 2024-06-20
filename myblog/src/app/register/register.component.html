@@ -14,7 +14,7 @@
             <div class="col-xl-12 mb-2">
               <label for="firstName" class="form-label">First Name</label>
               <input type="text" class="form-control" id="firstName" placeholder="First Name" formControlName="firstName">
-              <div *ngIf=" userRegForm.controls['firstName'].hasError('required') && userRegForm.controls['firstName'].touched">
+              <div *ngIf=" userRegForm.controls['firstName'].hasError('required') && userRegForm.controls['firstName'].touched" class="text-danger">
                 First Name is required
               </div>
             </div>
@@ -24,7 +24,7 @@
             <div class="col-xl-12 mb-2">
               <label for="lastName" class="form-label">Last Name</label>
               <input type="text" class="form-control" id="lastName" placeholder="Last Name" formControlName="lastName">
-              <div *ngIf="userRegForm.controls['lastName'].hasError('required') && userRegForm.controls['lastName'].touched">
+              <div *ngIf="userRegForm.controls['lastName'].hasError('required') && userRegForm.controls['lastName'].touched" class="text-danger">
                 Email is required
               </div>
             </div>
@@ -44,7 +44,7 @@
             <div class="col-xl-12 mb-2">
               <label for="password" class="form-label">Password</label>
               <input type="text" class="form-control" id="password" placeholder="Password" formControlName="password">
-              <div *ngIf="userRegForm.controls['password'].hasError('required') && userRegForm.controls['password'].touched">
+              <div *ngIf="userRegForm.controls['password'].hasError('required') && userRegForm.controls['password'].touched" class="text-danger">
                 Password is required
               </div>
             </div>
@@ -54,7 +54,7 @@
             <div class="col-xl-12 mb-2">
               <label for="confirmPassword" class="form-label">Confirm Password</label>
               <input type="text" class="form-control" id="confirmPassword" placeholder="Confirm Password" formControlName="confirmPassword">
-              <div *ngIf="userRegForm.controls['confirmPassword'].hasError('required') && userRegForm.controls['confirmPassword'].touched">
+              <div *ngIf="userRegForm.controls['confirmPassword'].hasError('required') && userRegForm.controls['confirmPassword'].touched" class="text-danger">
                 Confirm Password is required
               </div>
             </div>
@@ -66,6 +66,7 @@
             Clicl here to register
           </a> -->
           <button class="btn btn-primary float-end" (click)="register()" [disabled]="!this.userRegForm.valid" routerLink="/home">
+
             SignUp
           </button>
         </div>
