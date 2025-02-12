@@ -1,0 +1,16 @@
+<section class="relative">
+  <div class="h-96 bg-cover bg-center" style="background-image: url('assets/hero-bg.jpg');">
+    <div class="h-full w-full flex items-center justify-center relative">
+      <!-- Content with higher z-index -->
+      <div class="text-center text-black z-20">  <!-- Increased z-index to 20 -->
+        <h1 class="text-5xl font-bold">Welcome to My Blog</h1>
+        <p class="mt-4 text-xl">Discover inspiring stories and ideas.</p>
+        <button class="mt-6 bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-6 rounded">
+          Explore Now
+        </button>
+      </div>
+      <!-- Floating Cards with lower z-index -->
+      <app-floating-cards class="absolute inset-0 pointer-events-none z-10"></app-floating-cards>
+    </div>
+  </div>
+</section>

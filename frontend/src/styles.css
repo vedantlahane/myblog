@@ -1,17 +1,2 @@
-/* You can add global styles to this file, and also import other style files
-@import url('https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&display=swap'); */
-:root{
-    --bg-body:black;
-    /* --font-one:"Jost",sans-serif; */
-
-}
-/* body{ */
-    /* background-color: var(--bg-body); */
-    /* font-family:var(--font-one);
-    font-family:"Jost",sans-serif; */
-    /* font-family: Arial, Helvetica, sans-serif; */
-/* } */
-
-.bg-theme {
-    background-image: linear-gradient( 0.2deg,  rgb(13, 38, 78) 4.8%, rgb(204, 210, 224) 85.5% );
-  }
+/* You can add global styles to this file, and also import other style files */
+@import "tailwindcss";
