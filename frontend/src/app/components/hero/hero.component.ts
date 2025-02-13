@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
-import { FloatingCardsComponent } from '../floating-cards/floating-cards.component';
+
 
 @Component({
   selector: 'app-hero',
-  imports: [FloatingCardsComponent],
+  imports: [],
   templateUrl: './hero.component.html',
   styleUrl: './hero.component.css'
 })

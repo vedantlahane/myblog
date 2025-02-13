@@ -1,7 +1,0 @@
-/* Ensure the container fills its parent */
-.floating-cards-container {
-    position: relative;
-    width: 100%;
-    height: 100%;
-  }
-  

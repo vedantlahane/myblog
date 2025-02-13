@@ -1,13 +1,1 @@
-<div class="floating-cards-container relative w-full h-full">
-  <div *ngFor="let card of floatingCards; let i = index"
-       [@fadeInScale]="{ value: '', params: { delay: card.delay, duration: 800 } }"
-       class="absolute bg-blue-400/30 rounded-2xl"  <!-- Increased opacity to 30% -->
-       [ngStyle]="{
-         'width.px': card.size,
-         'height.px': card.size,
-         'z-index': card.z,
-         'left': card.x + '%',  <!-- Use percentage for responsive positioning -->
-         'top': card.y + '%'
-       }">
-  </div>
-</div>
+<p>floating-cards works!</p>
