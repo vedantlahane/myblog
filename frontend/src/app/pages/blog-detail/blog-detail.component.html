@@ -1,0 +1,85 @@
+<!-- pages/blog-detail/blog-detail.component.html -->
+<div class="container mx-auto px-4 py-8">
+    <!-- Loading State -->
+    <div *ngIf="isLoading" class="flex justify-center items-center h-64">
+      <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
+    </div>
+  
+    <!-- Error State -->
+    <div *ngIf="error" class="text-red-500 text-center py-8">
+      {{ error }}
+    </div>
+  
+    <!-- Post Content -->
+    <article *ngIf="post && !isLoading" class="max-w-4xl mx-auto">
+      <!-- Header -->
+      <header class="mb-8">
+        <h1 class="text-4xl font-bold mb-4">{{ post.title }}</h1>
+        <div class="flex items-center text-gray-600 mb-4">
+          <span class="mr-4">By {{ post.author }}</span>
+          <span>{{ post.date | date:'mediumDate' }}</span>
+        </div>
+        <img [src]="post.thumbnail" [alt]="post.title" class="w-full h-96 object-cover rounded-lg">
+      </header>
+  
+      <!-- Tags -->
+      <div class="flex flex-wrap gap-2 mb-8">
+        <span *ngFor="let tag of post.tags" 
+              class="px-3 py-1 bg-gray-100 rounded-full text-sm">
+          #{{ tag }}
+        </span>
+      </div>
+  
+      <!-- Content -->
+      <div class="prose prose-lg max-w-none mb-12" [innerHTML]="post.content">
+      </div>
+  
+      <!-- Comments Section -->
+      <section class="mt-12 border-t pt-8">
+        <h2 class="text-2xl font-bold mb-6">Comments ({{ post.comments.length }})</h2>
+        
+        <!-- Add Comment Form -->
+        <form (ngSubmit)="submitComment()" class="mb-8">
+          <textarea
+            [(ngModel)]="newComment"
+            name="comment"
+            rows="4"
+            class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            placeholder="Add a comment..."
+          ></textarea>
+          <button
+            type="submit"
+            class="mt-2 px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+          >
+            Post Comment
+          </button>
+        </form>
+  
+        <!-- Comments List -->
+        <div class="space-y-6">
+          <div *ngFor="let comment of post.comments" class="flex gap-4 p-4 bg-gray-50 rounded-lg">
+            <img [src]="comment.avatar" [alt]="comment.author" 
+                 class="w-12 h-12 rounded-full">
+            <div>
+              <div class="flex items-center gap-2 mb-2">
+                <span class="font-semibold">{{ comment.author }}</span>
+                <span class="text-sm text-gray-500">{{ comment.date | date:'short' }}</span>
+              </div>
+              <p class="text-gray-700">{{ comment.content }}</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </article>
+  
+    <!-- Related Posts -->
+    <section *ngIf="relatedPosts.length > 0" class="mt-16">
+      <h2 class="text-2xl font-bold mb-6">Related Posts</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <app-blog-card
+          *ngFor="let relatedPost of relatedPosts"
+          [post]="relatedPost"
+        ></app-blog-card>
+      </div>
+    </section>
+  </div>
