@@ -1,14 +1,37 @@
+<!-- components/hero/hero.component.html -->
 <section class="relative">
-  <div class="h-96 bg-cover bg-center" style="background-image: url('assets/hero-bg.jpg');">
+  <div 
+    class="h-72 sm:h-96 bg-cover bg-center relative" 
+    style="background-image: url('assets/hero-bg.jpg');"
+  >
+    <div class="absolute inset-0 bg-black opacity-30"></div>
+
     <div class="h-full w-full flex items-center justify-center relative">
-      <!-- Content with higher z-index -->
-      <div class="text-center text-black z-20">  <!-- Increased z-index to 20 -->
-        <h1 class="text-5xl font-bold">Welcome to My Blog</h1>
-        <p class="mt-4 text-xl">Discover inspiring stories and ideas.</p>
-        <button class="mt-6 bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-6 rounded">
+      <div class="text-center text-white z-20 px-4 sm:px-0">
+        <h1 class="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 animate-fade-in-up">
+          Welcome to My Blog
+        </h1>
+        <p class="mt-4 text-lg sm:text-xl animate-fade-in-up" style="animation-delay: 0.2s;">
+          Discover inspiring stories and ideas.
+        </p>
+        <button 
+          (click)="exploreNow()"
+          class="mt-6 bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-6 rounded transition duration-300 transform hover:scale-105 animate-fade-in-up"
+          style="animation-delay: 0.4s;"
+        >
           Explore Now
         </button>
       </div>
     </div>
   </div>
+</section>
+<!-- Add loading state -->
+<section class="relative">
+  @if (!isImageLoaded) {
+    <div class="h-72 sm:h-96 bg-gray-200 animate-pulse"></div>
+  }
+  
+  @if (isImageLoaded) {
+    <!-- Your existing hero content -->
+  }
 </section>

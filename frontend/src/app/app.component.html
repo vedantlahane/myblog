@@ -1,1 +1,23 @@
-<app-home></app-home>
+<!-- app.component.html -->
+<div class="min-h-screen flex flex-col">
+  <!-- Header -->
+  <div class="w-full bg-white shadow">
+    <div class="container mx-auto max-w-7xl px-4 sm:px-6">
+      <app-header></app-header>
+    </div>
+  </div>
+
+  <!-- Main content -->
+  <main class="flex-grow">
+    <div class="container mx-auto max-w-7xl px-4 sm:px-6">
+      <router-outlet></router-outlet>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <div class="w-full bg-gray-100">
+    <div class="container mx-auto max-w-7xl px-4 sm:px-6">
+      <app-footer></app-footer>
+    </div>
+  </div>
+</div>

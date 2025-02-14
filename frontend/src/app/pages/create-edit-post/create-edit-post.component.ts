@@ -52,7 +52,7 @@ export class CreateEditPostComponent implements OnInit {
     private fb: FormBuilder,
     private blogService: BlogService,
     private route: ActivatedRoute,
-    private router: Router
+    public router: Router
   ) {
     this.postForm = this.fb.group({
       title: ['', [Validators.required, Validators.minLength(5)]],

@@ -1,14 +1,13 @@
-<div class="container mx-auto max-w-7xl px-4">
-  <app-header></app-header>
-  <app-hero></app-hero>
-  <app-main-content></app-main-content>
+<!-- pages/home/home.component.html -->
+<!-- Home page specific content -->
+<app-hero></app-hero>
+<app-main-content></app-main-content>
 
-  <!-- Show All Posts Button (if desired) -->
-  <div class="flex justify-center my-8">
-    <button class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-6 rounded">
-      Show All Posts
-    </button>
-  </div>
-
-  <app-footer></app-footer>
+<!-- CTA Button -->
+<div class="flex justify-center my-8">
+  <button 
+    (click)="navigateToPosts()"
+    class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-6 rounded transition duration-300">
+    Show All Posts
+  </button>
 </div>

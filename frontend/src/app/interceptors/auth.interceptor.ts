@@ -7,12 +7,12 @@ import {
   HttpInterceptor,
   HttpErrorResponse
 } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { Observable, throwError } from 'rxjs';//Observable is a generic type, so we need to import it from 'rxjs' package, that means we can pass any type of data to it. throwError is a function that creates an error observable, that means we can throw an error from the observable.
+import { catchError } from 'rxjs/operators';//catchError is an operator that intercepts an Observable that failed and returns a new Observable or throws an error.
 import { AuthService } from '../services/auth.service';
 import { Router } from '@angular/router';
 
-@Injectable()
+@Injectable()//The @Injectable() decorator is used to define a class as a provider of services that other classes can use.
 export class AuthInterceptor implements HttpInterceptor {
   constructor(
     private authService: AuthService,
@@ -21,7 +21,7 @@ export class AuthInterceptor implements HttpInterceptor {
 
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
     // Get the current user from AuthService
-    const currentUser = this.authService.currentUserValue;
+    const currentUser = this.authService.currentUser;
 
     // Add auth header if user is logged in and request is to the API URL
     if (currentUser?.token) {
