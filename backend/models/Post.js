@@ -15,7 +15,7 @@ const PostSchema = new mongoose.Schema({
         trim: true,
         maxLength: [200, 'Subtitle cannot be more than 200 characters']
     },
-    slug: {
+    slug: {// URL friendly version of title for SEO and URL routing purposes 
         type: String,
         unique: true,
         lowercase: true
@@ -33,7 +33,7 @@ const PostSchema = new mongoose.Schema({
     },
 
     // Media
-    thumbnail: {
+    thumbnail: {// Thumbnail image for the post
         url: {
             type: String,
             default: 'default-thumbnail.jpg'
@@ -41,12 +41,12 @@ const PostSchema = new mongoose.Schema({
         alt: String,
         caption: String
     },
-    coverImage: {
+    coverImage: {// Cover image for the post
         url: String,
         alt: String,
         caption: String
     },
-    images: [{
+    images: [{// Array of images in the post
         url: String,
         alt: String,
         caption: String
@@ -89,14 +89,14 @@ const PostSchema = new mongoose.Schema({
         type: Number,  // in minutes
         default: 0
     },
-    seo: {
-        metaTitle: String,
+    seo: {// Search Engine Optimization fields for the post 
+        metaTitle: String,// Title for search engines 
         metaDescription: {
             type: String,
             maxLength: 160
         },
         keywords: [String],
-        canonicalUrl: String
+        canonicalUrl: String// Canonical URL for SEO
     },
 
     // Statistics
@@ -143,7 +143,7 @@ const PostSchema = new mongoose.Schema({
     publishedAt: Date,
 
     // Version Control
-    version: {
+    version: {// Version number of the post i.e. 1, 2, 3, etc.
         type: Number,
         default: 1
     },
