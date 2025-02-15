@@ -1,63 +1,122 @@
 // models/Comment.js
 const mongoose = require('mongoose');
 
+// Schema for previous versions of comments (for edit history)
+const CommentVersionSchema = new mongoose.Schema({
+    content: String,
+    editedAt: Date,
+    editedBy: String
+});
+
 const CommentSchema = new mongoose.Schema({
-    // Comment Content
+    // Content Information
     content: {
         type: String,
         required: [true, 'Comment content is required'],
-        trim: true,// Remove whitespace from both ends of a string
-        maxLength: [1000, 'Comment cannot be more than 1000 characters']
+        trim: true,
+        maxLength: [1000, 'Comment cannot be more than 1000 characters'],
+        minLength: [2, 'Comment must be at least 2 characters long']
+    },
+    
+    // Version Control
+    previousVersions: [CommentVersionSchema],
+    isEdited: {
+        type: Boolean,
+        default: false
     },
 
     // Relationship with Post
     post: {
-        type: mongoose.Schema.Types.ObjectId,// Reference to Post model
-        ref: 'Post',// Reference to Post model
-        required: true
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Post',
+        required: true,
+        index: true // For faster queries
     },
 
     // Author Information
     author: {
         name: {
             type: String,
-            required: true
+            required: true,
+            trim: true
         },
         email: {
             type: String,
-            required: true
+            required: true,
+            lowercase: true,
+            trim: true
         },
-        avatar: String
+        avatar: {
+            type: String,
+            default: function() {
+                return `https://ui-avatars.com/api/?name=${encodeURIComponent(this.author.name)}`;
+            }
+        },
+        ip: String, // For spam prevention
+        userAgent: String // For spam prevention
     },
 
-    // Parent Comment (for nested comments/replies)
+    // Nested Comments Structure
     parentComment: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Comment',
         default: null
     },
-
-    // Nested Replies
-    replies: [{// Array of Comment IDs
+    replies: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Comment'
     }],
+    depth: {
+        type: Number,
+        default: 0,
+        max: 3 // Limit nesting depth
+    },
 
     // Engagement Metrics
     likes: {
         type: Number,
         default: 0
     },
+    likedBy: [{ // Track who liked the comment
+        type: String, // Email or userId
+        required: true
+    }],
+    reports: [{ // Track reported comments
+        reportedBy: String,
+        reason: String,
+        createdAt: {
+            type: Date,
+            default: Date.now
+        }
+    }],
 
-    // Status
-    status: {//to check if the comment is approved or not
+    // Status and Moderation
+    status: {
         type: String,
-        enum: ['pending', 'approved', 'spam', 'deleted'],
+        enum: ['pending', 'approved', 'spam', 'deleted', 'flagged'],
         default: 'pending'
     },
+    moderatedBy: {
+        type: String, // Admin/moderator who took action
+        default: null
+    },
+    moderatedAt: Date,
+    moderationReason: String,
 
-    // For soft delete
-    isDeleted: {//to check if the comment is deleted or not
+    // Soft Delete
+    isDeleted: {
+        type: Boolean,
+        default: false
+    },
+    deletedAt: Date,
+    deletedBy: String,
+
+    // Spam Prevention
+    spamScore: {
+        type: Number,
+        default: 0
+    },
+    isSpam: {
         type: Boolean,
         default: false
     }
@@ -67,62 +126,130 @@ const CommentSchema = new mongoose.Schema({
     toObject: { virtuals: true }
 });
 
-// Indexes for performance optimization and to enforce uniqueness constraint if needed 
-CommentSchema.index({ post: 1, createdAt: -1 });//to get the comments of a post in descending order of creation time
-CommentSchema.index({ 'author.email': 1 });//to get the comments of a user
-CommentSchema.index({ status: 1 });//to get the comments based on status
+// Indexes
+CommentSchema.index({ post: 1, createdAt: -1 });
+CommentSchema.index({ 'author.email': 1 });
+CommentSchema.index({ status: 1 });
+CommentSchema.index({ parentComment: 1 });
+CommentSchema.index({ isDeleted: 1 });
+CommentSchema.index({ spamScore: 1 });
+
+// Virtuals
+CommentSchema.virtual('replyCount').get(function() {
+    return this.replies.length;
+});
 
 // Pre-save middleware
-CommentSchema.pre('save', async function(next) {//it is used to update the parent comment and post's comments array
-    if (this.isNew) {//if the comment is new then only update the parent comment and post's comments array
-        // If this is a reply, update parent comment
-        if (this.parentComment) {//if the comment is a reply then update the parent comment
-            await mongoose.model('Comment').findByIdAndUpdate(//update the parent comment by pushing the reply id to the replies array
-                this.parentComment,//parent comment id
-                { $push: { replies: this._id } }//push the reply id to the replies array
+CommentSchema.pre('save', async function(next) {
+    try {
+        if (this.isNew) {
+            // Set depth for nested comments
+            if (this.parentComment) {
+                const parentComment = await this.constructor.findById(this.parentComment);
+                if (parentComment) {
+                    this.depth = parentComment.depth + 1;
+                    // Update parent comment
+                    await this.constructor.findByIdAndUpdate(
+                        this.parentComment,
+                        { $push: { replies: this._id } }
+                    );
+                }
+            }
+
+            // Update post's comments array
+            await mongoose.model('Post').findByIdAndUpdate(
+                this.post,
+                { $push: { comments: this._id } }
             );
         }
-        
-        // Update post's comments array
-        await mongoose.model('Post').findByIdAndUpdate(//update the post's comments array by pushing the comment id to the comments array
-            this.post,
-            { $push: { comments: this._id } }
-        );
+        next();
+    } catch (error) {
+        next(error);
     }
-    next();
 });
 
 // Instance Methods
-CommentSchema.methods.approve = async function() {//to approve the comment
-    this.status = 'approved';//change the status to approved
-    return this.save();//save the comment
-};
+CommentSchema.methods = {
+    async approve() {
+        this.status = 'approved';
+        this.moderatedAt = new Date();
+        return this.save();
+    },
 
-CommentSchema.methods.markAsSpam = async function() {//to mark the comment as spam
-    this.status = 'spam';//change the status to spam
-    return this.save();
-};
+    async markAsSpam() {
+        this.status = 'spam';
+        this.isSpam = true;
+        this.moderatedAt = new Date();
+        return this.save();
+    },
 
-CommentSchema.methods.softDelete = async function() {
-    this.isDeleted = true;
-    return this.save();
+    async softDelete(deletedBy) {
+        this.isDeleted = true;
+        this.deletedAt = new Date();
+        this.deletedBy = deletedBy;
+        return this.save();
+    },
+
+    async toggleLike(userEmail) {
+        const liked = this.likedBy.includes(userEmail);
+        if (liked) {
+            this.likedBy.pull(userEmail);
+            this.likes -= 1;
+        } else {
+            this.likedBy.push(userEmail);
+            this.likes += 1;
+        }
+        return this.save();
+    },
+
+    async report(reportedBy, reason) {
+        this.reports.push({ reportedBy, reason });
+        if (this.reports.length >= 3) { // Auto-flag after 3 reports
+            this.status = 'flagged';
+        }
+        return this.save();
+    }
 };
 
 // Static Methods
-CommentSchema.statics.findByPost = function(postId) {
-    return this.find({
-        post: postId,
-        status: 'approved',
-        isDeleted: false
-    }).sort({ createdAt: -1 });
-};
+CommentSchema.statics = {
+    async findByPost(postId, options = {}) {
+        const {
+            status = 'approved',
+            sort = { createdAt: -1 },
+            page = 1,
+            limit = 10
+        } = options;
 
-CommentSchema.statics.findReplies = function(commentId) {
-    return this.find({
-        parentComment: commentId,
-        status: 'approved',
-        isDeleted: false
-    }).sort({ createdAt: 1 });
+        return this.find({
+            post: postId,
+            status,
+            isDeleted: false,
+            parentComment: null
+        })
+        .sort(sort)
+        .skip((page - 1) * limit)
+        .limit(limit)
+        .populate('replies');
+    },
+
+    async findReplies(commentId) {
+        return this.find({
+            parentComment: commentId,
+            status: 'approved',
+            isDeleted: false
+        })
+        .sort({ createdAt: 1 });
+    },
+
+    async findSpam() {
+        return this.find({
+            $or: [
+                { status: 'spam' },
+                { spamScore: { $gt: 5 } }
+            ]
+        });
+    }
 };
 
 const Comment = mongoose.model('Comment', CommentSchema);

@@ -17,7 +17,7 @@ const PostSchema = new mongoose.Schema({
     },
     slug: {// URL friendly version of title for SEO and URL routing purposes 
         type: String,
-        unique: true,
+        // unique: true,
         lowercase: true
     },
 
@@ -76,7 +76,7 @@ const PostSchema = new mongoose.Schema({
     // Categorization
     category: {
         type: String,
-        required: true,
+        default: 'Other',
         enum: ['Technology', 'Programming', 'Design', 'Business', 'Lifestyle', 'Other']
     },
     tags: [{
@@ -160,7 +160,7 @@ const PostSchema = new mongoose.Schema({
 
 // Indexes
 PostSchema.index({ title: 'text', content: 'text' });
-// PostSchema.index({ slug: 1 }, { unique: true });
+PostSchema.index({ slug: 1 }, { unique: true });
 PostSchema.index({ 'author.email': 1 });
 PostSchema.index({ status: 1, createdAt: -1 });
 PostSchema.index({ category: 1 });
@@ -206,30 +206,6 @@ PostSchema.methods.toJSON = function() {
     
     return post;
 };
-
-// Static method to find published posts
-PostSchema.statics.findPublished = function() {
-    return this.find({ 
-        status: 'published',
-        $or: [
-            { scheduledFor: { $lte: new Date() } },
-            { scheduledFor: null }
-        ]
-    }).sort({ createdAt: -1 });
-};
-
-// Static method to find featured posts
-PostSchema.statics.findFeatured = function() {
-    return this.find({ 
-        status: 'published',
-        featured: true 
-    }).sort({ createdAt: -1 });
-};
-
-const Post = mongoose.model('Post', PostSchema);
-
-module.exports = Post;
-
 // Get approved comments count
 
 PostSchema.virtual('approvedCommentsCount').get(async function() {
@@ -293,3 +269,26 @@ PostSchema.methods.getCommentsWithReplies = async function() {
     return comments;
 
 };
+// Static method to find published posts
+PostSchema.statics.findPublished = function() {
+    return this.find({ 
+        status: 'published',
+        $or: [
+            { scheduledFor: { $lte: new Date() } },
+            { scheduledFor: null }
+        ]
+    }).sort({ createdAt: -1 });
+};
+
+// Static method to find featured posts
+PostSchema.statics.findFeatured = function() {
+    return this.find({ 
+        status: 'published',
+        featured: true 
+    }).sort({ createdAt: -1 });
+};
+
+const Post = mongoose.model('Post', PostSchema);
+
+module.exports = Post;
+
