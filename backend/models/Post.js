@@ -160,7 +160,7 @@ const PostSchema = new mongoose.Schema({
 
 // Indexes
 PostSchema.index({ title: 'text', content: 'text' });
-PostSchema.index({ slug: 1 }, { unique: true });
+// PostSchema.index({ slug: 1 }, { unique: true });
 PostSchema.index({ 'author.email': 1 });
 PostSchema.index({ status: 1, createdAt: -1 });
 PostSchema.index({ category: 1 });
