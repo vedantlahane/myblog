@@ -239,19 +239,19 @@ CommentSchema.statics = {
             status: 'approved',
             isDeleted: false
         })
-        .sort({ createdAt: 1 });
+        .sort({ createdAt: 1 });// Sort replies by oldest first
     },
 
-    async findSpam() {
+    async findSpam() {// Find comments marked as spam or have high spam score
         return this.find({
             $or: [
-                { status: 'spam' },
-                { spamScore: { $gt: 5 } }
+                { status: 'spam' },// Comments marked as spam
+                { spamScore: { $gt: 5 } }// Comments with spam score greater than 5
             ]
         });
     }
 };
 
-const Comment = mongoose.model('Comment', CommentSchema);
+const Comment = mongoose.model('Comment', CommentSchema);// Create a model
 
 module.exports = Comment;
