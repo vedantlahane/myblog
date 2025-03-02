@@ -6,7 +6,7 @@ const PostSchema = new mongoose.Schema({
     title: {
         type: String,
         required: [true, 'Title is required'],
-        trim: true,
+        trim: true,// to remove any leading or from back whitespaces
         maxLength: [100, 'Title cannot be more than 100 characters']
     },
     subtitle: {
@@ -29,7 +29,8 @@ const PostSchema = new mongoose.Schema({
     contentType: {
         type: String,
         enum: ['text', 'html', 'markdown'],
-        default: 'html'
+        default: 'html'// Default content type is HTML
+        //HTML because most common format on web and easy to implement
     },
 
     // Media
@@ -67,6 +68,8 @@ const PostSchema = new mongoose.Schema({
     },
 
     // Publication Details
+    // Not necessary write now
+    // may be will  use in future iterations
     publication: {
         name: String,
         logo: String,
@@ -79,6 +82,9 @@ const PostSchema = new mongoose.Schema({
         default: 'Other',
         enum: ['Technology', 'Programming', 'Design', 'Business', 'Lifestyle', 'Other']
     },
+    //Tags
+    //tags can be used to categorize posts such as by topic, subject, or theme
+    //Not necessary write now
     tags: [{
         type: String,
         trim: true
@@ -117,6 +123,7 @@ const PostSchema = new mongoose.Schema({
     },
 
     // Comments (Reference to separate collection)
+    // will add in future iteration
     comments: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Comment'
@@ -159,7 +166,15 @@ const PostSchema = new mongoose.Schema({
 });
 
 // Indexes
-PostSchema.index({ title: 'text', content: 'text' });
+// Indexes are used to optimize search queries
+// For example, we can create an index on the title field to speed up search queries
+// Indexes can be created on single or multiple fields
+// Indexes can be created in ascending or descending order
+// Indexes can be created as unique or non-unique
+// Indexes can be created on embedded fields
+// Indexes can be created on text fields for full-text search
+// Indexes can be created on geospatial fields for location-based search
+PostSchema.index({ title: 'text', content: 'text' });//here we are creating a text index on the title and content fields, this can be used like a full-text search in MongoDB 
 PostSchema.index({ slug: 1 }, { unique: true });
 PostSchema.index({ 'author.email': 1 });
 PostSchema.index({ status: 1, createdAt: -1 });
@@ -188,97 +203,97 @@ PostSchema.pre('save', function(next) {
 });
 
 // Virtual for comment count
-PostSchema.virtual('commentCount').get(function() {
-    return this.comments.length;
-});
+// PostSchema.virtual('commentCount').get(function() {
+//     return this.comments.length;
+// });
 
 // Instance method to format post
-PostSchema.methods.toJSON = function() {
-    const post = this.toObject();
+// PostSchema.methods.toJSON = function() {
+//     const post = this.toObject();//toObject() method converts the document to a plain JavaScript object
     
-    // Format dates
-    if (post.createdAt) {
-        post.createdAt = post.createdAt.toLocaleDateString();
-    }
-    if (post.updatedAt) {
-        post.updatedAt = post.updatedAt.toLocaleDateString();
-    }
+//     // Format dates
+//     if (post.createdAt) {
+//         post.createdAt = post.createdAt.toLocaleDateString();//toLocaleDateString() method returns a string with a language sensitive representation of the date portion of this date
+//     }
+//     if (post.updatedAt) {
+//         post.updatedAt = post.updatedAt.toLocaleDateString();
+//     }
     
-    return post;
-};
+//     return post;
+// };
 // Get approved comments count
 
-PostSchema.virtual('approvedCommentsCount').get(async function() {
+// PostSchema.virtual('approvedCommentsCount').get(async function() {
 
-    const Comment = mongoose.model('Comment');
+//     const Comment = mongoose.model('Comment');
 
-    return await Comment.countDocuments({
+//     return await Comment.countDocuments({
 
-        post: this._id,
+//         post: this._id,
 
-        status: 'approved',
+//         status: 'approved',
 
-        isDeleted: false
+//         isDeleted: false
 
-    });
+//     });
 
-});
+// });
 
 
-// Get comments with replies
+// // Get comments with replies
 
-PostSchema.methods.getCommentsWithReplies = async function() {
+// PostSchema.methods.getCommentsWithReplies = async function() {
 
-    const Comment = mongoose.model('Comment');
+//     const Comment = mongoose.model('Comment');
 
     
 
-    // Get top-level comments
+//     // Get top-level comments
 
-    const comments = await Comment.find({
+//     const comments = await Comment.find({
 
-        post: this._id,
+//         post: this._id,
 
-        parentComment: null,
+//         parentComment: null,
 
-        status: 'approved',
+//         status: 'approved',
 
-        isDeleted: false
+//         isDeleted: false
 
-    })
+//     })
 
-    .sort({ createdAt: -1 })
+//     .sort({ createdAt: -1 })
 
-    .populate({
+//     .populate({
 
-        path: 'replies',
+//         path: 'replies',
 
-        match: { 
+//         match: { 
 
-            status: 'approved',
+//             status: 'approved',
 
-            isDeleted: false
+//             isDeleted: false
 
-        },
+//         },
 
-        options: { sort: { createdAt: 1 } }
+//         options: { sort: { createdAt: 1 } }
 
-    });
+//     });
 
 
-    return comments;
+//     return comments;
 
-};
+// };
 // Static method to find published posts
-PostSchema.statics.findPublished = function() {
-    return this.find({ 
-        status: 'published',
-        $or: [
-            { scheduledFor: { $lte: new Date() } },
-            { scheduledFor: null }
-        ]
-    }).sort({ createdAt: -1 });
-};
+// PostSchema.statics.findPublished = function() {
+//     return this.find({ 
+//         status: 'published',
+//         $or: [
+//             { scheduledFor: { $lte: new Date() } },
+//             { scheduledFor: null }
+//         ]
+//     }).sort({ createdAt: -1 });
+// };
 
 // Static method to find featured posts
 PostSchema.statics.findFeatured = function() {

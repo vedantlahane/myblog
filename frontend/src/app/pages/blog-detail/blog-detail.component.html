@@ -1,85 +1,118 @@
-<!-- pages/blog-detail/blog-detail.component.html -->
+<!-- src/app/pages/blog-detail/blog-detail.component.html -->
 <div class="container mx-auto px-4 py-8">
-    <!-- Loading State -->
-    <div *ngIf="isLoading" class="flex justify-center items-center h-64">
+  <!-- Loading State -->
+  @if (isLoading) {
+    <div class="flex justify-center items-center h-64">
       <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
     </div>
-  
-    <!-- Error State -->
-    <div *ngIf="error" class="text-red-500 text-center py-8">
-      {{ error }}
+  }
+
+  <!-- Error State -->
+  @if (error) {
+    <div class="text-red-500 text-center py-8">
+      <p class="text-xl mb-4">{{ error }}</p>
+      <button 
+        (click)="goBack()"
+        class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+      >
+        Go Back
+      </button>
     </div>
-  
-    <!-- Post Content -->
-    <article *ngIf="post && !isLoading" class="max-w-4xl mx-auto">
+  }
+
+  <!-- Post Content -->
+  @if (post && !isLoading) {
+    <article class="max-w-4xl mx-auto">
+      <!-- Back Button -->
+      <button 
+        (click)="goBack()"
+        class="mb-6 flex items-center text-gray-600 hover:text-gray-900"
+      >
+        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+        </svg>
+        Back
+      </button>
+
       <!-- Header -->
       <header class="mb-8">
         <h1 class="text-4xl font-bold mb-4">{{ post.title }}</h1>
-        <div class="flex items-center text-gray-600 mb-4">
-          <span class="mr-4">By {{ post.author }}</span>
-          <span>{{ post.date | date:'mediumDate' }}</span>
-        </div>
-        <img [src]="post.thumbnail" [alt]="post.title" class="w-full h-96 object-cover rounded-lg">
-      </header>
-  
-      <!-- Tags -->
-      <div class="flex flex-wrap gap-2 mb-8">
-        <span *ngFor="let tag of post.tags" 
-              class="px-3 py-1 bg-gray-100 rounded-full text-sm">
-          #{{ tag }}
-        </span>
-      </div>
-  
-      <!-- Content -->
-      <div class="prose prose-lg max-w-none mb-12" [innerHTML]="post.content">
-      </div>
-  
-      <!-- Comments Section -->
-      <section class="mt-12 border-t pt-8">
-        <h2 class="text-2xl font-bold mb-6">Comments ({{ post.comments.length }})</h2>
-        
-        <!-- Add Comment Form -->
-        <form (ngSubmit)="submitComment()" class="mb-8">
-          <textarea
-            [(ngModel)]="newComment"
-            name="comment"
-            rows="4"
-            class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            placeholder="Add a comment..."
-          ></textarea>
-          <button
-            type="submit"
-            class="mt-2 px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
-          >
-            Post Comment
-          </button>
-        </form>
-  
-        <!-- Comments List -->
-        <div class="space-y-6">
-          <div *ngFor="let comment of post.comments" class="flex gap-4 p-4 bg-gray-50 rounded-lg">
-            <img [src]="comment.avatar" [alt]="comment.author" 
-                 class="w-12 h-12 rounded-full">
+        <p class="text-xl text-gray-600 mb-6">{{ post.subtitle }}</p>
+
+        <!-- Author and Meta Info -->
+        <div class="flex items-center justify-between mb-6">
+          <div class="flex items-center">
+            <img 
+              [src]="getAuthorAvatar()" 
+              [alt]="getAuthorName()"
+              class="w-12 h-12 rounded-full mr-4"
+            >
             <div>
-              <div class="flex items-center gap-2 mb-2">
-                <span class="font-semibold">{{ comment.author }}</span>
-                <span class="text-sm text-gray-500">{{ comment.date | date:'short' }}</span>
-              </div>
-              <p class="text-gray-700">{{ comment.content }}</p>
+              <p class="font-semibold">{{ getAuthorName() }}</p>
+              <p class="text-sm text-gray-500">
+                {{ formatDate(post.publishedAt || post.createdAt) }}
+                • {{ getReadingTime(post.stats.readingTime) }}
+              </p>
             </div>
           </div>
+
+          <!-- Stats -->
+          <div class="flex items-center space-x-4 text-gray-500">
+            <span class="flex items-center">
+              <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                      d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                      d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+              </svg>
+              {{ post.stats.views || 0 }}
+            </span>
+            <span class="flex items-center">
+              <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                      d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+              </svg>
+              {{ post.stats.likes || 0 }}
+            </span>
+          </div>
+        </div>
+
+        <!-- Featured Image -->
+        <img 
+          [src]="getThumbnailUrl()" 
+          [alt]="getThumbnailAlt()"
+          class="w-full h-96 object-cover rounded-lg"
+        >
+      </header>
+
+      <!-- Tags -->
+      @if (post.tags && post.tags.length) {
+        <div class="flex flex-wrap gap-2 mb-8">
+          @for (tag of post.tags; track tag) {
+            <span class="px-3 py-1 bg-gray-100 rounded-full text-sm text-gray-700">
+              #{{ tag }}
+            </span>
+          }
+        </div>
+      }
+
+      <!-- Content -->
+      <div 
+        class="prose prose-lg max-w-none mb-12"
+        [innerHTML]="post.content"
+      ></div>
+    </article>
+
+    <!-- Related Posts -->
+    @if (hasRelatedPosts()) {
+      <section class="mt-16">
+        <h2 class="text-2xl font-bold mb-6">Related Posts</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          @for (post of relatedPosts; track post._id) {
+            <app-blog-card [post]="post" />
+          }
         </div>
       </section>
-    </article>
-  
-    <!-- Related Posts -->
-    <section *ngIf="relatedPosts.length > 0" class="mt-16">
-      <h2 class="text-2xl font-bold mb-6">Related Posts</h2>
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <app-blog-card
-          *ngFor="let relatedPost of relatedPosts"
-          [post]="relatedPost"
-        ></app-blog-card>
-      </div>
-    </section>
-  </div>
+    }
+  }
+</div>

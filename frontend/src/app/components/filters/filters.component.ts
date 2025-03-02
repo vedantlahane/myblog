@@ -1,72 +1,49 @@
-// filters.component.ts
-
+// src/app/components/filters/filters.component.ts
 import { Component, Output, EventEmitter } from '@angular/core';
-
 import { CommonModule } from '@angular/common';
-
 import { FormsModule } from '@angular/forms';
 
-
 @Component({
-
   selector: 'app-filters',
-
   standalone: true,
+  imports: [CommonModule, FormsModule],
+  template: `
+    <div class="flex gap-4">
+      <select 
+        (change)="onFilterChange('category', $event)"
+        class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500">
+        <option value="">All Categories</option>
+        <option *ngFor="let category of categories" [value]="category">
+          {{category}}
+        </option>
+      </select>
 
-  imports: [
-
-    CommonModule,
-
-    FormsModule
-
-  ],
-
-  templateUrl: './filters.component.html',
-
-  styleUrls: ['./filters.component.css']
-
+      <select 
+        (change)="onFilterChange('sortBy', $event)"
+        class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500">
+        <option value="">Sort By</option>
+        <option value="date">Latest</option>
+        <option value="views">Most Viewed</option>
+        <option value="likes">Most Liked</option>
+      </select>
+    </div>
+  `
 })
-
 export class FiltersComponent {
   @Output() filterChange = new EventEmitter<any>();
 
-  categories: string[] = ['Technology', 'Travel', 'Food', 'Lifestyle', 'Business'];
-  tags: string[] = ['Angular', 'React', 'Vue', 'JavaScript', 'TypeScript', 'Web Development'];
-  selectedCategories: string[] = [];
-  selectedTags: string[] = [];
-  dateFrom: string = '';
-  dateTo: string = '';
+  categories = [
+    'Technology',
+    'Programming',
+    'Design',
+    'Business',
+    'Lifestyle',
+    'Other'
+  ];
 
-  onCategoryChange(event: any) {
-    const category = event.target.value;
-    if (event.target.checked) {
-      this.selectedCategories.push(category);
-    } else {
-      this.selectedCategories = this.selectedCategories.filter(c => c !== category);
-    }
-    this.emitFilters();
-  }
-
-  onTagClick(tag: string) {
-    const index = this.selectedTags.indexOf(tag);
-    if (index === -1) {
-      this.selectedTags.push(tag);
-    } else {
-      this.selectedTags.splice(index, 1);
-    }
-    this.emitFilters();
-  }
-
-  onDateChange() {
-    this.emitFilters();
-  }
-
-  private emitFilters() {
+  onFilterChange(type: string, event: any) {
     this.filterChange.emit({
-      categories: this.selectedCategories,
-      tags: this.selectedTags,
-      dateFrom: this.dateFrom,
-      dateTo: this.dateTo
+      [type]: event.target.value
     });
   }
 }

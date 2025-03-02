@@ -1,10 +1,12 @@
 // server.js
-const express = require('express');
-const cors = require('cors');
-require('dotenv').config();
-const connectDB = require('./config/db');
-const postRoutes = require('./routes/postRoutes');
-const commentRoutes = require('./routes/commentRoutes');
+import express from 'express';
+import cors from 'cors';
+import dotenv from 'dotenv';
+import connectDB from './config/db.js';
+import postRoutes from './routes/postRoutes.js';
+import commentRoutes from './routes/commentRoutes.js';
+
+dotenv.config();
 
 
 // Initialize express
@@ -14,15 +16,21 @@ const app = express();
 connectDB();
 
 // Middleware
-app.use(cors());
 app.use(express.json());
+
+app.use(cors({
+  origin: 'http://localhost:4200', // Your Angular app URL
+  credentials: true
+}));
+
+
 
 // Routes
 app.use('/api/posts', postRoutes);
 app.use('/api/comments', commentRoutes);
 
-// Basic error handling
-app.use((err, req, res, next) => {
+// Error handling middleware
+app.use((err, _req, res, next) => {
     console.error(err.stack);
     res.status(500).json({
         message: 'Something went wrong!',

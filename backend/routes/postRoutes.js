@@ -4,16 +4,32 @@ const router = express.Router();
 const {
     getAllPosts,
     getPostById,
+    getPostBySlug,
     createPost,
     updatePost,
-    deletePost
+    deletePost,
+    getFeaturedPosts,
+    toggleLike
 } = require('../controllers/postController');
 
-// Post routes
-router.get('/', getAllPosts);
-router.get('/:id', getPostById);
-router.post('/', createPost);
-router.put('/:id', updatePost);
-router.delete('/:id', deletePost);
+// Important: Order matters! Put more specific routes first
+// Featured posts
+router.get('/featured', getFeaturedPosts);
+
+// Slug-based route
+router.get('/slug/:slug', getPostBySlug);
+
+// Like post
+router.post('/:id/like', toggleLike);
+
+// CRUD operations
+router.route('/')
+    .get(getAllPosts)
+    .post(createPost);
+
+router.route('/:id')
+    .get(getPostById)
+    .put(updatePost)
+    .delete(deletePost);
 
 module.exports = router;

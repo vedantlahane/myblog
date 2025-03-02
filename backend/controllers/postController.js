@@ -56,32 +56,86 @@ const getAllPosts = async (req, res) => {
     }
 };
 
-// Get single post by ID or slug
 const getPostById = async (req, res) => {
+
     try {
-        const query = req.params.id.match(/^[0-9a-fA-F]{24}$/) 
-            ? { _id: req.params.id }
-            : { slug: req.params.id };
-
-        const post = await Post.findOne(query)
-            .populate('comments');
-
-        if (!post) {
-            return res.status(404).json({ message: 'Post not found' });
-        }
-
-        // Increment view count
-        post.stats.views += 1;
-        await post.save();
-
-        res.json(post);
-    } catch (error) {
-        res.status(500).json({
-            message: 'Error fetching post',
-            error: error.message
+  
+      const post = await Post.findById(req.params.id);
+  
+      if (!post) {
+  
+        return res.status(404).json({
+  
+          success: false,
+  
+          message: 'Post not found'
+  
         });
+  
+      }
+  
+      res.json({
+  
+        success: true,
+  
+        post
+  
+      });
+  
+    } catch (error) {
+  
+      res.status(500).json({
+  
+        success: false,
+  
+        message: error.message
+  
+      });
+  
     }
-};
+  
+  };
+  
+  
+  const getPostBySlug = async (req, res) => {
+  
+    try {
+  
+      const post = await Post.findOne({ slug: req.params.slug });
+  
+      if (!post) {
+  
+        return res.status(404).json({
+  
+          success: false,
+  
+          message: 'Post not found'
+  
+        });
+  
+      }
+  
+      res.json({
+  
+        success: true,
+  
+        post
+  
+      });
+  
+    } catch (error) {
+  
+      res.status(500).json({
+  
+        success: false,
+  
+        message: error.message
+  
+      });
+  
+    }
+  
+  };
 
 // Create new post
 const createPost = async (req, res) => {
@@ -223,9 +277,11 @@ const toggleLike = async (req, res) => {
 module.exports = {
     getAllPosts,
     getPostById,
+    getPostBySlug,
     createPost,
     updatePost,
     deletePost,
     getFeaturedPosts,
-    toggleLike
+    toggleLike,
+    
 };

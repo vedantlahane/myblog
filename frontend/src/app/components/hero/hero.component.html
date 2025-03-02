@@ -1,15 +1,15 @@
-<!-- components/hero/hero.component.html -->
+<!-- src/app/components/hero/hero.component.html -->
 <section class="relative">
   <div 
     class="h-72 sm:h-96 bg-cover bg-center relative" 
-    style="background-image: url('assets/hero-bg.jpg');"
+    [style.backgroundImage]="'url(assets/hero-bg.jpg)'"
   >
-    <div class="absolute inset-0 bg-black opacity-30"></div>
+    <div class="absolute inset-5 bg-black opacity-30"></div>
 
     <div class="h-full w-full flex items-center justify-center relative">
       <div class="text-center text-white z-20 px-4 sm:px-0">
         <h1 class="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 animate-fade-in-up">
-          Welcome to My Blog
+          Welcome to myblog
         </h1>
         <p class="mt-4 text-lg sm:text-xl animate-fade-in-up" style="animation-delay: 0.2s;">
           Discover inspiring stories and ideas.
@@ -24,14 +24,4 @@
       </div>
     </div>
   </div>
-</section>
-<!-- Add loading state -->
-<section class="relative">
-  @if (!isImageLoaded) {
-    <div class="h-72 sm:h-96 bg-gray-200 animate-pulse"></div>
-  }
-  
-  @if (isImageLoaded) {
-    <!-- Your existing hero content -->
-  }
 </section>
