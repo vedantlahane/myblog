@@ -1,15 +1,13 @@
-<!-- src/app/components/blog-card/blog-card.component.html -->
 <article class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
-    <!-- Featured Badge -->
-    @if (post.featured) {
-      <div class="absolute top-4 right-4">
-        <span class="bg-yellow-100 text-yellow-800 text-xs font-medium px-2.5 py-0.5 rounded-full">
-          Featured
-        </span>
-      </div>
-    }
-  
-    <!-- Thumbnail -->
+  <!-- Featured Badge -->
+  <div *ngIf="post.featured" class="absolute top-4 right-4">
+    <span class="bg-yellow-100 text-yellow-800 text-xs font-medium px-2.5 py-0.5 rounded-full">
+      Featured
+    </span>
+  </div>
+
+  <!-- Thumbnail -->
+  <ng-container *ngIf="post.thumbnail?.url">
     <a [routerLink]="['/blog', post.slug]" class="block relative">
       <img 
         [src]="post.thumbnail.url" 
@@ -19,84 +17,84 @@
       
       <!-- Category Badge -->
       <span 
-        [class]="'absolute top-4 left-4 px-3 py-1 rounded-full text-sm ' + getCategoryClass(post.category)"
+        class="absolute top-4 left-4 px-3 py-1 rounded-full text-sm"
+        [ngClass]="getCategoryClass(post.category)"
       >
         {{ post.category }}
       </span>
     </a>
+  </ng-container>
   
-    <!-- Content -->
-    <div class="p-6">
-      <!-- Title and Subtitle -->
-      <div class="mb-4">
-        <h2 class="text-xl font-bold mb-2 line-clamp-2 hover:text-blue-600">
-          <a [routerLink]="['/blog', post.slug]">{{ post.title }}</a>
-        </h2>
-        <p class="text-gray-600 text-sm line-clamp-2">{{ post.subtitle }}</p>
-      </div>
+
   
-      <!-- Author and Meta Info -->
-      <div class="flex items-center justify-between">
-        <!-- Author -->
-        <div class="flex items-center">
-          <img 
-            [src]="post.author.avatar" 
-            [alt]="post.author.name"
-            class="w-8 h-8 rounded-full mr-2"
-          >
-          <div class="text-sm">
-            <p class="font-medium text-gray-900">{{ post.author.name }}</p>
-          </div>
-        </div>
-  
-        <!-- Meta Info -->
-        <div class="text-sm text-gray-500">
-          <div class="flex items-center space-x-2">
-            <!-- Date -->
-            <span>{{ formatDate(post.publishedAt || post.createdAt) }}</span>
-            
-            <!-- Reading Time -->
-            <span>•</span>
-            <span>{{ getReadingTime(post.stats.readingTime || 0) }}</span>
-          </div>
+
+  <!-- Content -->
+  <div class="p-6">
+    <!-- Title and Subtitle -->
+    <div class="mb-4">
+      <h2 class="text-xl font-bold mb-2 line-clamp-2 hover:text-blue-600">
+        <a [routerLink]="['/blog', post.slug]">{{ post.title }}</a>
+      </h2>
+      <p class="text-gray-600 text-sm line-clamp-2">{{ post.subtitle }}</p>
+    </div>
+
+    <!-- Author and Meta Info -->
+    <div class="flex items-center justify-between">
+      <!-- Author -->
+      <div class="flex items-center">
+        <img 
+          [src]="post.author.avatar" 
+          [alt]="post.author.name"
+          class="w-8 h-8 rounded-full mr-2"
+        >
+        <div class="text-sm">
+          <p class="font-medium text-gray-900">{{ post.author.name }}</p>
         </div>
       </div>
-  
-      <!-- Tags -->
-      @if (post.tags && post.tags.length > 0) {
-        <div class="mt-4 flex flex-wrap gap-2">
-          @for (tag of post.tags.slice(0, 3); track tag) {
-            <span class="text-xs text-gray-600 bg-gray-100 px-2 py-1 rounded-full">
-              #{{ tag }}
-            </span>
-          }
-          @if (post.tags.length > 3) {
-            <span class="text-xs text-gray-600">+{{ post.tags.length - 3 }}</span>
-          }
-        </div>
-      }
-  
-      <!-- Stats -->
-      <div class="mt-4 flex items-center text-sm text-gray-500 space-x-4">
-        <!-- Views -->
-        <div class="flex items-center">
-          <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                  d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                  d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
-          </svg>
-          <span>{{ post.stats.views }}</span>
-        </div>
-  
-        <!-- Likes -->
-        <div class="flex items-center">
-          <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                  d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
-          </svg>
-          <span>{{ post.stats.likes }}</span>
+
+      <!-- Meta Info -->
+      <div class="text-sm text-gray-500">
+        <div class="flex items-center space-x-2">
+          <!-- Date -->
+          <span>{{ formatDate(post.publishedAt || post.createdAt) }}</span>
+          <!-- Reading Time -->
+          <span>•</span>
+          <span>{{ getReadingTime(post.stats.readingTime || 0) }}</span>
         </div>
       </div>
     </div>
-  </article>
+
+    <!-- Tags -->
+    <div *ngIf="post.tags && post.tags.length > 0" class="mt-4 flex flex-wrap gap-2">
+      <span *ngFor="let tag of post.tags.slice(0, 3)" class="text-xs text-gray-600 bg-gray-100 px-2 py-1 rounded-full">
+        #{{ tag }}
+      </span>
+      <span *ngIf="post.tags.length > 3" class="text-xs text-gray-600">
+        +{{ post.tags.length - 3 }}
+      </span>
+    </div>
+
+    <!-- Stats -->
+    <div class="mt-4 flex items-center text-sm text-gray-500 space-x-4">
+      <!-- Views -->
+      <div class="flex items-center">
+        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+        </svg>
+        <span>{{ post.stats.views }}</span>
+      </div>
+
+      <!-- Likes -->
+      <div class="flex items-center">
+        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+        </svg>
+        <span>{{ post.stats.likes }}</span>
+      </div>
+    </div>
+  </div>
+</article>
