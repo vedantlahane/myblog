@@ -78,11 +78,18 @@
         </div>
 
         <!-- Featured Image -->
-        <img 
+        <ng-container *ngIf="post.thumbnail?.url">
+          <img 
+            [src]="getThumbnailUrl()" 
+            [alt]="getThumbnailAlt()"
+            class="w-full h-96 object-cover rounded-lg"
+          >
+        </ng-container>
+        <!-- <img 
           [src]="getThumbnailUrl()" 
           [alt]="getThumbnailAlt()"
           class="w-full h-96 object-cover rounded-lg"
-        >
+        > -->
       </header>
 
       <!-- Tags -->
