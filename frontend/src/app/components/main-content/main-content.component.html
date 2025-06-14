@@ -1,38 +1,107 @@
 <section class="container mx-auto my-8 px-4">
-    <div class="flex flex-col md:flex-row md:space-x-8">
-      <!-- Left Column: Featured Posts -->
-      <div class="md:w-2/3">
-        <h2 class="text-2xl font-bold mb-4">Featured Posts</h2>
-        <div class="flex flex-col">
-          <!-- Featured Post Card 1 -->
-          <div class="p-4 rounded shadow hover:shadow-lg transition">
-            <div>
-              <h3 class="mt-4 text-xl font-bold">Post Title 1</h3>
-            <p class="mt-2 text-gray-600">A short excerpt of the post content goes here...</p>
+  <div class="flex flex-col md:flex-row md:space-x-8">
+    <!-- Left Column: Featured Posts -->
+    <div class="md:w-4/7 w-full">
+      <h2 class="text-2xl font-bold mb-6">Featured Posts</h2>
+      <div class="flex flex-col space-y-6">
+        <!-- Featured Post Card 1 -->
+        <article class="flex flex-col sm:flex-row items-start bg-white rounded-lg shadow p-4">
+          <div class="flex-1">
+            <div class="flex items-center mb-2">
+              <img
+                src="Author.svg"
+                alt="Author profile picture"
+                class="w-10 h-10 rounded-full mr-3"
+              />
+              <span class="text-gray-700 font-medium">Author Name</span>
             </div>
-            <div>
-              <img src="assets/post1.jpg" alt="Post Image" class=" border h-28 object-cover rounded">
+            <h3 class="mt-2 text-xl font-bold">Post Title 1</h3>
+            <p class="mt-2 text-gray-600">
+              A short excerpt of the post content goes here...
+            </p>
+            <div class="flex flex-wrap items-center text-sm text-gray-500 mt-3 space-x-4">
+              <span class="flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M21 16v-5a2 2 0 00-2-2h-1.34A8.001 8.001 0 003 15.25V16a2 2 0 002 2h14a2 2 0 002-2z" />
+                </svg>
+                Jan 1, 2023
+              </span>
+              <span class="flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10h4.764A2.236 2.236 0 0021 7.764V5a2 2 0 00-2-2h-5.764A2.236 2.236 0 0011 2.236V4a2 2 0 00-2 2H5a2 2 0 00-2 2v2.236A2.236 2.236 0 002.236 11H4a2 2 0 002 2v2.764A2.236 2.236 0 007.764 21H10a2 2 0 002 2v-1.764A2.236 2.236 0 0012.236 19H14a2 2 0 002-2v-2.764A2.236 2.236 0 0019.764 13H18a2 2 0 00-2-2v-1z" />
+                </svg>
+                123
+              </span>
+              <span class="flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8h2a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2v-8a2 2 0 012-2h2m4-4v4m0 0V4m0 4a4 4 0 014 4h-4a4 4 0 01-4-4h4z" />
+                </svg>
+                45
+              </span>
             </div>
-            
-            
+            <div class="mt-3 flex space-x-4">
+              <a href="#" class="text-blue-600 hover:underline flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
+                Save
+              </a>
+              <a href="#" class="text-blue-600 hover:underline flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12c0 4.418-4.03 8-9 8s-9-3.582-9-8a9 9 0 0118 0z" />
+                </svg>
+                More
+              </a>
+            </div>
           </div>
-      
-        </div>
-      </div>
-  
-      <!-- Right Column: Filters / Sidebar -->
-      <div class="md:w-1/3 mt-8 md:mt-0">
-        <h2 class="text-2xl font-bold mb-4">Filters</h2>
-        <div class="bg-gray-100 p-4 rounded shadow">
-          <p class="mb-2 font-semibold">Categories</p>
-          <ul class="space-y-2">
-            <li><a href="#" class="text-blue-500 hover:underline">Technology</a></li>
-            <li><a href="#" class="text-blue-500 hover:underline">Lifestyle</a></li>
-            <li><a href="#" class="text-blue-500 hover:underline">Travel</a></li>
-          </ul>
-          <!-- Optional: Add a search box or more filter options -->
-        </div>
+          <div class="flex items-center justify-center mt-4 sm:mt-0 sm:ml-6">
+            <img
+              src="assets/post1.jpg"
+              alt="Post thumbnail"
+              class="w-32 h-28 object-cover rounded border"
+            />
+          </div>
+        </article>
+        <!-- Repeat <article> for more posts -->
       </div>
     </div>
-  </section>
-  
+
+    <!-- Right Column: Filters / Sidebar -->
+    <aside class="md:w-2/7 w-full mt-8 md:mt-0">
+      <h2 class="text-2xl font-bold mb-6">Filters</h2>
+      <div class="bg-gray-100 p-4 rounded-lg shadow">
+        <p class="mb-2 font-semibold">Categories</p>
+        <ul class="space-y-2">
+          <li>
+            <a href="#" class="text-blue-500 hover:underline flex items-center">
+              <!-- Example: Technology icon -->
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+              </svg>
+              Technology
+            </a>
+          </li>
+          <li>
+            <a href="#" class="text-blue-500 hover:underline flex items-center">
+              <!-- Example: Heart icon for Lifestyle -->
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8l8 8 8-8" />
+              </svg>
+              Lifestyle
+            </a>
+          </li>
+          <li>
+            <a href="#" class="text-blue-500 hover:underline flex items-center">
+              <!-- Example: Globe icon for Travel -->
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" fill="none"/>
+                <path stroke="currentColor" stroke-width="2" d="M2 12h20M12 2a15.3 15.3 0 010 20M12 2a15.3 15.3 0 000 20" />
+              </svg>
+              Travel
+            </a>
+          </li>
+        </ul>
+      </div>
+    </aside>
+  </div>
+</section>
