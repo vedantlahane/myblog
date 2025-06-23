@@ -1,6 +1,5 @@
 import express, { Request, Response } from 'express';
-import registerUser from '../controllers/user.controller';
-import loginUser from '../controllers/user.controller';
+import { registerUser, loginUser } from '../controllers/user.controller';
 
 
 const router = express.Router();
