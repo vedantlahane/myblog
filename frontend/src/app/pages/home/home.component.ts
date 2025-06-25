@@ -1,12 +1,9 @@
 // pages/home/home.component.ts
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { HeroComponent } from '../../components/hero/hero.component';
-import { MainContentComponent } from '../../components/main-content/main-content.component';
-
 @Component({
   selector: 'app-home',
-  imports: [HeroComponent, MainContentComponent],
+  imports: [],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'
 })

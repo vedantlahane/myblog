@@ -11,13 +11,7 @@ export const routes: Routes = [
   {
     path: 'blog',
     children: [
-      {
-        path: '',
-        loadComponent: () => 
-          import('./pages/blog-listing/blog-listing.component')
-            .then(m => m.BlogListingComponent),
-        title: 'Blog'
-      },
+     
       {
         path: ':id',
         loadComponent: () => 
