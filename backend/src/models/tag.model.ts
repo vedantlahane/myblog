@@ -50,7 +50,7 @@ const tagSchema = new Schema<ITagDocument>({
 });
 
 // Indexes
-tagSchema.index({ slug: 1 });
+
 tagSchema.index({ postCount: -1 });
 
 // Pre-save middleware

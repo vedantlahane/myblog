@@ -1,103 +1,173 @@
-
-// ✅ post.controller.ts (Controller)
 import { Request, Response } from 'express';
-import { Post } from '../models/post.model';
+import { Post, IPostDocument } from '../models/post.model';
+import mongoose from 'mongoose';
 
+// Helper function for error responses
+const handleError = (res: Response, status: number, message: string) => {
+  res.status(status).json({ success: false, error: message });
+};
+
+// Create a new post
 export const createPost = async (req: Request, res: Response) => {
   try {
-    const post = new Post(req.body);
-    await post.save();
-    res.status(201).json({ message: 'Post created successfully', post });
-  } catch (error) {
-    res.status(500).json({ message: 'Internal server error', error });
-  }
-};
-
-export const getAllPosts = async (req: Request, res: Response) => {
-  try {
-    const posts = await Post.find().populate('author', 'name');
-    res.status(200).json(posts);
-  } catch (error) {
-    res.status(500).json({ message: 'Internal server error', error });
-  }
-};
-
-export const getPostById = async (req: Request, res: Response) => {
-  try {
-    const post = await Post.findById(req.params.id).populate('author', 'name');
-    if (!post) res.status(404).json({ message: 'Post not found' });
-    res.status(200).json(post);
-  } catch (error) {
-    res.status(500).json({ message: 'Internal server error', error });
-  }
-};
-
-export const updatePost = async (req: Request, res: Response) => {
-  try {
-    const updated = await Post.findByIdAndUpdate(req.params.id, req.body, { new: true });
-    if (!updated) {
-      res.status(404).json({ message: 'Post not found' });
-      return;
-    }
-    res.status(200).json({ message: 'Post updated', post: updated });
-  } catch (error) {
-    res.status(500).json({ message: 'Internal server error', error });
-  }
-};
-
-export const deletePost = async (req: Request, res: Response) => {
-  try {
-    const deleted = await Post.findByIdAndDelete(req.params.id);
-    if (!deleted) res.status(404).json({ message: 'Post not found' });
-    res.status(200).json({ message: 'Post deleted successfully' });
-  } catch (error) {
-    res.status(500).json({ message: 'Internal server error', error });
-  }
-};
-
-export const addComment = async (req: Request, res: Response) => {
-  try {
-    const post = await Post.findById(req.params.id);
-    if (!post) {
-      res.status(404).json({ message: 'Post not found' });
-      return;
-    }
-    post.comments.push({
-      user: req.body.user,
-      content: req.body.content,
-      createdAt: new Date()
+    const { title, content, author, tags = [], status = 'draft' } = req.body;
+    
+    const newPost = await Post.create({
+      title,
+      content,
+      author,
+      tags,
+      status,
+      // Slug and readTime will be auto-generated in pre-save hook
     });
 
-    await post.save();
-    res.status(201).json({ message: 'Comment added successfully', post });
-  } catch (error) {
-    res.status(500).json({ message: 'Internal server error', error });
+    res.status(201).json(newPost);
+  } catch (error: any) {
+    handleError(res, 400, error.message);
   }
 };
 
-export const getComments = async (req: Request, res: Response) => {
+// Get all posts (with filtering)
+export const getPosts = async (req: Request, res: Response) => {
   try {
-    const post = await Post.findById(req.params.id).populate('comments.user', 'name');
-    if (!post)  {
-      res.status(404).json({ message: 'Post not found' });
-      return;
-    }
-    res.status(200).json(post.comments);
-  } catch (error) {
-    res.status(500).json({ message: 'Internal server error', error });
+    const { status, author, tag, search } = req.query;
+    const filter: any = {};
+    
+    if (status) filter.status = status;
+    if (author) filter.author = new mongoose.Types.ObjectId(author as string);
+    if (tag) filter.tags = tag;
+    if (search) filter.$text = { $search: search as string };
+
+    const posts = await Post.find(filter)
+      .populate('author', 'name email avatarUrl')
+      .sort({ createdAt: -1 });
+
+    res.json(posts);
+  } catch (error: any) {
+    handleError(res, 500, error.message);
   }
 };
 
-// export const deleteComment = async (req: Request, res: Response) => {
-//   try {
-//     const post = await Post.findById(req.params.id);
-//     if (!post) return res.status(404).json({ message: 'Post not found' });
+// Get a single post by ID
+export const getPostById = async (req: Request, res: Response) => {
+  try {
+    const post = await Post.findById(req.params.id)
+      .populate('author', 'name email avatarUrl')
+      .populate('likes', 'name email avatarUrl');
+    
+    if (!post) return handleError(res, 404, 'Post not found');
+    
+    res.json(post);
+  } catch (error: any) {
+    handleError(res, 500, error.message);
+  }
+};
 
-//     post.comments = post.comments.filter(comment => comment._id?.toString() !== req.params.commentId);
-//     await post.save();
+// Update a post
+export const updatePost = async (req: Request, res: Response) => {
+  try {
+    const updates = req.body;
+    const post = await Post.findByIdAndUpdate(
+      req.params.id,
+      updates,
+      { new: true, runValidators: true }
+    );
+    
+    if (!post) return handleError(res, 404, 'Post not found');
+    res.json(post);
+  } catch (error: any) {
+    handleError(res, 400, error.message);
+  }
+};
 
-//     res.status(200).json({ message: 'Comment deleted successfully' });
-//   } catch (error) {
-//     res.status(500).json({ message: 'Internal server error', error });
-//   }
-// };
+// Delete a post
+export const deletePost = async (req: Request, res: Response) => {
+  try {
+    const post = await Post.findByIdAndDelete(req.params.id);
+    if (!post) return handleError(res, 404, 'Post not found');
+    res.json({ success: true, message: 'Post deleted' });
+  } catch (error: any) {
+    handleError(res, 500, error.message);
+  }
+};
+
+// Like a post
+export const likePost = async (req: Request, res: Response) => {
+  try {
+    const postId = req.params.id;
+    const userId = req.body.userId; // Typically from auth middleware
+    
+    const updatedPost = await Post.findByIdAndUpdate(
+      postId,
+      { $addToSet: { likes: userId } },
+      { new: true }
+    );
+    
+    if (!updatedPost) return handleError(res, 404, 'Post not found');
+    res.json(updatedPost);
+  } catch (error: any) {
+    handleError(res, 500, error.message);
+  }
+};
+
+// Unlike a post
+export const unlikePost = async (req: Request, res: Response) => {
+  try {
+    const postId = req.params.id;
+    const userId = req.body.userId;
+    
+    const updatedPost = await Post.findByIdAndUpdate(
+      postId,
+      { $pull: { likes: userId } },
+      { new: true }
+    );
+    
+    if (!updatedPost) return handleError(res, 404, 'Post not found');
+    res.json(updatedPost);
+  } catch (error: any) {
+    handleError(res, 500, error.message);
+  }
+};
+
+// Increment view count
+export const viewPost = async (req: Request, res: Response) => {
+  try {
+    const updatedPost = await Post.findByIdAndUpdate(
+      req.params.id,
+      { $inc: { viewCount: 1 } },
+      { new: true }
+    );
+    
+    if (!updatedPost) return handleError(res, 404, 'Post not found');
+    res.json(updatedPost);
+  } catch (error: any) {
+    handleError(res, 500, error.message);
+  }
+};
+
+
+export const getPostBySlug = async (req: Request, res: Response) => {
+  try {
+    const post = await Post.findOne({ slug: req.params.slug, status: 'published' })
+      .populate('author', 'name email avatarUrl')
+      .populate('likes', 'name email avatarUrl');
+    
+    if (!post) return handleError(res, 404, 'Post not found');
+    res.json(post);
+  } catch (error: any) {
+    handleError(res, 500, error.message);
+  }
+};
+
+
+export const getPublishedPosts = async (_req: Request, res: Response) => {
+  try {
+    const posts = await Post.find({ status: 'published' })
+      .sort({ publishedAt: -1 })
+      .populate('author', 'name email avatarUrl');
+    
+    res.json(posts);
+  } catch (error: any) {
+    handleError(res, 500, error.message);
+  }
+};

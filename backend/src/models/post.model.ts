@@ -91,7 +91,7 @@ const postSchema = new Schema<IPostDocument>({
 });
 
 // Indexes
-postSchema.index({ slug: 1 });
+// postSchema.index({ slug: 1 });
 postSchema.index({ author: 1, status: 1 });
 postSchema.index({ tags: 1 });
 postSchema.index({ status: 1, publishedAt: -1 });
