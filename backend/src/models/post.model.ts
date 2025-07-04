@@ -7,7 +7,7 @@ export interface IPost {
   excerpt?: string;
   author: mongoose.Types.ObjectId;
   coverImage?: string;
-  tags: string[];
+  tags: mongoose.Types.ObjectId[] | string[] ;
   status: 'draft' | 'published' | 'archived';
   likes: mongoose.Types.ObjectId[];
   viewCount: number;
@@ -62,9 +62,12 @@ const postSchema = new Schema<IPostDocument>({
     }
   },
   tags: [{
-    type: String,
-    lowercase: true,
-    trim: true
+    type: Schema.Types.ObjectId, 
+    ref: 'Tag',
+    validate: {
+      validator: (tags: mongoose.Types.ObjectId[]) => Array.isArray(tags) && tags.length > 0,
+      message: 'At least one tag is required'
+    }
   }],
   status: {
     type: String,
