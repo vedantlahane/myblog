@@ -48,7 +48,13 @@ const userSchema = new Schema<IUserDocument>({
     type: String, 
     required: [true, 'Password is required'],
     minlength: [8, 'Password must be at least 8 characters'],
-    select: false // Don't include password by default
+    validate: {
+      validator: (password: string) => {
+        return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/.test(password);
+      },
+      message: 'Password must contain at least one uppercase letter, lowercase letter, number, and special character'
+    },
+    select: false
   },
   avatarUrl: { 
     type: String,
@@ -74,27 +80,33 @@ const userSchema = new Schema<IUserDocument>({
 userSchema.index({ email: 1 });
 userSchema.index({ name: 'text' });
 userSchema.index({ createdAt: -1 });
+userSchema.index({ email: 1, isVerified: 1 });
+userSchema.index({ isAdmin: 1, isVerified: 1 });
 
-userSchema.pre<IUserDocument>('save', async function (next){
-  if(!this.isModified('password')) return next();
-  try{
+// Configure virtuals to appear in JSON
+userSchema.set('toJSON', { virtuals: true });
+userSchema.set('toObject', { virtuals: true });
+
+// Password hashing middleware
+userSchema.pre<IUserDocument>('save', async function (next) {
+  if (!this.isModified('password')) return next();
+  
+  try {
     const salt = await bcrypt.genSalt(12);
-    this.password = await bcrypt.hash(this.password,salt);
+    this.password = await bcrypt.hash(this.password, salt);
     next();
   } catch (error) {
     next(error as Error);
   }
-})
+});
 
 // Instance methods
 userSchema.methods.comparePassword = async function(candidatePassword: string): Promise<boolean> {
-  try{
+  try {
     return await bcrypt.compare(candidatePassword, this.password);
-  }
-  catch (error) {
+  } catch (error) {
     throw new Error('Password comparison failed');
   }
-  
 };
 
 userSchema.methods.toSafeObject = function(): Partial<IUserDocument> {

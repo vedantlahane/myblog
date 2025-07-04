@@ -61,14 +61,14 @@ const postSchema = new Schema<IPostDocument>({
       message: 'Please provide a valid URL'
     }
   },
-  tags: [{
-    type: Schema.Types.ObjectId, 
-    ref: 'Tag',
-    validate: {
-      validator: (tags: mongoose.Types.ObjectId[]) => Array.isArray(tags) && tags.length > 0,
-      message: 'At least one tag is required'
-    }
-  }],
+  tags: {
+  type: [{ type: Schema.Types.ObjectId, ref: 'Tag' }],
+  validate: {
+    validator: (tags: mongoose.Types.ObjectId[]) => tags.length > 0,
+    message: 'At least one tag is required'
+  }
+},
+
   status: {
     type: String,
     enum: ['draft', 'published', 'archived'],
@@ -94,7 +94,7 @@ const postSchema = new Schema<IPostDocument>({
 });
 
 // Indexes
-// postSchema.index({ slug: 1 });
+postSchema.index({ slug: 1 });
 postSchema.index({ author: 1, status: 1 });
 postSchema.index({ tags: 1 });
 postSchema.index({ status: 1, publishedAt: -1 });
