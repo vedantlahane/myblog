@@ -1,65 +1,59 @@
 import mongoose, { Document, Schema, Model } from 'mongoose';
 
-export type NotificationType = 'like' | 'comment' | 'follow' | 'reply' | 'mention';
-
 export interface INotification {
-  type: NotificationType;
   recipient: mongoose.Types.ObjectId;
   sender?: mongoose.Types.ObjectId;
-  post?: mongoose.Types.ObjectId;
-  comment?: mongoose.Types.ObjectId;
+  type: 'like' | 'comment' | 'follow' | 'mention' | 'post';
   message: string;
+  entityType?: 'post' | 'comment' | 'user';
+  entityId?: mongoose.Types.ObjectId;
   isRead: boolean;
-  readAt?: Date;
-  metadata?: Record<string, any>;
   createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface INotificationDocument extends INotification, Document {}
 
 interface INotificationModel extends Model<INotificationDocument> {
-  markAsRead(userId: string, notificationIds: string[]): Promise<void>;
-  getUnreadCount(userId: string): Promise<number>;
+  findUnreadByUser(userId: mongoose.Types.ObjectId): Promise<INotificationDocument[]>;
+  markAsRead(notificationId: mongoose.Types.ObjectId): Promise<void>;
+  markAllAsReadForUser(userId: mongoose.Types.ObjectId): Promise<void>;
 }
 
 const notificationSchema = new Schema<INotificationDocument>({
-  type: { 
-    type: String, 
+  recipient: {
+    type: Schema.Types.ObjectId,
+    ref: 'User',
+    required: true
+  },
+  sender: {
+    type: Schema.Types.ObjectId,
+    ref: 'User'
+  },
+  type: {
+    type: String,
+    enum: ['like', 'comment', 'follow', 'mention', 'post'],
+    required: true
+  },
+  message: {
+    type: String,
     required: true,
-    enum: ['like', 'comment', 'follow', 'reply', 'mention']
+    maxlength: [200, 'Message cannot exceed 200 characters']
   },
-  recipient: { 
-    type: Schema.Types.ObjectId, 
-    ref: 'User', 
-    required: true 
+  entityType: {
+    type: String,
+    enum: ['post', 'comment', 'user']
   },
-  sender: { 
-    type: Schema.Types.ObjectId, 
-    ref: 'User' 
+  entityId: {
+    type: Schema.Types.ObjectId,
+    refPath: 'entityType'
   },
-  post: { 
-    type: Schema.Types.ObjectId, 
-    ref: 'Post' 
-  },
-  comment: { 
-    type: Schema.Types.ObjectId, 
-    ref: 'Comment' 
-  },
-  message: { 
-    type: String, 
-    required: true 
-  },
-  isRead: { 
-    type: Boolean, 
-    default: false 
-  },
-  readAt: Date,
-  metadata: { 
-    type: Map, 
-    of: Schema.Types.Mixed 
+  isRead: {
+    type: Boolean,
+    default: false
   }
-}, { 
-  timestamps: true 
+}, {
+  timestamps: true
 });
 
 // Indexes
@@ -67,27 +61,18 @@ notificationSchema.index({ recipient: 1, isRead: 1, createdAt: -1 });
 notificationSchema.index({ recipient: 1, type: 1 });
 
 // Static methods
-notificationSchema.statics.markAsRead = async function(
-  userId: string, 
-  notificationIds: string[]
-) {
-  await this.updateMany(
-    { 
-      _id: { $in: notificationIds }, 
-      recipient: userId 
-    },
-    { 
-      isRead: true, 
-      readAt: new Date() 
-    }
-  );
+notificationSchema.statics.findUnreadByUser = function(userId: mongoose.Types.ObjectId) {
+  return this.find({ recipient: userId, isRead: false })
+    .populate('sender', 'name avatarUrl')
+    .sort({ createdAt: -1 });
 };
 
-notificationSchema.statics.getUnreadCount = async function(userId: string) {
-  return this.countDocuments({ recipient: userId, isRead: false });
+notificationSchema.statics.markAsRead = async function(notificationId: mongoose.Types.ObjectId) {
+  await this.findByIdAndUpdate(notificationId, { isRead: true });
 };
 
-export const Notification = mongoose.model<INotificationDocument, INotificationModel>(
-  'Notification', 
-  notificationSchema
-);
+notificationSchema.statics.markAllAsReadForUser = async function(userId: mongoose.Types.ObjectId) {
+  await this.updateMany({ recipient: userId, isRead: false }, { isRead: true });
+};
+
+export const Notification = mongoose.model<INotificationDocument, INotificationModel>('Notification', notificationSchema);
