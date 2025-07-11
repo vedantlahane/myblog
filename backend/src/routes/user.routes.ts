@@ -21,20 +21,12 @@ import {
 import { authenticate } from '../middleware/auth';
 const router = express.Router();
 
-// Create a new user
+// Basic CRUD operations
 router.post('/', createUser);
-
-// Get all users
 router.get('/', getUsers);
-
-// Get a single user by ID
 router.get('/:id', getUserById);
-
-// Update a user by ID
-router.put('/:id', updateUser);
-
-// Delete a user by ID
-router.delete('/:id', deleteUser);
+router.put('/:id', authenticate, updateUser);
+router.delete('/:id', authenticate, deleteUser);
 
 // Public profile routes
 router.get('/:id/posts', getUserPosts);

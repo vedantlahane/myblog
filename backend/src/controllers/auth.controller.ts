@@ -1,11 +1,18 @@
 import { Request, Response } from 'express';
-import jwt from 'jsonwebtoken';
+import jwt, { SignOptions } from 'jsonwebtoken';
 import { User } from '../models/user.model';
 
 const generateToken = (userId: string): string => {
-  return jwt.sign({ userId }, process.env.JWT_SECRET!, {
-    expiresIn: process.env.JWT_EXPIRE || '7d'
-  });
+  const secret = process.env.JWT_SECRET;
+  if (!secret) {
+    throw new Error('JWT_SECRET is not defined');
+  }
+  
+  const options: SignOptions = {
+    expiresIn: (process.env.JWT_EXPIRE || '7d') as SignOptions['expiresIn']
+  };
+  
+  return jwt.sign({ userId }, secret, options);
 };
 
 export const register = async (req: Request, res: Response): Promise<void> => {
@@ -19,7 +26,7 @@ export const register = async (req: Request, res: Response): Promise<void> => {
     }
 
     const user = await User.create({ email, password, name });
-    const token = generateToken(user._id.toString());
+    const token = generateToken((user._id as any).toString());
 
     res.status(201).json({
       user: user.toSafeObject(),
@@ -39,7 +46,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
       return;
     }
 
-    const user = await User.findByEmail(email).select('+password');
+    const user = await User.findOne({ email: email.toLowerCase() }).select('+password');
     if (!user) {
       res.status(401).json({ error: 'Invalid credentials' });
       return;
@@ -51,7 +58,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
       return;
     }
 
-    const token = generateToken(user._id.toString());
+    const token = generateToken((user._id as any).toString());
 
     res.json({
       user: user.toSafeObject(),

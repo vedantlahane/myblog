@@ -3,6 +3,7 @@ import { Post } from '../models/post.model';
 import { Tag } from '../models/tag.model';
 import { Notification } from '../models/notification.model';
 import { isValidObjectId } from 'mongoose';
+import { User } from '../models/user.model';
 
 export const createPost = async (req: Request, res: Response): Promise<void> => {
   try {
@@ -27,7 +28,7 @@ export const createPost = async (req: Request, res: Response): Promise<void> => 
 
     // Update tag post counts
     await Promise.all(
-      tags.map((tagId: string) => Tag.incrementPostCount(tagId as any))
+      tags.map((tagId: any) => Tag.incrementPostCount(tagId))
     );
 
     // Notify followers if published
@@ -167,10 +168,10 @@ export const updatePost = async (req: Request, res: Response): Promise<void> => 
     // Update tag counts if tags changed
     if (JSON.stringify(oldTags) !== JSON.stringify(newTags)) {
       await Promise.all([
-        ...oldTags.filter(tag => !newTags.includes(tag))
-          .map(tag => Tag.decrementPostCount(tag)),
-        ...newTags.filter(tag => !oldTags.includes(tag))
-          .map(tag => Tag.incrementPostCount(tag))
+        ...oldTags.filter((tag: any) => !newTags.includes(tag))
+          .map((tag: any) => Tag.decrementPostCount(tag)),
+        ...newTags.filter((tag: any) => !oldTags.includes(tag))
+          .map((tag: any) => Tag.incrementPostCount(tag))
       ]);
     }
 
@@ -203,7 +204,7 @@ export const deletePost = async (req: Request, res: Response): Promise<void> => 
 
     // Update tag counts
     await Promise.all(
-      post.tags.map(tag => Tag.decrementPostCount(tag))
+      post.tags.map(tag => Tag.decrementPostCount(tag as any))
     );
 
     res.json({ message: 'Post deleted successfully' });
@@ -223,7 +224,7 @@ export const likePost = async (req: Request, res: Response): Promise<void> => {
       return;
     }
 
-    if (post.likes.includes(userId as any)) {
+    if (post.likes.some((id: any) => id.equals(userId))) {
       res.status(400).json({ error: 'Post already liked' });
       return;
     }
@@ -260,7 +261,7 @@ export const unlikePost = async (req: Request, res: Response): Promise<void> => 
       return;
     }
 
-    post.likes = post.likes.filter(id => !id.equals(userId));
+    post.likes = post.likes.filter((id: any) => !id.equals(userId));
     await post.save();
 
     res.json({ message: 'Post unliked successfully', likes: post.likes.length });

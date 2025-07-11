@@ -33,8 +33,150 @@ const upload = multer({
   }
 }).single('avatar');
 
-// Existing CRUD operations (already implemented)
-// ... (keep your existing createUser, getUsers, getUserById, updateUser, deleteUser)
+// Basic CRUD operations
+export const createUser = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { email, password, name, isAdmin = false } = req.body;
+
+    const existingUser = await User.findOne({ email: email.toLowerCase() });
+    if (existingUser) {
+      res.status(400).json({ error: 'Email already registered' });
+      return;
+    }
+
+    const user = await User.create({ email, password, name, isAdmin });
+    res.status(201).json(user.toSafeObject());
+  } catch (error) {
+    res.status(400).json({ error: (error as Error).message });
+  }
+};
+
+export const getUsers = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { 
+      page = 1, 
+      limit = 10, 
+      search,
+      isAdmin 
+    } = req.query;
+
+    const query: any = {};
+    
+    if (search) {
+      query.$or = [
+        { name: { $regex: search, $options: 'i' } },
+        { email: { $regex: search, $options: 'i' } }
+      ];
+    }
+    
+    if (isAdmin !== undefined) {
+      query.isAdmin = isAdmin === 'true';
+    }
+
+    const users = await User.find(query)
+      .select('-password')
+      .sort({ createdAt: -1 })
+      .limit(Number(limit) * 1)
+      .skip((Number(page) - 1) * Number(limit));
+
+    const total = await User.countDocuments(query);
+
+    res.json({
+      users,
+      currentPage: Number(page),
+      totalPages: Math.ceil(total / Number(limit)),
+      totalUsers: total
+    });
+  } catch (error) {
+    res.status(500).json({ error: (error as Error).message });
+  }
+};
+
+export const getUserById = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const user = await User.findById(req.params.id)
+      .populate('followers', 'name avatarUrl')
+      .populate('following', 'name avatarUrl');
+    
+    if (!user) {
+      res.status(404).json({ error: 'User not found' });
+      return;
+    }
+
+    res.json(user.toSafeObject());
+  } catch (error) {
+    res.status(500).json({ error: (error as Error).message });
+  }
+};
+
+export const updateUser = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const userId = req.params.id;
+    const currentUserId = req.user!.userId;
+    const { name, bio, avatarUrl, isAdmin } = req.body;
+
+    // Only allow users to update their own profile or admins to update any profile
+    if (userId !== currentUserId && !req.user!.isAdmin) {
+      res.status(403).json({ error: 'You can only update your own profile' });
+      return;
+    }
+
+    const updateData: any = { name, bio, avatarUrl };
+    
+    // Only admins can change admin status
+    if (req.user!.isAdmin && isAdmin !== undefined) {
+      updateData.isAdmin = isAdmin;
+    }
+
+    const user = await User.findByIdAndUpdate(
+      userId,
+      updateData,
+      { new: true, runValidators: true }
+    );
+
+    if (!user) {
+      res.status(404).json({ error: 'User not found' });
+      return;
+    }
+
+    res.json(user.toSafeObject());
+  } catch (error) {
+    res.status(400).json({ error: (error as Error).message });
+  }
+};
+
+export const deleteUser = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const userId = req.params.id;
+    const currentUserId = req.user!.userId;
+
+    // Only allow users to delete their own account or admins to delete any account
+    if (userId !== currentUserId && !req.user!.isAdmin) {
+      res.status(403).json({ error: 'You can only delete your own account' });
+      return;
+    }
+
+    const user = await User.findById(userId);
+    if (!user) {
+      res.status(404).json({ error: 'User not found' });
+      return;
+    }
+
+    // Prevent deleting the last admin
+    if (user.isAdmin) {
+      const adminCount = await User.countDocuments({ isAdmin: true });
+      if (adminCount === 1) {
+        res.status(400).json({ error: 'Cannot delete the last admin user' });
+        return;
+      }
+    }
+
+    await User.findByIdAndDelete(userId);
+    res.json({ message: 'User deleted successfully' });
+  } catch (error) {
+    res.status(500).json({ error: (error as Error).message });
+  }
+};
 
 // Follow/Unfollow functionality
 export const followUser = async (req: Request, res: Response): Promise<void> => {
@@ -57,13 +199,13 @@ export const followUser = async (req: Request, res: Response): Promise<void> => 
       return;
     }
 
-    if (currentUser.following.includes(targetUser._id)) {
+    if (currentUser.following.some((id: any) => id.equals(targetUser._id))) {
       res.status(400).json({ error: 'Already following this user' });
       return;
     }
 
-    currentUser.following.push(targetUser._id);
-    targetUser.followers.push(currentUser._id);
+    currentUser.following.push(targetUser._id as any);
+    targetUser.followers.push(currentUser._id as any);
 
     await Promise.all([
       currentUser.save(),
@@ -100,10 +242,10 @@ export const unfollowUser = async (req: Request, res: Response): Promise<void> =
     }
 
     currentUser.following = currentUser.following.filter(
-      id => !id.equals(targetUser._id)
+      (id: any) => !id.equals(targetUser._id)
     );
     targetUser.followers = targetUser.followers.filter(
-      id => !id.equals(currentUser._id)
+      (id: any) => !id.equals(currentUser._id)
     );
 
     await Promise.all([
