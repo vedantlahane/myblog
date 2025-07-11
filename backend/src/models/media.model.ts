@@ -87,6 +87,5 @@ const mediaSchema = new Schema<IMediaDocument>({
 mediaSchema.index({ uploadedBy: 1 });
 mediaSchema.index({ mimeType: 1 });
 mediaSchema.index({ createdAt: -1 });
-mediaSchema.index({ filename: 1 });
 
 export const Media = mongoose.model<IMediaDocument, IMediaModel>('Media', mediaSchema);

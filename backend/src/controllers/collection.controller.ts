@@ -103,7 +103,7 @@ export const getCollectionById = async (req: Request, res: Response): Promise<vo
     }
 
     // Sort posts by order
-    collection.posts.sort((a, b) => a.order - b.order);
+    collection.posts.sort((a: any, b: any) => a.order - b.order);
 
     res.json(collection);
   } catch (error) {
@@ -113,21 +113,23 @@ export const getCollectionById = async (req: Request, res: Response): Promise<vo
 
 export const getCollectionBySlug = async (req: Request, res: Response): Promise<void> => {
   try {
-    const collection = await Collection.findBySlug(req.params.slug)
-      .populate('author', 'name avatarUrl bio')
-      .populate({
-        path: 'posts.post',
-        select: 'title slug excerpt coverImage publishedAt tags',
-        populate: [
-          { path: 'author', select: 'name avatarUrl' },
-          { path: 'tags', select: 'name slug' }
-        ]
-      });
+    const collection = await Collection.findBySlug(req.params.slug);
     
     if (!collection) {
       res.status(404).json({ error: 'Collection not found' });
       return;
     }
+
+    // Populate the fields
+    await collection.populate('author', 'name avatarUrl bio');
+    await collection.populate({
+      path: 'posts.post',
+      select: 'title slug excerpt coverImage publishedAt tags',
+      populate: [
+        { path: 'author', select: 'name avatarUrl' },
+        { path: 'tags', select: 'name slug' }
+      ]
+    });
 
     // Check if user can view private collection
     if (!collection.isPublic && (!req.user || collection.author._id.toString() !== req.user.userId)) {
@@ -136,7 +138,7 @@ export const getCollectionBySlug = async (req: Request, res: Response): Promise<
     }
 
     // Sort posts by order
-    collection.posts.sort((a, b) => a.order - b.order);
+    collection.posts.sort((a: any, b: any) => a.order - b.order);
 
     res.json(collection);
   } catch (error) {
