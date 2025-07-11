@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { Bookmark } from '../models/bookmark.model';
 import { Post } from '../models/post.model';
 import { isValidObjectId } from 'mongoose';
+import mongoose from 'mongoose';
 
 export const createBookmark = async (req: Request, res: Response): Promise<void> => {
   try {
@@ -72,8 +73,8 @@ export const getBookmarks = async (req: Request, res: Response): Promise<void> =
     if (search) {
       const searchRegex = new RegExp(search as string, 'i');
       bookmarks = bookmarks.filter(bookmark => 
-        searchRegex.test(bookmark.post.title) || 
-        searchRegex.test(bookmark.post.excerpt || '') ||
+        searchRegex.test((bookmark.post as any).title) || 
+        searchRegex.test((bookmark.post as any).excerpt || '') ||
         searchRegex.test(bookmark.notes || '')
       );
     }

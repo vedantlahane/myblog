@@ -19,6 +19,9 @@ import notificationRoutes from './routes/notification.routes';
 import searchRoutes from './routes/search.routes';
 import categoryRoutes from './routes/category.routes';
 import mediaRoutes from './routes/media.routes';
+import draftRoutes from './routes/draft.routes';
+import bookmarkRoutes from './routes/bookmark.routes';
+import collectionRoutes from './routes/collection.routes';
 
 const app: Application = express();
 
@@ -59,6 +62,9 @@ app.use('/api/notifications', notificationRoutes);
 app.use('/api/search', searchRoutes);
 app.use('/api/categories', categoryRoutes);
 app.use('/api/media', mediaRoutes);
+app.use('/api/drafts', draftRoutes);
+app.use('/api/bookmarks', bookmarkRoutes);
+app.use('/api/collections', collectionRoutes);
 
 // Health check
 app.get('/health', (_req, res) => {
