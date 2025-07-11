@@ -77,7 +77,6 @@ const userSchema = new Schema<IUserDocument>({
 });
 
 // Indexes for better query performance
-userSchema.index({ email: 1 });
 userSchema.index({ name: 'text' });
 userSchema.index({ createdAt: -1 });
 userSchema.index({ email: 1, isVerified: 1 });

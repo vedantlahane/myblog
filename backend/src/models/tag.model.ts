@@ -47,7 +47,6 @@ const tagSchema = new Schema<ITagDocument>({
 });
 
 // Indexes
-tagSchema.index({ slug: 1 });
 tagSchema.index({ name: 'text' });
 tagSchema.index({ postCount: -1 });
 

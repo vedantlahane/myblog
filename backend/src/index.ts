@@ -1,21 +1,28 @@
-import express from 'express';
-import dotenv from 'dotenv';
-import { connectDB } from './config/db';
-import postRoutes from './routes/post.routes';
-import userRoutes from './routes/user.routes';
+import app from './app';
+import { config } from './config/env';
 
+const PORT = config.port;
 
-dotenv.config();
-connectDB();
+const server = app.listen(PORT, () => {
+  console.log(`Server running in ${config.nodeEnv} mode on port ${PORT}`);
+});
 
-const app = express();
-const PORT = process.env.PORT || 5000;
+// Handle unhandled promise rejections
+process.on('unhandledRejection', (err: Error) => {
+  console.error(`Error: ${err.message}`);
+  server.close(() => process.exit(1));
+});
 
-app.use(express.json());
+// Handle uncaught exceptions
+process.on('uncaughtException', (err: Error) => {
+  console.error(`Uncaught Exception: ${err.message}`);
+  process.exit(1);
+});
 
-app.use('/api/posts', postRoutes);
-app.use('/api/users', userRoutes);
-
-app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
+// Graceful shutdown
+process.on('SIGTERM', () => {
+  console.log('SIGTERM received. Shutting down gracefully...');
+  server.close(() => {
+    console.log('Process terminated');
+  });
 });

@@ -17,6 +17,8 @@ import tagRoutes from './routes/tag.routes';
 import commentRoutes from './routes/comment.routes';
 import notificationRoutes from './routes/notification.routes';
 import searchRoutes from './routes/search.routes';
+import categoryRoutes from './routes/category.routes';
+import mediaRoutes from './routes/media.routes';
 
 const app: Application = express();
 
@@ -55,6 +57,8 @@ app.use('/api/tags', tagRoutes);
 app.use('/api/comments', commentRoutes);
 app.use('/api/notifications', notificationRoutes);
 app.use('/api/search', searchRoutes);
+app.use('/api/categories', categoryRoutes);
+app.use('/api/media', mediaRoutes);
 
 // Health check
 app.get('/health', (_req, res) => {
