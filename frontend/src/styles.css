@@ -1,2 +1,70 @@
-/* You can add global styles to this file, and also import other style files */
+/* Global styles for Angular 20 + Tailwind CSS v4 */
 @import "tailwindcss";
+
+/* Custom utility classes */
+@layer utilities {
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  .line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  .line-clamp-4 {
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+/* Prose styles for article content */
+.prose {
+  color: theme('colors.gray.700');
+}
+
+.prose h1,
+.prose h2,
+.prose h3,
+.prose h4 {
+  color: theme('colors.amber.900');
+  font-family: theme('fontFamily.serif');
+}
+
+.prose a {
+  color: theme('colors.yellow.600');
+  text-decoration: none;
+}
+
+.prose a:hover {
+  text-decoration: underline;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: theme('colors.gray.100');
+}
+
+::-webkit-scrollbar-thumb {
+  background: theme('colors.yellow.500');
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: theme('colors.gray.800');
+}
