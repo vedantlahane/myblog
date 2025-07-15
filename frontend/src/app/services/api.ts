@@ -12,7 +12,10 @@ import type {
   PostQueryParams,
   PaginatedResponse,
   CreatePostRequest,
-  UpdatePostRequest
+  UpdatePostRequest,
+  Tag,
+  Comment,
+  CreateCommentRequest
 } from '../../types/api';
 
 @Injectable({
@@ -46,7 +49,7 @@ export class ApiService {
 
   // Auth methods
   login(data: LoginRequest): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${this.baseURL}/api/auth/login`, data)
+    return this.http.post<AuthResponse>(`${this.baseURL}/auth/login`, data)
       .pipe(
         tap(response => {
           if (response.token) {
@@ -58,7 +61,7 @@ export class ApiService {
   }
 
   register(data: RegisterRequest): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${this.baseURL}/api/auth/register`, data)
+    return this.http.post<AuthResponse>(`${this.baseURL}/auth/register`, data)
       .pipe(
         tap(response => {
           if (response.token) {
@@ -70,7 +73,7 @@ export class ApiService {
   }
 
   logout(): Observable<any> {
-    return this.http.post(`${this.baseURL}/api/auth/logout`, {}, { headers: this.getHeaders() })
+    return this.http.post(`${this.baseURL}/auth/logout`, {}, { headers: this.getHeaders() })
       .pipe(
         tap(() => {
           localStorage.removeItem('authToken');
@@ -80,38 +83,81 @@ export class ApiService {
   }
 
   getCurrentUser(): Observable<User> {
-    return this.http.get<User>(`${this.baseURL}/api/auth/me`, { headers: this.getHeaders() });
+    return this.http.get<User>(`${this.baseURL}/auth/me`, { headers: this.getHeaders() });
   }
 
   // Post methods
   getPosts(params?: PostQueryParams): Observable<PaginatedResponse<Post>> {
-    return this.http.get<PaginatedResponse<Post>>(`${this.baseURL}/api/posts`, {
+    return this.http.get<PaginatedResponse<Post>>(`${this.baseURL}/posts`, {
       params: params as any,
       headers: this.getHeaders()
     });
   }
 
   getPostBySlug(slug: string): Observable<Post> {
-    return this.http.get<Post>(`${this.baseURL}/api/posts/slug/${slug}`, { headers: this.getHeaders() });
+    return this.http.get<Post>(`${this.baseURL}/posts/slug/${slug}`, { headers: this.getHeaders() });
   }
 
   getTrendingPosts(): Observable<Post[]> {
-    return this.http.get<Post[]>(`${this.baseURL}/api/posts/trending`, { headers: this.getHeaders() });
+    return this.http.get<Post[]>(`${this.baseURL}/posts/trending`, { headers: this.getHeaders() });
   }
 
   createPost(data: CreatePostRequest): Observable<Post> {
-    return this.http.post<Post>(`${this.baseURL}/api/posts`, data, { headers: this.getHeaders() });
+    return this.http.post<Post>(`${this.baseURL}/posts`, data, { headers: this.getHeaders() });
   }
 
   updatePost(id: string, data: UpdatePostRequest): Observable<Post> {
-    return this.http.put<Post>(`${this.baseURL}/api/posts/${id}`, data, { headers: this.getHeaders() });
+    return this.http.put<Post>(`${this.baseURL}/posts/${id}`, data, { headers: this.getHeaders() });
   }
 
   likePost(id: string): Observable<any> {
-    return this.http.post(`${this.baseURL}/api/posts/${id}/like`, {}, { headers: this.getHeaders() });
+    return this.http.post(`${this.baseURL}/posts/${id}/like`, {}, { headers: this.getHeaders() });
   }
 
   unlikePost(id: string): Observable<any> {
-    return this.http.delete(`${this.baseURL}/api/posts/${id}/like`, { headers: this.getHeaders() });
+    return this.http.delete(`${this.baseURL}/posts/${id}/like`, { headers: this.getHeaders() });
+  }
+
+  // Additional Post methods
+  getPostById(id: string): Observable<Post> {
+    return this.http.get<Post>(`${this.baseURL}/posts/${id}`, { headers: this.getHeaders() });
+  }
+
+  getRelatedPosts(id: string): Observable<Post[]> {
+    return this.http.get<Post[]>(`${this.baseURL}/posts/${id}/related`, { headers: this.getHeaders() });
+  }
+
+  // User methods
+  getUserById(id: string): Observable<User> {
+    return this.http.get<User>(`${this.baseURL}/users/${id}`, { headers: this.getHeaders() });
+  }
+
+  followUser(id: string): Observable<any> {
+    return this.http.post(`${this.baseURL}/users/${id}/follow`, {}, { headers: this.getHeaders() });
+  }
+
+  unfollowUser(id: string): Observable<any> {
+    return this.http.delete(`${this.baseURL}/users/${id}/follow`, { headers: this.getHeaders() });
+  }
+
+  // Tag methods
+  getTags(): Observable<Tag[]> {
+    return this.http.get<Tag[]>(`${this.baseURL}/tags`, { headers: this.getHeaders() });
+  }
+
+  getTagBySlug(slug: string): Observable<Tag> {
+    return this.http.get<Tag>(`${this.baseURL}/tags/slug/${slug}`, { headers: this.getHeaders() });
+  }
+
+  // Comment methods
+  getComments(params?: any): Observable<Comment[]> {
+    return this.http.get<Comment[]>(`${this.baseURL}/comments`, {
+      params: params as any,
+      headers: this.getHeaders()
+    });
+  }
+
+  createComment(data: CreateCommentRequest): Observable<Comment> {
+    return this.http.post<Comment>(`${this.baseURL}/comments`, data, { headers: this.getHeaders() });
   }
 }

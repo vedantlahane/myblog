@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { ApiService } from '../../services/api';
-import type { Post, User, Comment } from '../../../types/api';
+import type { Post, User, Comment, Tag } from '../../../types/api';
 import { finalize } from 'rxjs/operators';
 
 @Component({
@@ -133,5 +133,13 @@ export class PostDetailComponent implements OnInit {
       month: 'long',
       day: 'numeric'
     });
+  }
+
+  getTagName(tag: string | Tag): string {
+    return typeof tag === 'string' ? tag : tag.name;
+  }
+
+  getTagSlug(tag: string | Tag): string {
+    return typeof tag === 'string' ? tag : tag.slug || tag.name;
   }
 }
