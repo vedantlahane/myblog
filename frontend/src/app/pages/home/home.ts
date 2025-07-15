@@ -1,11 +1,17 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ApiService } from '../../services/api';
 import { TrendingCardComponent } from '../../components/trending-card/trending-card';
 import { HotTopicCardComponent } from '../../components/hot-topic-card/hot-topic-card';
 import { LatestCardComponent } from '../../components/latest-card/latest-card';
 import type { Post } from '../../../types/api';
-import { finalize } from 'rxjs/operators';
+import { catchError, finalize, takeUntil } from 'rxjs/operators';
+import { of, Subject } from 'rxjs';
+
+interface ErrorState {
+  trending: string | null;
+  latest: string | null;
+}
 
 @Component({
   selector: 'app-home',
@@ -17,47 +23,85 @@ import { finalize } from 'rxjs/operators';
     LatestCardComponent
   ],
   templateUrl: './home.html',
-  styleUrls: ['./home.css']
 })
-export class HomeComponent implements OnInit {
-  trendingPosts: Post[] = [];
-  hotTopicPost: Post | null = null;
-  latestPosts: Post[] = [];
-  loading = true;
-  error: string | null = null;
+export class HomeComponent implements OnInit, OnDestroy {
+  private apiService = inject(ApiService);
+  private destroy$ = new Subject<void>();
+  
+  // State management with signals
+  trendingPosts = signal<Post[]>([]);
+  latestPosts = signal<Post[]>([]);
+  trendingLoading = signal(false);
+  latestLoading = signal(false);
+  errorState = signal<ErrorState>({ trending: null, latest: null });
+  
+  // Computed properties
+  hotTopicPost = computed(() => this.trendingPosts()[0] || null);
+  loading = computed(() => this.trendingLoading() || this.latestLoading());
+  error = computed(() => {
+    const errors = this.errorState();
+    return errors.trending || errors.latest;
+  });
 
-  constructor(private apiService: ApiService) {}
-
-  ngOnInit() {
+  ngOnInit(): void {
     this.loadPosts();
   }
 
-  loadPosts() {
-    this.loading = true;
-    
-    // Load trending posts
-    this.apiService.getTrendingPosts()
-      .pipe(finalize(() => this.loading = false))
-      .subscribe({
-        next: (posts) => {
-          this.trendingPosts = posts.slice(0, 2);
-          this.hotTopicPost = posts[0]; // Use first trending as hot topic
-        },
-        error: (err) => {
-          console.error('Error loading trending posts:', err);
-          this.error = 'Failed to load trending posts';
-        }
-      });
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
 
-    // Load latest posts
-    this.apiService.getPosts({ limit: 10, status: 'published' })
-      .subscribe({
-        next: (response) => {
-          this.latestPosts = response.data;
-        },
-        error: (err) => {
-          console.error('Error loading latest posts:', err);
-        }
+  loadPosts(): void {
+    this.loadTrendingPosts();
+    this.loadLatestPosts();
+  }
+
+  private loadTrendingPosts(): void {
+    this.trendingLoading.set(true);
+    this.updateErrorState({ trending: null });
+    
+    this.apiService.getTrendingPosts()
+      .pipe(
+        takeUntil(this.destroy$),
+        catchError(err => {
+          console.error('Error loading trending posts:', err);
+          this.updateErrorState({ trending: 'Failed to load trending posts. Please try again.' });
+          return of([]);
+        }),
+        finalize(() => this.trendingLoading.set(false))
+      )
+      .subscribe(posts => {
+        this.trendingPosts.set(posts.slice(0, 2));
       });
+  }
+
+  private loadLatestPosts(): void {
+    this.latestLoading.set(true);
+    this.updateErrorState({ latest: null });
+    
+    this.apiService.getPosts({ limit: 10, status: 'published' })
+      .pipe(
+        takeUntil(this.destroy$),
+        catchError(err => {
+          console.error('Error loading latest posts:', err);
+          this.updateErrorState({ latest: 'Failed to load latest posts. Please try again.' });
+          return of({ data: [] });
+        }),
+        finalize(() => this.latestLoading.set(false))
+      )
+      .subscribe(response => {
+        this.latestPosts.set(response.data || []);
+      });
+  }
+
+  private updateErrorState(partialError: Partial<ErrorState>): void {
+    this.errorState.update(current => ({ ...current, ...partialError }));
+  }
+
+  // Public method for retry functionality
+  retryLoad(): void {
+    this.errorState.set({ trending: null, latest: null });
+    this.loadPosts();
   }
 }

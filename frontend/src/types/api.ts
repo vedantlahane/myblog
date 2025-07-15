@@ -85,6 +85,7 @@ export interface AuthResponse {
 // ========================= POST TYPES =========================
 
 export interface Post {
+id: any;
   _id: string;
   title: string;
   slug: string;

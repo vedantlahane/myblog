@@ -1,33 +1,54 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ApiService } from '../../services/api';
 import { User, Post } from '../../../types/api';
-// import { PostCardComponent } from '../../components/post-card/post-card';
+import { catchError, finalize, takeUntil } from 'rxjs/operators';
+import { of, Subject, forkJoin } from 'rxjs';
+
+interface LoadingState {
+  profile: boolean;
+  posts: boolean;
+  follow: boolean;
+}
 
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [CommonModule], // PostCardComponent
+  imports: [CommonModule],
   templateUrl: './profile.html',
-  styleUrl: './profile.css'
 })
-export class ProfileComponent implements OnInit {
-  user: User | null = null;
-  posts: Post[] = [];
-  loading = false;
-  error: string | null = null;
-  isOwnProfile = false;
-  isFollowing = false;
+export class ProfileComponent implements OnInit, OnDestroy {
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  private apiService = inject(ApiService);
+  private destroy$ = new Subject<void>();
 
-  constructor(
-    private route: ActivatedRoute,
-    public router: Router,
-    private apiService: ApiService
-  ) {}
+  // State management with signals
+  user = signal<User | null>(null);
+  posts = signal<Post[]>([]);
+  currentUser = signal<User | null>(null);
+  loadingState = signal<LoadingState>({
+    profile: false,
+    posts: false,
+    follow: false
+  });
+  error = signal<string | null>(null);
+  isFollowing = signal(false);
 
-  ngOnInit() {
-    this.route.params.subscribe(params => {
+  // Computed properties
+  loading = computed(() => this.loadingState().profile || this.loadingState().posts);
+  isOwnProfile = computed(() => {
+    const current = this.currentUser();
+    const viewed = this.user();
+    return current && viewed && current._id === viewed._id;
+  });
+
+  ngOnInit(): void {
+    this.loadCurrentUser();
+    this.route.params.pipe(
+      takeUntil(this.destroy$)
+    ).subscribe(params => {
       const userId = params['id'];
       if (userId) {
         this.loadUserProfile(userId);
@@ -35,91 +56,153 @@ export class ProfileComponent implements OnInit {
     });
   }
 
-  private loadUserProfile(userId: string) {
-    this.loading = true;
-    this.error = null;
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
 
-    // Load user information
-    this.apiService.getUserById(userId).subscribe({
-      next: (user: User) => {
-        this.user = user;
-        this.loadUserPosts(userId);
-        this.checkIfOwnProfile();
+  private loadCurrentUser(): void {
+    this.apiService.getCurrentUser().pipe(
+      takeUntil(this.destroy$),
+      catchError(err => {
+        console.error('Failed to load current user:', err);
+        return of(null);
+      })
+    ).subscribe(user => {
+      this.currentUser.set(user);
+    });
+  }
+
+  private loadUserProfile(userId: string): void {
+    this.setLoadingState({ profile: true, posts: true });
+    this.error.set(null);
+
+    // Load user and posts in parallel
+    forkJoin({
+      user: this.apiService.getUserById(userId).pipe(
+        catchError(err => {
+          console.error('Error loading user:', err);
+          return of(null);
+        })
+      ),
+      posts: this.apiService.getPosts({ author: userId }).pipe(
+        catchError(err => {
+          console.error('Error loading posts:', err);
+          return of({ data: [] });
+        })
+      )
+    }).pipe(
+      takeUntil(this.destroy$),
+      finalize(() => this.setLoadingState({ profile: false, posts: false }))
+    ).subscribe(({ user, posts }) => {
+      if (user) {
+        this.user.set(user);
+        this.posts.set(posts.data || posts);
         this.checkFollowingStatus();
-      },
-      error: (err: any) => {
-        this.error = 'User not found';
-        this.loading = false;
+      } else {
+        this.error.set('User not found');
       }
     });
   }
 
-  private loadUserPosts(userId: string) {
-    this.apiService.getPosts({ author: userId }).subscribe({
-      next: (response: any) => {
-        this.posts = response.data || response;
-        this.loading = false;
-      },
-      error: (err: any) => {
-        this.error = 'Failed to load user posts';
-        this.loading = false;
-      }
-    });
-  }
-
-  private checkIfOwnProfile() {
-    // Check if viewing own profile
-    this.apiService.getCurrentUser().subscribe({
-      next: (currentUser: User) => {
-        this.isOwnProfile = currentUser._id === this.user?._id;
-      },
-      error: () => {
-        this.isOwnProfile = false;
-      }
-    });
-  }
-
-  private checkFollowingStatus() {
-    if (!this.isOwnProfile && this.user) {
+  private checkFollowingStatus(): void {
+    const currentUserData = this.currentUser();
+    const viewedUser = this.user();
+    
+    if (!this.isOwnProfile() && currentUserData && viewedUser) {
       // Check if already following this user
-      // This would need to be implemented in the API service
-      this.isFollowing = false;
+      // This logic would depend on your API structure
+      // For now, using a placeholder implementation
+      this.isFollowing.set(false);
     }
   }
 
-  followUser() {
-    if (!this.user) return;
+  followUser(): void {
+    const viewedUser = this.user();
+    if (!viewedUser) return;
 
-    this.apiService.followUser(this.user._id).subscribe({
-      next: () => {
-        this.isFollowing = true;
-        if (this.user) {
-          this.user.followerCount = (this.user.followerCount || 0) + 1;
-        }
-      },
-      error: (err: any) => {
+    this.setLoadingState({ follow: true });
+
+    this.apiService.followUser(viewedUser._id).pipe(
+      takeUntil(this.destroy$),
+      catchError(err => {
         console.error('Failed to follow user:', err);
+        return of(null);
+      }),
+      finalize(() => this.setLoadingState({ follow: false }))
+    ).subscribe(response => {
+      if (response) {
+        this.isFollowing.set(true);
+        this.user.update(current => {
+          if (current) {
+            return {
+              ...current,
+              followerCount: (current.followerCount || 0) + 1
+            };
+          }
+          return current;
+        });
       }
     });
   }
 
-  unfollowUser() {
-    if (!this.user) return;
+  unfollowUser(): void {
+    const viewedUser = this.user();
+    if (!viewedUser) return;
 
-    this.apiService.unfollowUser(this.user._id).subscribe({
-      next: () => {
-        this.isFollowing = false;
-        if (this.user) {
-          this.user.followerCount = Math.max((this.user.followerCount || 0) - 1, 0);
-        }
-      },
-      error: (err: any) => {
+    this.setLoadingState({ follow: true });
+
+    this.apiService.unfollowUser(viewedUser._id).pipe(
+      takeUntil(this.destroy$),
+      catchError(err => {
         console.error('Failed to unfollow user:', err);
+        return of(null);
+      }),
+      finalize(() => this.setLoadingState({ follow: false }))
+    ).subscribe(response => {
+      if (response) {
+        this.isFollowing.set(false);
+        this.user.update(current => {
+          if (current) {
+            return {
+              ...current,
+              followerCount: Math.max((current.followerCount || 0) - 1, 0)
+            };
+          }
+          return current;
+        });
       }
     });
   }
 
-  editProfile() {
+  editProfile(): void {
     this.router.navigate(['/settings/profile']);
+  }
+
+  navigateToPost(post: Post): void {
+    this.router.navigate(['/post', post.slug]);
+  }
+
+  navigateHome(): void {
+    this.router.navigate(['/']);
+  }
+
+  navigateToWrite(): void {
+    this.router.navigate(['/write']);
+  }
+
+  retryLoad(): void {
+    this.route.params.pipe(
+      takeUntil(this.destroy$)
+    ).subscribe(params => {
+      const userId = params['id'];
+      if (userId) {
+        this.loadUserProfile(userId);
+      }
+    });
+  }
+
+  private setLoadingState(state: Partial<LoadingState>): void {
+    this.loadingState.update(current => ({ ...current, ...state }));
   }
 }

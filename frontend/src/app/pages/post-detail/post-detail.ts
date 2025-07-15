@@ -1,32 +1,73 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit, OnDestroy, inject, signal, computed } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { ActivatedRoute, RouterModule } from '@angular/router';
+import { PLATFORM_ID } from '@angular/core';
 import { ApiService } from '../../services/api';
 import type { Post, User, Comment, Tag } from '../../../types/api';
-import { finalize } from 'rxjs/operators';
+import { catchError, finalize, takeUntil } from 'rxjs/operators';
+import { of, Subject, forkJoin } from 'rxjs';
+
+interface LoadingState {
+  post: boolean;
+  related: boolean;
+  comments: boolean;
+  like: boolean;
+}
 
 @Component({
   selector: 'app-post-detail',
   standalone: true,
   imports: [CommonModule, RouterModule],
-  templateUrl: './post-detail.html',
-  styleUrls: ['./post-detail.css']
+  templateUrl: './post-detail.html'
 })
-export class PostDetailComponent implements OnInit {
-  post: Post | null = null;
-  relatedPosts: Post[] = [];
-  comments: Comment[] = [];
-  loading = true;
-  error: string | null = null;
-  isLiked = false;
+export class PostDetailComponent implements OnInit, OnDestroy {
+  private route = inject(ActivatedRoute);
+  private apiService = inject(ApiService);
+  private platformId = inject(PLATFORM_ID);
+  private isBrowser = isPlatformBrowser(this.platformId);
+  private destroy$ = new Subject<void>();
+  
+  // State management with signals
+  post = signal<Post | null>(null);
+  relatedPosts = signal<Post[]>([]);
+  comments = signal<Comment[]>([]);
+  loadingState = signal<LoadingState>({
+    post: false,
+    related: false,
+    comments: false,
+    like: false
+  });
+  error = signal<string | null>(null);
+  isLiked = signal(false);
 
-  constructor(
-    private route: ActivatedRoute,
-    private apiService: ApiService
-  ) {}
+  // Computed properties
+  loading = computed(() => this.loadingState().post);
+  authorName = computed(() => {
+    const currentPost = this.post();
+    if (!currentPost) return '';
+    if (typeof currentPost.author === 'string') return 'Unknown Author';
+    return (currentPost.author as User).name;
+  });
 
-  ngOnInit() {
-    this.route.params.subscribe(params => {
+  authorAvatar = computed(() => {
+    const currentPost = this.post();
+    if (!currentPost) return '';
+    if (typeof currentPost.author === 'string') return 'assets/default-avatar.png';
+    return (currentPost.author as User).avatarUrl || 'assets/default-avatar.png';
+  });
+
+  readingTime = computed(() => {
+    const currentPost = this.post();
+    if (!currentPost) return 0;
+    return currentPost.readingTime || Math.ceil(currentPost.content.split(' ').length / 200);
+  });
+
+  tagsList = computed(() => this.post()?.tags || []);
+
+  ngOnInit(): void {
+    this.route.params.pipe(
+      takeUntil(this.destroy$)
+    ).subscribe(params => {
       const slug = params['slug'];
       if (slug) {
         this.loadPost(slug);
@@ -34,97 +75,102 @@ export class PostDetailComponent implements OnInit {
     });
   }
 
-  loadPost(slug: string) {
-    this.loading = true;
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  loadPost(slug: string): void {
+    this.setLoadingState({ post: true });
+    this.error.set(null);
     
     this.apiService.getPostBySlug(slug)
-      .pipe(finalize(() => this.loading = false))
-      .subscribe({
-        next: (post) => {
-          this.post = post;
-          this.checkIfLiked();
-          this.loadRelatedPosts(post._id);
-          this.loadComments(post._id);
-        },
-        error: (err) => {
+      .pipe(
+        takeUntil(this.destroy$),
+        catchError(err => {
           console.error('Error loading post:', err);
-          this.error = 'Failed to load post';
+          this.error.set('Failed to load post. Please try again.');
+          return of(null);
+        }),
+        finalize(() => this.setLoadingState({ post: false }))
+      )
+      .subscribe(post => {
+        if (post) {
+          this.post.set(post);
+          this.checkIfLiked();
+          this.loadAdditionalData(post._id);
         }
       });
   }
 
-  loadRelatedPosts(postId: string) {
-    this.apiService.getRelatedPosts(postId)
-      .subscribe({
-        next: (posts) => {
-          this.relatedPosts = posts.slice(0, 3);
-        },
-        error: (err) => {
+  private loadAdditionalData(postId: string): void {
+    // Load related posts and comments in parallel
+    forkJoin({
+      related: this.apiService.getRelatedPosts(postId).pipe(
+        catchError(err => {
           console.error('Error loading related posts:', err);
-        }
-      });
-  }
-
-  loadComments(postId: string) {
-    this.apiService.getComments({ post: postId })
-      .subscribe({
-        next: (comments) => {
-          this.comments = comments;
-        },
-        error: (err) => {
+          return of([]);
+        })
+      ),
+      comments: this.apiService.getComments({ post: postId }).pipe(
+        catchError(err => {
           console.error('Error loading comments:', err);
-        }
-      });
+          return of([]);
+        })
+      )
+    }).pipe(
+      takeUntil(this.destroy$)
+    ).subscribe(({ related, comments }) => {
+      this.relatedPosts.set(related.slice(0, 3));
+      this.comments.set(comments);
+    });
   }
 
-  checkIfLiked() {
-    // Check if current user has liked this post
-    const currentUser = localStorage.getItem('currentUser');
-    if (currentUser && this.post) {
-      const user = JSON.parse(currentUser);
-      this.isLiked = this.post.likes.includes(user._id);
-    }
-  }
-
-  toggleLike() {
-    if (!this.post) return;
+  private checkIfLiked(): void {
+    if (!this.isBrowser) return;
     
-    if (this.isLiked) {
-      this.apiService.unlikePost(this.post._id).subscribe({
-        next: (response) => {
-          this.isLiked = false;
-          if (this.post) {
-            this.post.likeCount = response.likes;
-          }
-        }
-      });
-    } else {
-      this.apiService.likePost(this.post._id).subscribe({
-        next: (response) => {
-          this.isLiked = true;
-          if (this.post) {
-            this.post.likeCount = response.likes;
-          }
-        }
-      });
+    const currentUser = localStorage.getItem('currentUser');
+    const currentPost = this.post();
+    
+    if (currentUser && currentPost) {
+      try {
+        const user = JSON.parse(currentUser);
+        this.isLiked.set(currentPost.likes?.includes(user._id) || false);
+      } catch (err) {
+        console.error('Error parsing user data:', err);
+      }
     }
   }
 
-  get authorName(): string {
-    if (!this.post) return '';
-    if (typeof this.post.author === 'string') return 'Unknown Author';
-    return (this.post.author as User).name;
-  }
-
-  get authorAvatar(): string {
-    if (!this.post) return '';
-    if (typeof this.post.author === 'string') return 'assets/default-avatar.png';
-    return (this.post.author as User).avatarUrl || 'assets/default-avatar.png';
-  }
-
-  get readingTime(): number {
-    if (!this.post) return 0;
-    return this.post.readingTime || Math.ceil(this.post.content.split(' ').length / 200);
+  toggleLike(): void {
+    const currentPost = this.post();
+    if (!currentPost) return;
+    
+    this.setLoadingState({ like: true });
+    
+    const likeAction = this.isLiked() 
+      ? this.apiService.unlikePost(currentPost._id)
+      : this.apiService.likePost(currentPost._id);
+    
+    likeAction.pipe(
+      takeUntil(this.destroy$),
+      catchError(err => {
+        console.error('Error toggling like:', err);
+        return of(null);
+      }),
+      finalize(() => this.setLoadingState({ like: false }))
+    ).subscribe(response => {
+      if (response) {
+        this.isLiked.set(!this.isLiked());
+        // Update the post with new like count
+        this.post.update(current => {
+          if (current) {
+            return { ...current, likeCount: response.likes };
+          }
+          return current;
+        });
+      }
+    });
   }
 
   formatDate(date: string): string {
@@ -135,19 +181,45 @@ export class PostDetailComponent implements OnInit {
     });
   }
 
-  get tagsList(): (string | Tag)[] {
-    return this.post?.tags || [];
-  }
-
   getTagName(tag: any): string {
     return typeof tag === 'string' ? tag : tag.name;
   }
 
-  getTagNames(tags: (string | Tag)[]): string[] {
-    return tags.map(tag => this.getTagName(tag));
+  getTagSlug(tag: any): string {
+    return typeof tag === 'string' 
+      ? tag.toLowerCase().replace(/\s+/g, '-') 
+      : tag.slug || tag.name.toLowerCase().replace(/\s+/g, '-');
   }
 
-  getTagSlug(tag: any): string {
-    return typeof tag === 'string' ? tag.toLowerCase().replace(/\s+/g, '-') : tag.slug || tag.name.toLowerCase().replace(/\s+/g, '-');
+  sharePost(platform: 'twitter' | 'facebook' | 'linkedin'): void {
+    const currentPost = this.post();
+    if (!currentPost || !this.isBrowser) return;
+    
+    const url = encodeURIComponent(window.location.href);
+    const title = encodeURIComponent(currentPost.title);
+    
+    const shareUrls = {
+      twitter: `https://twitter.com/intent/tweet?url=${url}&text=${title}`,
+      facebook: `https://www.facebook.com/sharer/sharer.php?u=${url}`,
+      linkedin: `https://www.linkedin.com/sharing/share-offsite/?url=${url}`
+    };
+    
+    window.open(shareUrls[platform], '_blank', 'width=600,height=400');
+  }
+
+  private setLoadingState(state: Partial<LoadingState>): void {
+    this.loadingState.update(current => ({ ...current, ...state }));
+  }
+
+  // Public method for retry functionality
+  retryLoad(): void {
+    this.route.params.pipe(
+      takeUntil(this.destroy$)
+    ).subscribe(params => {
+      const slug = params['slug'];
+      if (slug) {
+        this.loadPost(slug);
+      }
+    });
   }
 }

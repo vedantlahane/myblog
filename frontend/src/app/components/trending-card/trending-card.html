@@ -1,31 +1,104 @@
-<article class="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow">
-  <a [routerLink]="['/post', post.slug]" class="block">
-    <div class="aspect-[4/3] relative overflow-hidden">
-      <img 
-        [src]="post.coverImage || 'assets/placeholder.jpg'" 
-        [alt]="post.title"
-        class="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
-      >
+<article class="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300">
+  <a 
+    [routerLink]="postUrl()" 
+    class="block focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 rounded-2xl"
+    [attr.aria-label]="'Read article: ' + post().title"
+    (keydown)="onKeyDown($event)"
+  >
+    <!-- Cover Image -->
+    <div class="aspect-[4/3] relative overflow-hidden bg-gray-100">
+      @if (!imageLoaded() && !imageError()) {
+        <!-- Loading skeleton -->
+        <div class="w-full h-full bg-gray-200 animate-pulse flex items-center justify-center">
+          <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+          </svg>
+        </div>
+      }
+      
+      @if (imageError()) {
+        <!-- Error state -->
+        <div class="w-full h-full bg-gray-100 flex items-center justify-center">
+          <div class="text-center">
+            <svg class="w-16 h-16 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+            </svg>
+            <p class="text-sm text-gray-500">Image unavailable</p>
+          </div>
+        </div>
+      } @else {
+        <img 
+          [src]="post().coverImage || 'assets/placeholder.jpg'" 
+          [alt]="post().title"
+          class="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+          [class.opacity-0]="!imageLoaded()"
+          [class.opacity-100]="imageLoaded()"
+          (load)="onImageLoad()"
+          (error)="onImageError()"
+          loading="lazy"
+        >
+      }
     </div>
     
+    <!-- Content -->
     <div class="p-6">
+      <!-- Category and Read Time -->
       <div class="flex items-center space-x-2 text-xs mb-3">
-        <span class="text-gold font-medium">{{ category }}</span>
-        <span class="text-warm-gray">•</span>
-        <span class="text-warm-gray">{{ readTime }}</span>
+        <span class="text-amber-600 font-medium bg-amber-50 px-2 py-1 rounded-full">
+          {{ category() }}
+        </span>
+        <span class="text-gray-500">•</span>
+        <time class="text-gray-500">{{ formattedReadTime() }}</time>
       </div>
       
-      <h3 class="font-serif font-bold text-xl text-dark-brown mb-3 line-clamp-2 hover:text-warm-gray transition-colors">
-        {{ post.title }}
+      <!-- Title -->
+      <h3 class="font-serif font-bold text-xl text-gray-900 mb-3 line-clamp-2 hover:text-amber-600 transition-colors">
+        {{ post().title }}
       </h3>
       
-      <p class="text-warm-gray text-sm line-clamp-3 mb-4">
-        {{ post.excerpt }}
-      </p>
+      <!-- Excerpt -->
+      @if (post().excerpt) {
+        <p class="text-gray-600 text-sm line-clamp-3 mb-4">
+          {{ post().excerpt }}
+        </p>
+      }
       
-      <button class="bg-beige text-dark-brown px-4 py-2 rounded-lg text-sm font-medium hover:bg-beige/80 transition-colors">
-        Continue Reading
-      </button>
+      <!-- Continue Reading Button -->
+      @if (showButton()) {
+        <button 
+          class="bg-gray-100 text-gray-900 px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-200 transition-colors focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2"
+          type="button"
+          aria-label="Continue reading this article"
+        >
+          Continue Reading
+        </button>
+      }
+      
+      <!-- Post metadata -->
+      <div class="flex items-center justify-between mt-4 pt-4 border-t border-gray-100">
+        <div class="flex items-center space-x-3">
+          <span class="text-xs text-gray-500">By {{ authorName() }}</span>
+        </div>
+        
+        <div class="flex items-center space-x-4 text-xs text-gray-500">
+          @if (post().readingTime) {
+            <span class="flex items-center">
+              <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+              {{ post().readingTime }} min
+            </span>
+          }
+          @if (post().likeCount > 0) {
+            <span class="flex items-center">
+              <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+              </svg>
+              {{ post().likeCount }}
+            </span>
+          }
+        </div>
+      </div>
     </div>
   </a>
 </article>
