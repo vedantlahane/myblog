@@ -1,8 +1,6 @@
 import { Routes } from '@angular/router';
 import { HomeComponent } from './pages/home/home';
 import { PostDetailComponent } from './pages/post-detail/post-detail';
-import { LoginComponent } from './pages/auth/login/login';
-import { RegisterComponent } from './pages/auth/register/register';
 
 export const routes: Routes = [
   {
@@ -11,19 +9,21 @@ export const routes: Routes = [
   },
   {
     path: 'post/:slug',
-    component: PostDetailComponent
+    component: PostDetailComponent,
+    data: { prerender: false }
   },
   {
     path: 'login',
-    component: LoginComponent
+    loadComponent: () => import('./pages/auth/login/login').then(m => m.LoginComponent)
   },
   {
     path: 'register',
-    component: RegisterComponent
+    loadComponent: () => import('./pages/auth/register/register').then(m => m.RegisterComponent)
   },
   {
     path: 'category/:category',
-    loadComponent: () => import('./pages/category/category').then(m => m.CategoryComponent)
+    loadComponent: () => import('./pages/category/category').then(m => m.CategoryComponent),
+    data: { prerender: false }
   },
   {
     path: 'tag/:tag',

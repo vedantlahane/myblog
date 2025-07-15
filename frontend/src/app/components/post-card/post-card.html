@@ -13,13 +13,12 @@
     <!-- Tags -->
     <div class="flex flex-wrap gap-2 mb-3">
       <span 
-        *ngFor="let tag of post.tags; let i = index" 
-        class="bg-blue-50 text-blue-600 text-xs font-medium px-2 py-1 rounded"
-        [class.hidden]="i > 2">
+        *ngFor="let tag of tagsList.slice(0, 3); let i = index" 
+        class="bg-blue-50 text-blue-600 text-xs font-medium px-2 py-1 rounded">
         #{{ getTagName(tag) }}
       </span>
-      <span *ngIf="post.tags.length > 3" class="text-xs text-gray-500">
-        +{{ post.tags.length - 3 }} more
+      <span *ngIf="tagsList.length > 3" class="text-xs text-gray-500">
+        +{{ tagsList.length - 3 }} more
       </span>
     </div>
 

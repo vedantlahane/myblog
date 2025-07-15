@@ -135,11 +135,19 @@ export class PostDetailComponent implements OnInit {
     });
   }
 
-  getTagName(tag: string | Tag): string {
+  get tagsList(): (string | Tag)[] {
+    return this.post?.tags || [];
+  }
+
+  getTagName(tag: any): string {
     return typeof tag === 'string' ? tag : tag.name;
   }
 
-  getTagSlug(tag: string | Tag): string {
-    return typeof tag === 'string' ? tag : tag.slug || tag.name;
+  getTagNames(tags: (string | Tag)[]): string[] {
+    return tags.map(tag => this.getTagName(tag));
+  }
+
+  getTagSlug(tag: any): string {
+    return typeof tag === 'string' ? tag.toLowerCase().replace(/\s+/g, '-') : tag.slug || tag.name.toLowerCase().replace(/\s+/g, '-');
   }
 }

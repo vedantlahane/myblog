@@ -26,19 +26,19 @@
 
 /* Prose styles for article content */
 .prose {
-  color: theme('colors.warm-gray');
+  color: theme('colors.gray.700');
 }
 
 .prose h1,
 .prose h2,
 .prose h3,
 .prose h4 {
-  color: theme('colors.dark-brown');
+  color: theme('colors.amber.900');
   font-family: theme('fontFamily.serif');
 }
 
 .prose a {
-  color: theme('colors.gold');
+  color: theme('colors.yellow.600');
   text-decoration: none;
 }
 
@@ -53,14 +53,14 @@
 }
 
 ::-webkit-scrollbar-track {
-  background: theme('colors.beige');
+  background: theme('colors.gray.100');
 }
 
 ::-webkit-scrollbar-thumb {
-  background: theme('colors.gold');
+  background: theme('colors.yellow.500');
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: theme('colors.dark-brown');
+  background: theme('colors.gray.800');
 }
