@@ -1,0 +1,71 @@
+<div class="container mx-auto px-4 py-8">
+  <!-- Loading State -->
+  <div *ngIf="loading" class="flex justify-center items-center min-h-[400px]">
+    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-gold"></div>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error && !loading" class="text-center py-8">
+    <p class="text-warm-gray">{{ error }}</p>
+    <button 
+      (click)="loadPosts()" 
+      class="mt-4 bg-gold text-dark-brown px-6 py-2 rounded-lg hover:bg-gold/90 transition-colors"
+    >
+      Try Again
+    </button>
+  </div>
+
+  <!-- Content -->
+  <div *ngIf="!loading && !error" class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+    <!-- Trending Section -->
+    <section class="lg:col-span-3">
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="font-serif font-bold text-2xl text-dark-brown">Trending</h2>
+        <svg class="w-6 h-6 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
+        </svg>
+      </div>
+      
+      <div class="space-y-6">
+        <app-trending-card 
+          *ngFor="let post of trendingPosts" 
+          [post]="post"
+        ></app-trending-card>
+      </div>
+    </section>
+
+    <!-- Hot Topic Section -->
+    <section class="lg:col-span-6">
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="font-serif font-bold text-2xl text-dark-brown">Hot Topic</h2>
+        <svg class="w-6 h-6 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z"></path>
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.879 16.121A3 3 0 1012.015 11L11 14H9c0 .768.293 1.536.879 2.121z"></path>
+        </svg>
+      </div>
+      
+      <app-hot-topic-card 
+        *ngIf="hotTopicPost"
+        [post]="hotTopicPost"
+      ></app-hot-topic-card>
+    </section>
+
+    <!-- Latest Section -->
+    <section class="lg:col-span-3">
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="font-serif font-bold text-2xl text-dark-brown">Latest</h2>
+        <svg class="w-6 h-6 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+        </svg>
+      </div>
+      
+      <div class="bg-white rounded-2xl p-6">
+        <app-latest-card 
+          *ngFor="let post of latestPosts; let i = index" 
+          [post]="post"
+          [showImage]="i === 0"
+        ></app-latest-card>
+      </div>
+    </section>
+  </div>
+</div>

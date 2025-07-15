@@ -1,12 +1,21 @@
+
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { HeaderComponent } from './components/header/header';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
-  templateUrl: './app.html',
-  styleUrl: './app.css'
+  imports: [RouterOutlet, HeaderComponent],
+  template: `
+    <div class="min-h-screen bg-cream">
+      <app-header></app-header>
+      <main>
+        <router-outlet></router-outlet>
+      </main>
+    </div>
+  `,
+  styles: []
 })
-export class App {
-  protected title = 'frontend';
+export class AppComponent {
+  title = 'blog-frontend';
 }

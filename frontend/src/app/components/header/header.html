@@ -1,0 +1,80 @@
+<header class="bg-cream sticky top-0 z-50 border-b border-beige/30">
+  <div class="container mx-auto px-4">
+    <div class="flex items-center justify-between h-20">
+      <!-- Logo -->
+      <a routerLink="/" class="flex items-center space-x-2">
+        <div class="w-10 h-10 bg-dark-brown rounded-full flex items-center justify-center">
+          <span class="text-cream font-serif font-bold text-xl">B</span>
+        </div>
+        <span class="font-serif font-bold text-2xl text-dark-brown">Blank.co</span>
+      </a>
+
+      <!-- Desktop Navigation -->
+      <nav class="hidden lg:flex items-center space-x-8">
+        <a 
+          *ngFor="let item of navigationItems" 
+          [routerLink]="item.route"
+          routerLinkActive="text-dark-brown font-semibold"
+          [routerLinkActiveOptions]="{exact: item.route === '/'}"
+          class="text-warm-gray hover:text-dark-brown transition-colors text-sm font-medium"
+        >
+          {{ item.label }}
+        </a>
+      </nav>
+
+      <!-- Right Section -->
+      <div class="flex items-center space-x-4">
+        <!-- Search Button -->
+        <button class="p-2 hover:bg-beige/30 rounded-lg transition-colors">
+          <svg class="w-5 h-5 text-warm-gray" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+          </svg>
+        </button>
+
+        <!-- Telegram Button -->
+        <a 
+          href="#" 
+          class="hidden md:flex items-center space-x-2 bg-gold text-dark-brown px-4 py-2 rounded-lg hover:bg-gold/90 transition-colors text-sm font-medium"
+        >
+          <span>Join us on Telegram</span>
+        </a>
+
+        <!-- Mobile Menu Button -->
+        <button 
+          (click)="toggleMenu()"
+          class="lg:hidden p-2 hover:bg-beige/30 rounded-lg transition-colors"
+        >
+          <svg class="w-6 h-6 text-warm-gray" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path *ngIf="!isMenuOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+            <path *ngIf="isMenuOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Navigation -->
+    <nav 
+      *ngIf="isMenuOpen"
+      class="lg:hidden py-4 border-t border-beige/30"
+    >
+      <div class="flex flex-col space-y-2">
+        <a 
+          *ngFor="let item of navigationItems" 
+          [routerLink]="item.route"
+          routerLinkActive="text-dark-brown font-semibold bg-beige/30"
+          [routerLinkActiveOptions]="{exact: item.route === '/'}"
+          class="text-warm-gray hover:text-dark-brown hover:bg-beige/20 px-4 py-2 rounded-lg transition-colors text-sm font-medium"
+          (click)="toggleMenu()"
+        >
+          {{ item.label }}
+        </a>
+        <a 
+          href="#" 
+          class="flex items-center justify-center space-x-2 bg-gold text-dark-brown px-4 py-3 rounded-lg hover:bg-gold/90 transition-colors text-sm font-medium mt-4"
+        >
+          <span>Join us on Telegram</span>
+        </a>
+      </div>
+    </nav>
+  </div>
+</header>

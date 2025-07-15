@@ -1,0 +1,70 @@
+<article class="bg-white rounded-2xl overflow-hidden shadow-sm">
+  <div class="p-6">
+    <div class="flex items-center space-x-2 text-xs mb-4">
+      <span class="text-gold font-medium">{{ category }}</span>
+      <span class="text-warm-gray">•</span>
+      <span class="text-warm-gray">{{ readTime }}</span>
+    </div>
+    
+    <h2 class="font-serif font-bold text-3xl text-dark-brown mb-4 leading-tight">
+      <a [routerLink]="['/post', post.slug]" class="hover:text-warm-gray transition-colors">
+        {{ post.title }}
+      </a>
+    </h2>
+    
+    <div class="aspect-[16/9] relative overflow-hidden rounded-xl mb-4">
+      <img 
+        [src]="post.coverImage || 'assets/placeholder.jpg'" 
+        [alt]="post.title"
+        class="w-full h-full object-cover"
+      >
+    </div>
+    
+    <p class="text-warm-gray text-base leading-relaxed mb-4 line-clamp-4">
+      {{ post.excerpt }}
+    </p>
+    
+    <div class="flex items-center justify-between">
+      <span class="text-sm text-warm-gray">By {{ authorName }}</span>
+      <a 
+        [routerLink]="['/post', post.slug]" 
+        class="text-dark-brown font-medium text-sm hover:text-gold transition-colors flex items-center space-x-1"
+      >
+        <span>Read More</span>
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+        </svg>
+      </a>
+    </div>
+  </div>
+</article>
+
+<!-- Additional Cards -->
+<div class="mt-6 space-y-4">
+  <h3 class="font-serif font-bold text-lg text-dark-brown">Videos to Watch</h3>
+  
+  <div class="bg-white rounded-2xl p-4">
+    <h4 class="font-serif font-bold text-xl text-dark-brown mb-3 line-clamp-2">
+      Funmi Iyanda surveys the 'Terror Lurking in the Waters of Borno Island' in this Episode of "Public Eye"
+    </h4>
+    
+    <div class="aspect-video relative overflow-hidden rounded-xl bg-gray-100">
+      <img 
+        src="assets/video-placeholder.jpg" 
+        alt="Video thumbnail"
+        class="w-full h-full object-cover"
+      >
+      <div class="absolute inset-0 flex items-center justify-center">
+        <div class="w-16 h-16 bg-white/90 rounded-full flex items-center justify-center">
+          <svg class="w-8 h-8 text-dark-brown ml-1" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M8 5v14l11-7z"></path>
+          </svg>
+        </div>
+      </div>
+    </div>
+    
+    <p class="text-sm text-warm-gray mt-3 line-clamp-3">
+      In this new episode of "Public Eye", Funmi Iyanda finds out about how lucrative oil business was for the terrorist before their arrest...
+    </p>
+  </div>
+</div>

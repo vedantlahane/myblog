@@ -1,0 +1,31 @@
+<article class="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+  <a [routerLink]="['/post', post.slug]" class="block">
+    <div class="aspect-[4/3] relative overflow-hidden">
+      <img 
+        [src]="post.coverImage || 'assets/placeholder.jpg'" 
+        [alt]="post.title"
+        class="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+      >
+    </div>
+    
+    <div class="p-6">
+      <div class="flex items-center space-x-2 text-xs mb-3">
+        <span class="text-gold font-medium">{{ category }}</span>
+        <span class="text-warm-gray">•</span>
+        <span class="text-warm-gray">{{ readTime }}</span>
+      </div>
+      
+      <h3 class="font-serif font-bold text-xl text-dark-brown mb-3 line-clamp-2 hover:text-warm-gray transition-colors">
+        {{ post.title }}
+      </h3>
+      
+      <p class="text-warm-gray text-sm line-clamp-3 mb-4">
+        {{ post.excerpt }}
+      </p>
+      
+      <button class="bg-beige text-dark-brown px-4 py-2 rounded-lg text-sm font-medium hover:bg-beige/80 transition-colors">
+        Continue Reading
+      </button>
+    </div>
+  </a>
+</article>

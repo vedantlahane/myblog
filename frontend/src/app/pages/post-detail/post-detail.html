@@ -1,0 +1,168 @@
+<article class="min-h-screen bg-cream">
+  <!-- Loading State -->
+  <div *ngIf="loading" class="flex justify-center items-center min-h-[400px]">
+    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-gold"></div>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error && !loading" class="container mx-auto px-4 py-8 text-center">
+    <p class="text-warm-gray">{{ error }}</p>
+    <a routerLink="/" class="mt-4 inline-block bg-gold text-dark-brown px-6 py-2 rounded-lg hover:bg-gold/90 transition-colors">
+      Back to Home
+    </a>
+  </div>
+
+  <!-- Post Content -->
+  <div *ngIf="post && !loading" class="pb-16">
+    <!-- Hero Section -->
+    <div class="bg-white">
+      <div class="container mx-auto px-4 py-12">
+        <div class="max-w-4xl mx-auto">
+          <!-- Category & Date -->
+          <div class="flex items-center space-x-4 text-sm mb-6">
+            <span class="text-gold font-medium">{{ post.tags[0] || 'Uncategorized' }}</span>
+            <span class="text-warm-gray">•</span>
+            <time class="text-warm-gray">{{ formatDate(post.publishedAt || post.createdAt) }}</time>
+            <span class="text-warm-gray">•</span>
+            <span class="text-warm-gray">{{ readingTime }} min read</span>
+          </div>
+
+          <!-- Title -->
+          <h1 class="font-serif font-bold text-4xl md:text-5xl text-dark-brown mb-8 leading-tight">
+            {{ post.title }}
+          </h1>
+
+          <!-- Author Info -->
+          <div class="flex items-center space-x-4 mb-8">
+            <img 
+              [src]="authorAvatar" 
+              [alt]="authorName"
+              class="w-12 h-12 rounded-full object-cover"
+            >
+            <div>
+              <p class="font-medium text-dark-brown">{{ authorName }}</p>
+              <p class="text-sm text-warm-gray">Author</p>
+            </div>
+          </div>
+
+          <!-- Cover Image -->
+          <div *ngIf="post.coverImage" class="aspect-[16/9] rounded-2xl overflow-hidden mb-12">
+            <img 
+              [src]="post.coverImage" 
+              [alt]="post.title"
+              class="w-full h-full object-cover"
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Article Content -->
+    <div class="container mx-auto px-4">
+      <div class="max-w-4xl mx-auto">
+        <div class="bg-white rounded-2xl p-8 md:p-12">
+          <!-- Content -->
+          <div 
+            class="prose prose-lg max-w-none prose-headings:font-serif prose-headings:text-dark-brown prose-p:text-warm-gray prose-a:text-gold prose-a:no-underline hover:prose-a:underline"
+            [innerHTML]="post.content"
+          ></div>
+
+          <!-- Tags -->
+          <div class="mt-12 pt-8 border-t border-beige">
+            <div class="flex flex-wrap gap-2">
+              <a 
+                *ngFor="let tag of post.tags" 
+                [routerLink]="['/tag', tag]"
+                class="bg-beige text-dark-brown px-4 py-2 rounded-lg text-sm font-medium hover:bg-gold hover:text-white transition-colors"
+              >
+                #{{ tag }}
+              </a>
+            </div>
+          </div>
+
+          <!-- Actions -->
+          <div class="mt-8 flex items-center justify-between">
+            <div class="flex items-center space-x-6">
+              <!-- Like Button -->
+              <button 
+                (click)="toggleLike()"
+                class="flex items-center space-x-2 text-warm-gray hover:text-gold transition-colors"
+                [class.text-gold]="isLiked"
+              >
+                <svg class="w-6 h-6" [class.fill-current]="isLiked" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                </svg>
+                <span class="font-medium">{{ post.likeCount }}</span>
+              </button>
+
+              <!-- Comment Count -->
+              <div class="flex items-center space-x-2 text-warm-gray">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+                </svg>
+                <span class="font-medium">{{ post.commentCount }}</span>
+              </div>
+            </div>
+
+            <!-- Share Buttons -->
+            <div class="flex items-center space-x-4">
+              <button class="text-warm-gray hover:text-dark-brown transition-colors">
+                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M23 3.00005C22.0424 3.67552 20.9821 4.19216 19.86 4.53005C19.2577 3.83756 18.4573 3.34674 17.567 3.12397C16.6767 2.90121 15.7395 2.95724 14.8821 3.2845C14.0247 3.61176 13.2884 4.19445 12.773 4.95376C12.2575 5.71308 11.9877 6.61238 12 7.53005V8.53005C10.2426 8.57561 8.50127 8.18586 6.93101 7.39549C5.36074 6.60513 4.01032 5.43868 3 4.00005C3 4.00005 -1 13 8 17C5.94053 18.398 3.48716 19.099 1 19C10 24 21 19 21 7.50005C20.9991 7.2215 20.9723 6.94364 20.92 6.67005C21.9406 5.66354 22.6608 4.39276 23 3.00005Z"></path>
+                </svg>
+              </button>
+              <button class="text-warm-gray hover:text-dark-brown transition-colors">
+                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"></path>
+                </svg>
+              </button>
+              <button class="text-warm-gray hover:text-dark-brown transition-colors">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m9.632 4.316C18.114 15.062 18 15.518 18 16c0 .482.114.938.316 1.342m0-2.684a3 3 0 110 2.684M12 8a5 5 0 100 8"></path>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Comments Section -->
+        <div class="mt-8 bg-white rounded-2xl p-8">
+          <h3 class="font-serif font-bold text-2xl text-dark-brown mb-6">
+            Comments ({{ comments.length }})
+          </h3>
+          
+          <!-- Add your comment component here -->
+          <div class="text-center py-8 text-warm-gray">
+            Comments section coming soon...
+          </div>
+        </div>
+
+        <!-- Related Posts -->
+        <div *ngIf="relatedPosts.length > 0" class="mt-12">
+          <h3 class="font-serif font-bold text-2xl text-dark-brown mb-6">
+            Related Articles
+          </h3>
+          
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <article *ngFor="let related of relatedPosts" class="bg-white rounded-2xl overflow-hidden">
+              <a [routerLink]="['/post', related.slug]" class="block">
+                <div *ngIf="related.coverImage" class="aspect-[16/9] overflow-hidden">
+                  <img 
+                    [src]="related.coverImage" 
+                    [alt]="related.title"
+                    class="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                  >
+                </div>
+                <div class="p-4">
+                  <h4 class="font-serif font-bold text-lg text-dark-brown hover:text-gold transition-colors line-clamp-2">
+                    {{ related.title }}
+                  </h4>
+                </div>
+              </a>
+            </article>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</article>
