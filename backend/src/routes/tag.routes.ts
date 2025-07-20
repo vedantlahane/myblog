@@ -2,6 +2,7 @@ import express from 'express';
 import {
   getTags,
   getTagById,
+  getTagBySlug,
   createTag,
   updateTag,
   deleteTag,
@@ -14,6 +15,7 @@ const router = express.Router();
 
 router.get('/', getTags);
 router.get('/popular', getPopularTags);
+router.get('/slug/:slug', getTagBySlug);
 router.get('/:id', getTagById);
 router.get('/:id/posts', getPostsByTag);
 

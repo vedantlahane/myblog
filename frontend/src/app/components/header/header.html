@@ -1,27 +1,13 @@
-<header class="bg-gray-50 sticky top-0 z-50 border-b border-gray-200 shadow-sm">
+<header class="bg-white/80 backdrop-blur-md sticky top-0 z-50 border-b border-gray-200/50 shadow-sm">
   <div class="container mx-auto px-4">
     <div class="flex items-center justify-between h-16">
       <!-- Logo -->
       <a routerLink="/" class="flex items-center space-x-2 group">
-        <div class="w-10 h-10 bg-gray-900 rounded-full flex items-center justify-center group-hover:bg-gray-800 transition-colors">
+        <div class="w-10 h-10 bg-gradient-to-br from-amber-500 to-orange-500 rounded-full flex items-center justify-center group-hover:from-amber-600 group-hover:to-orange-600 transition-all duration-200 shadow-md">
           <span class="text-white font-serif font-bold text-xl">B</span>
         </div>
-        <span class="font-serif font-bold text-2xl text-gray-900">Blank.co</span>
+        <span class="font-serif font-bold text-2xl text-gray-900 group-hover:text-amber-600 transition-colors">Modern Blog</span>
       </a>
-
-      <!-- Desktop Navigation -->
-      <nav class="hidden lg:flex items-center space-x-6" role="navigation" aria-label="Main navigation">
-        @for (item of navigationItems; track item.route) {
-          <a 
-            [routerLink]="item.route"
-            routerLinkActive="text-gray-900 font-semibold"
-            [routerLinkActiveOptions]="{exact: item.route === '/'}"
-            class="text-gray-600 hover:text-gray-900 transition-colors text-sm font-medium px-3 py-2 rounded-md hover:bg-gray-100"
-          >
-            {{ item.label }}
-          </a>
-        }
-      </nav>
 
       <!-- Right Section -->
       <div class="flex items-center space-x-2">
@@ -29,48 +15,60 @@
         <div class="relative search-container">
           <button 
             (click)="toggleSearch()"
-            class="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-            aria-label="Open search"
+            class="p-2.5 hover:bg-gray-100 rounded-lg transition-all duration-200 group"
+            aria-label="Open search (Ctrl+K)"
             [attr.aria-expanded]="isSearchOpen()"
           >
-            <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <svg class="w-5 h-5 text-gray-600 group-hover:text-gray-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
             </svg>
           </button>
 
           @if (isSearchOpen()) {
-            <div class="absolute right-0 top-full mt-2 w-80 bg-white rounded-lg shadow-lg border border-gray-200 p-4">
+            <div class="absolute right-0 top-full mt-2 w-80 bg-white rounded-xl shadow-xl border border-gray-200/50 p-4 animate-in slide-in-from-top-2 duration-200">
               <div class="relative">
                 <input
                   id="search-input"
                   type="text"
                   [formControl]="searchControl"
-                  placeholder="Search posts..."
-                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
+                  placeholder="Search posts... (Ctrl+K)"
+                  class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-all duration-200"
                   (keydown.enter)="navigateToSearch()"
                   (keydown.escape)="toggleSearch()"
                 >
                 @if (isLoading()) {
-                  <div class="absolute right-3 top-2.5">
-                    <div class="animate-spin rounded-full h-5 w-5 border-b-2 border-amber-500"></div>
+                  <div class="absolute right-3 top-3.5">
+                    <div class="animate-spin rounded-full h-5 w-5 border-2 border-amber-500 border-t-transparent"></div>
                   </div>
                 }
               </div>
               
+              @if (searchError()) {
+                <div class="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+                  <p class="text-sm text-red-600">{{ searchError() }}</p>
+                </div>
+              }
+              
               @if (searchResults().length > 0) {
                 <div class="mt-4 max-h-60 overflow-y-auto">
-                  <div class="text-sm text-gray-500 mb-2">Search Results</div>
+                  <div class="text-sm text-gray-500 mb-2 font-medium">Search Results</div>
                   @for (result of searchResults(); track result._id) {
                     <button
                       (click)="onSearchResultClick(result)"
-                      class="w-full text-left p-2 hover:bg-gray-50 rounded-lg transition-colors"
+                      class="w-full text-left p-3 hover:bg-gray-50 rounded-lg transition-colors group"
                     >
-                      <div class="font-medium text-gray-900 text-sm">{{ result.title }}</div>
+                      <div class="font-medium text-gray-900 text-sm group-hover:text-amber-600 transition-colors">
+                        {{ result.title }}
+                      </div>
                       @if (result.excerpt) {
                         <div class="text-gray-600 text-xs mt-1 line-clamp-2">{{ result.excerpt }}</div>
                       }
                     </button>
                   }
+                </div>
+              } @else if (!isLoading() && searchControl.value && searchControl.value.length > 2) {
+                <div class="mt-4 p-3 text-center text-gray-500 text-sm">
+                  No results found for "{{ searchControl.value }}"
                 </div>
               }
             </div>
@@ -83,34 +81,39 @@
           <div class="relative user-menu-container">
             <button 
               (click)="toggleUserMenu()"
-              class="flex items-center space-x-2 p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              class="flex items-center space-x-2 p-2 hover:bg-gray-100 rounded-lg transition-all duration-200 group"
               aria-label="Open user menu"
               [attr.aria-expanded]="isUserMenuOpen()"
             >
-              <img 
-                [src]="currentUser()?.avatarUrl || '/assets/default-avatar.png'" 
-                [alt]="currentUser()?.name || 'User'"
-                class="w-8 h-8 rounded-full object-cover"
-              >
-              <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <div class="relative">
+                <img 
+                  [src]="currentUser()?.avatarUrl || '/assets/default-avatar.png'" 
+                  [alt]="currentUser()?.name || 'User'"
+                  class="w-8 h-8 rounded-full object-cover ring-2 ring-gray-200 group-hover:ring-amber-300 transition-all"
+                >
+                @if (currentUser()?.isVerified) {
+                  <div class="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></div>
+                }
+              </div>
+              <svg class="w-4 h-4 text-gray-600 group-hover:text-gray-800 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
               </svg>
             </button>
 
             @if (isUserMenuOpen()) {
-              <div class="absolute right-0 top-full mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2">
-                <div class="px-4 py-2 border-b border-gray-100">
-                  <div class="font-medium text-gray-900">{{ currentUser()?.name }}</div>
-                  <div class="text-sm text-gray-600">{{ currentUser()?.email }}</div>
+              <div class="absolute right-0 top-full mt-2 w-48 bg-white rounded-xl shadow-xl border border-gray-200/50 py-2 animate-in slide-in-from-top-2 duration-200">
+                <div class="px-4 py-3 border-b border-gray-100">
+                  <div class="font-medium text-gray-900 truncate">{{ currentUser()?.name }}</div>
+                  <div class="text-sm text-gray-600 truncate">{{ currentUser()?.email }}</div>
                 </div>
                 
                 @for (item of userMenuItems; track item.route) {
                   <a 
                     [routerLink]="item.route"
-                    class="flex items-center space-x-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                    class="flex items-center space-x-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-amber-50 hover:text-amber-700 transition-colors group"
                     (click)="closeAllMenus()"
                   >
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <svg class="w-4 h-4 text-gray-500 group-hover:text-amber-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       @switch (item.icon) {
                         @case ('user') {
                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
@@ -136,17 +139,17 @@
                 <div class="border-t border-gray-100 mt-2 pt-2">
                   <button 
                     (click)="logout()"
-                    class="flex items-center space-x-3 w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors"
+                    class="flex items-center space-x-3 w-full px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors group"
                     [disabled]="isLoading()"
                   >
                     @if (isLoading()) {
-                      <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-red-600"></div>
+                      <div class="animate-spin rounded-full h-4 w-4 border-2 border-red-600 border-t-transparent"></div>
                     } @else {
-                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                      <svg class="w-4 h-4 group-hover:text-red-700 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
                       </svg>
                     }
-                    <span>Logout</span>
+                    <span>{{ isLoading() ? 'Logging out...' : 'Logout' }}</span>
                   </button>
                 </div>
               </div>
@@ -157,40 +160,27 @@
           <div class="flex items-center space-x-2">
             <button 
               (click)="navigateToLogin()"
-              class="hidden md:block px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"
+              class="hidden md:block px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-all duration-200"
             >
               Login
             </button>
             <button 
               (click)="navigateToRegister()"
-              class="px-4 py-2 bg-amber-500 text-gray-900 text-sm font-medium rounded-lg hover:bg-amber-600 transition-colors"
+              class="px-4 py-2 bg-gradient-to-r from-amber-500 to-orange-500 text-white text-sm font-medium rounded-lg hover:from-amber-600 hover:to-orange-600 transition-all duration-200 shadow-md hover:shadow-lg"
             >
               Sign Up
             </button>
           </div>
         }
 
-        <!-- Telegram Button -->
-        <a 
-          href="https://t.me/blankco" 
-          target="_blank"
-          rel="noopener noreferrer"
-          class="hidden md:flex items-center space-x-2 bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors text-sm font-medium"
-        >
-          <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/>
-          </svg>
-          <span>Telegram</span>
-        </a>
-
         <!-- Mobile Menu Button -->
         <button 
           (click)="toggleMenu()"
           class="lg:hidden p-2 hover:bg-gray-100 rounded-lg transition-colors"
-          aria-label="Open mobile menu"
+          aria-label="Toggle mobile menu"
           [attr.aria-expanded]="isMenuOpen()"
         >
-          <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+          <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             @if (!isMenuOpen()) {
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
             } @else {
@@ -204,7 +194,7 @@
     <!-- Mobile Navigation -->
     @if (isMenuOpen()) {
       <nav 
-        class="lg:hidden py-4 border-t border-gray-200"
+        class="lg:hidden py-4 border-t border-gray-200 animate-in slide-in-from-top-2 duration-200"
         role="navigation"
         aria-label="Mobile navigation"
       >
@@ -212,7 +202,7 @@
           @for (item of navigationItems; track item.route) {
             <a 
               [routerLink]="item.route"
-              routerLinkActive="text-gray-900 font-semibold bg-gray-100"
+              routerLinkActive="text-amber-600 font-semibold bg-amber-50"
               [routerLinkActiveOptions]="{exact: item.route === '/'}"
               class="text-gray-600 hover:text-gray-900 hover:bg-gray-50 px-4 py-3 rounded-lg transition-colors text-sm font-medium"
               (click)="closeAllMenus()"
@@ -222,7 +212,7 @@
           }
           
           @if (!isAuthenticated()) {
-            <div class="border-t border-gray-200 pt-4 mt-4">
+            <div class="border-t border-gray-200 pt-4 mt-4 space-y-2">
               <button 
                 (click)="navigateToLogin()"
                 class="w-full text-left px-4 py-3 text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-colors text-sm font-medium"
@@ -231,7 +221,7 @@
               </button>
               <button 
                 (click)="navigateToRegister()"
-                class="w-full text-left px-4 py-3 bg-amber-500 text-gray-900 rounded-lg hover:bg-amber-600 transition-colors text-sm font-medium mt-2"
+                class="w-full text-left px-4 py-3 bg-gradient-to-r from-amber-500 to-orange-500 text-white rounded-lg hover:from-amber-600 hover:to-orange-600 transition-colors text-sm font-medium"
               >
                 Sign Up
               </button>
@@ -249,32 +239,18 @@
               }
               <button 
                 (click)="logout()"
-                class="w-full text-left px-4 py-3 text-red-600 hover:bg-red-50 rounded-lg transition-colors text-sm font-medium mt-2"
+                class="w-full text-left px-4 py-3 text-red-600 hover:bg-red-50 rounded-lg transition-colors text-sm font-medium mt-2 flex items-center space-x-2"
                 [disabled]="isLoading()"
               >
                 @if (isLoading()) {
-                  <div class="flex items-center space-x-2">
-                    <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-red-600"></div>
-                    <span>Logging out...</span>
-                  </div>
+                  <div class="animate-spin rounded-full h-4 w-4 border-2 border-red-600 border-t-transparent"></div>
+                  <span>Logging out...</span>
                 } @else {
-                  Logout
+                  <span>Logout</span>
                 }
               </button>
             </div>
           }
-          
-          <a 
-            href="https://t.me/blankco" 
-            target="_blank"
-            rel="noopener noreferrer"
-            class="flex items-center justify-center space-x-2 bg-blue-500 text-white px-4 py-3 rounded-lg hover:bg-blue-600 transition-colors text-sm font-medium mt-4"
-          >
-            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/>
-            </svg>
-            <span>Join Telegram</span>
-          </a>
         </div>
       </nav>
     }

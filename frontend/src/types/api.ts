@@ -501,6 +501,7 @@ export interface ApiClient {
   logout(): Promise<{ message: string }>;
 
   // User endpoints
+  createUser(data: any): Promise<User>;
   getUsers(params?: UserQueryParams): Promise<PaginatedResponse<User>>;
   getUserById(id: string): Promise<User>;
   updateUser(id: string, data: UpdateUserRequest): Promise<User>;
@@ -510,6 +511,9 @@ export interface ApiClient {
   getFollowers(id: string): Promise<User[]>;
   getFollowing(id: string): Promise<User[]>;
   getUserPosts(id: string): Promise<Post[]>;
+  savePost(postId: string): Promise<{ message: string }>;
+  unsavePost(postId: string): Promise<{ message: string }>;
+  getSavedPosts(): Promise<Post[]>;
   updateProfile(data: UpdateProfileRequest): Promise<User>;
   changePassword(data: ChangePasswordRequest): Promise<{ message: string }>;
   uploadAvatar(file: File): Promise<{ avatarUrl: string }>;
@@ -528,7 +532,8 @@ export interface ApiClient {
   getRelatedPosts(id: string): Promise<Post[]>;
 
   // Comment endpoints
-  getComments(params?: CommentQueryParams): Promise<Comment[]>;
+  getCommentsByPost(postId: string): Promise<Comment[]>;
+  getCommentReplies(commentId: string): Promise<Comment[]>;
   createComment(data: CreateCommentRequest): Promise<Comment>;
   updateComment(id: string, data: UpdateCommentRequest): Promise<Comment>;
   deleteComment(id: string): Promise<{ message: string }>;
@@ -537,7 +542,9 @@ export interface ApiClient {
 
   // Tag endpoints
   getTags(): Promise<Tag[]>;
+  getPopularTags(): Promise<Tag[]>;
   getTagById(id: string): Promise<Tag>;
+  getPostsByTag(id: string): Promise<Post[]>;
   getTagBySlug(slug: string): Promise<Tag>;
   createTag(data: CreateTagRequest): Promise<Tag>;
   updateTag(id: string, data: UpdateTagRequest): Promise<Tag>;
@@ -598,12 +605,13 @@ export interface ApiClient {
   markAsRead(id: string): Promise<{ message: string }>;
   markAllAsRead(): Promise<{ message: string }>;
   deleteNotification(id: string): Promise<{ message: string }>;
+  getUnreadCount(): Promise<{ count: number }>;
 
   // Search endpoints
-  search(params: SearchRequest): Promise<SearchResponse>;
   searchPosts(query: string): Promise<Post[]>;
   searchUsers(query: string): Promise<User[]>;
   searchTags(query: string): Promise<Tag[]>;
+  globalSearch(query: string): Promise<any>;
 }
 
 // ========================= HTTP CLIENT CONFIG =========================

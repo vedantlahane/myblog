@@ -1,0 +1,84 @@
+# Test API Endpoints
+
+### Health Check
+GET http://localhost:5000/health
+
+### Register User
+POST http://localhost:5000/api/auth/register
+Content-Type: application/json
+
+{
+  "name": "Vedant",
+  "email": "vedant@example.com",
+  "password": "Password123!"
+}
+
+### Login User
+POST http://localhost:5000/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "vedant@example.com",
+  "password": "Password123!"
+}
+
+### Get Current User (requires token)
+GET http://localhost:5000/api/auth/me
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODdkMDI0ZDI0YjcyMzdlNzg3OTNmOWUiLCJpYXQiOjE3NTMwMjk3MTcsImV4cCI6MTc1MzYzNDUxN30.JJW71bOUHJ1EKYDLcG4Tj4mmvU77snkkdh7fH_uwEcQ
+
+### Get All Tags
+GET http://localhost:5000/api/tags
+
+### Create Tag (admin only)
+POST http://localhost:5000/api/tags
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODdkMDI0ZDI0YjcyMzdlNzg3OTNmOWUiLCJpYXQiOjE3NTMwMjk3MTcsImV4cCI6MTc1MzYzNDUxN30.JJW71bOUHJ1EKYDLcG4Tj4mmvU77snkkdh7fH_uwEcQ
+
+{
+  "name": "web-development",
+  "description": "Web development technologies and frameworks"
+}
+
+### Create Post (requires token) - Use actual tag ObjectIds
+POST http://localhost:5000/api/posts
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODdkMDI0ZDI0YjcyMzdlNzg3OTNmOWUiLCJpYXQiOjE3NTMwMjk3MTcsImV4cCI6MTc1MzYzNDUxN30.JJW71bOUHJ1EKYDLcG4Tj4mmvU77snkkdh7fH_uwEcQ
+
+{
+  "title": "My First Blog Post",
+  "content": "This is the content of my first blog post. It contains interesting information about web development and modern technologies.",
+  "tags": ["REPLACE_WITH_ACTUAL_TAG_IDS"],
+  "status": "published"
+}
+
+### Get All Posts
+GET http://localhost:5000/api/posts
+
+### Get Trending Posts
+GET http://localhost:5000/api/posts/trending
+
+### Get Post by ID (replace POST_ID with actual post ID)
+GET http://localhost:5000/api/posts/POST_ID
+
+### Update Post (requires token, replace POST_ID)
+PUT http://localhost:5000/api/posts/POST_ID
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODdkMDI0ZDI0YjcyMzdlNzg3OTNmOWUiLCJpYXQiOjE3NTMwMjk3MTcsImV4cCI6MTc1MzYzNDUxN30.JJW71bOUHJ1EKYDLcG4Tj4mmvU77snkkdh7fH_uwEcQ
+{
+  "title": "My Updated Blog Post",
+  "content": "This is the updated content of my blog post with more detailed information.",
+  "tags": ["web-development", "javascript", "nodejs", "backend"],
+  "status": "published"
+}
+
+### Like Post (requires token, replace POST_ID)
+POST http://localhost:5000/api/posts/POST_ID/like
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODdkMDI0ZDI0YjcyMzdlNzg3OTNmOWUiLCJpYXQiOjE3NTMwMjk3MTcsImV4cCI6MTc1MzYzNDUxN30.JJW71bOUHJ1EKYDLcG4Tj4mmvU77snkkdh7fH_uwEcQ
+
+### Unlike Post (requires token, replace POST_ID)
+DELETE http://localhost:5000/api/posts/POST_ID/like
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODdkMDI0ZDI0YjcyMzdlNzg3OTNmOWUiLCJpYXQiOjE3NTMwMjk3MTcsImV4cCI6MTc1MzYzNDUxN30.JJW71bOUHJ1EKYDLcG4Tj4mmvU77snkkdh7fH_uwEcQ
+
+### Delete Post (requires token, replace POST_ID)
+DELETE http://localhost:5000/api/posts/POST_ID
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODdkMDI0ZDI0YjcyMzdlNzg3OTNmOWUiLCJpYXQiOjE3NTMwMjk3MTcsImV4cCI6MTc1MzYzNDUxN30.JJW71bOUHJ1EKYDLcG4Tj4mmvU77snkkdh7fH_uwEcQ

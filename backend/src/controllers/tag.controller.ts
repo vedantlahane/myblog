@@ -63,6 +63,22 @@ export const getTagById = async (req: Request, res: Response): Promise<void> => 
   }
 };
 
+export const getTagBySlug = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const slug = req.params.slug;
+    
+    const tag = await Tag.findOne({ slug });
+    if (!tag) {
+      res.status(404).json({ error: 'Tag not found' });
+      return;
+    }
+
+    res.json(tag);
+  } catch (error) {
+    res.status(500).json({ error: (error as Error).message });
+  }
+};
+
 export const updateTag = async (req: Request, res: Response): Promise<void> => {
   try {
     const { name, description } = req.body;

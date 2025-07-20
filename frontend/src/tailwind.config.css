@@ -1,0 +1,30 @@
+/* Using the new CSS-based config for Tailwind v4 */
+@config {
+  plugins: [
+    require('@tailwindcss/typography'),
+    require('@tailwindcss/line-clamp'),
+    require('tailwind-scrollbar'),
+  ],
+  theme: {
+    extend: {
+      fontFamily: {
+        serif: ['Lora', 'Georgia', 'serif'], // Example serif font
+      },
+      typography: ({ theme }) => ({
+        DEFAULT: {
+          css: {
+            '--tw-prose-body': theme('colors.gray[700]'),
+            '--tw-prose-headings': theme('colors.amber[900]'),
+            '--tw-prose-links': theme('colors.yellow[600]'),
+            'a:hover': {
+              textDecoration: 'underline',
+            },
+            'h1, h2, h3, h4': {
+              fontFamily: theme('fontFamily.serif').join(', '),
+            },
+          },
+        },
+      }),
+    },
+  },
+}
