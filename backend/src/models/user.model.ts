@@ -1,6 +1,8 @@
 import mongoose, { Document, Schema, Model } from 'mongoose';
 import bcrypt from 'bcrypt';
 
+
+//Interface for User Document, Document is a mongoose interface that represents a document in the database, it extendes mongoose.Document, which provides properties and methods for interacting with the document in the databse, Interface is used to define the structure of the user document, including the fields and their types, as well as methods for comparing passwords and converting to a safe object, safe object is used to remove sensitive information like password when returning the user document
 export interface IUser {
   name: string;
   email: string;
@@ -16,15 +18,21 @@ export interface IUser {
   updatedAt: Date;
 }
 
+
+//here we are extending the IUser interface with Document to create a new interface IUserDocument, which represents a user document in the database, this interface includes all the fields from IUser as well as methods for comparing passwords and coonverting to a safe object, the Document interface provides properties and methods for interacting with the document in the database, such as _id, save(), remove(), etc., this allows us to use mongoose methods on the user document while still having type safety for our custom fields and methods
+
+//comparePassword method is used to compare the candidate password with the hashed password stored in the database, it returns a promise that resolves to a boolean indicating whether the passwords match, toSafeObject method is used to return a safe version of the user document, excluding sensitive information like the password, Partial<IUserDocument> is used to indicate that the returned object may not contain all fields of IUserDocument, allowing for flexibility in the returned object structure
 export interface IUserDocument extends IUser, Document {
   comparePassword(candidatePassword: string): Promise<boolean>;
   toSafeObject(): Partial<IUserDocument>;
 }
-
+// IUserModel interface extends mongoose Model and includes a static method for finding a user by email, this allows us to define custom methods that can be called on the User model, such as findByEmail, which returns a promise that resolves to a user document or null if no user is found with the given email, this is useful for encapsulating database queries related to users within the model itself, providing a clean and organized way to interact with user data in the database
 interface IUserModel extends Model<IUserDocument> {
   findByEmail(email: string): Promise<IUserDocument | null>;
 }
 
+
+// Mongoose schema for User, this defines the structure of the user document in the database, including field types, validation rules, and default values, it also includes indexes for better query performance and middleware for password hashing
 const userSchema = new Schema<IUserDocument>({
   name: { 
     type: String, 
@@ -83,6 +91,7 @@ userSchema.index({ email: 1, isVerified: 1 });
 userSchema.index({ isAdmin: 1, isVerified: 1 });
 
 // Configure virtuals to appear in JSON
+// virtuals are properties that are not stored in the database but can be computed from the document's data, here we are using virtuals to get the ollower and following counts, .set method is used to configure the schema to include virtuals when converting to JSON or an object
 userSchema.set('toJSON', { virtuals: true });
 userSchema.set('toObject', { virtuals: true });
 
@@ -120,6 +129,7 @@ userSchema.statics.findByEmail = async function(email: string) {
 };
 
 // Virtual for follower count
+// so here we are creating virtual properties for the number of followers and following, these 
 userSchema.virtual('followerCount').get(function() {
   return this.followers?.length || 0;
 });

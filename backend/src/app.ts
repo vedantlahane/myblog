@@ -3,7 +3,6 @@ import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import compression from 'compression';
-import mongoSanitize from 'express-mongo-sanitize';
 import { connectDB } from './config/database';
 import { config } from './config/env';
 import { errorHandler, notFound } from './middleware/error';
@@ -29,6 +28,11 @@ const app: Application = express();
 connectDB();
 
 // Middleware
+
+//helmet is a middleware that helps to secure Express apps by setting various HTTP headers
+// It helps to protect against common vulnerabilities like clickjacking, cross-site scripting (XSS), and other attacks
+// It sets various HTTP headers to help protect the app from well-known web vulnerabilities
+// It is a collection of smaller middleware functions that set security-related HTTP headers
 app.use(helmet());
 app.use(cors({
   origin: config.clientUrl,
@@ -37,7 +41,6 @@ app.use(cors({
 app.use(compression());
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
-app.use(mongoSanitize());
 
 // Logging
 if (config.nodeEnv === 'development') {
