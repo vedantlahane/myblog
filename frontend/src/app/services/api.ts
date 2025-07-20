@@ -3,7 +3,7 @@ import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http
 import { PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { Observable, BehaviorSubject, throwError } from 'rxjs';
-import { tap, catchError, retry } from 'rxjs/operators';
+import { tap, catchError, retry, map } from 'rxjs/operators';
 import { environment } from '../environments/environment';
 import type {
   LoginRequest, RegisterRequest, AuthResponse, User, Post, PostQueryParams,
@@ -55,6 +55,9 @@ export class ApiService {
       errorMessage = 'Resource not found.';
     } else if (error.status >= 500) {
       errorMessage = 'Server error. Please try again later.';
+    } else if (error.error?.error) {
+      // Backend returns { error: "message" }
+      errorMessage = error.error.error;
     } else if (error.error?.message) {
       errorMessage = error.error.message;
     }
@@ -71,7 +74,7 @@ export class ApiService {
 
   // Auth Methods
   login(data: LoginRequest): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${this.baseURL}/auth/login`, data)
+    return this.http.post<AuthResponse>(`${this.baseURL}/api/auth/login`, data)
       .pipe(
         tap(response => {
           if (response.token && this.isBrowser) {
@@ -84,7 +87,7 @@ export class ApiService {
   }
 
   register(data: RegisterRequest): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${this.baseURL}/auth/register`, data)
+    return this.http.post<AuthResponse>(`${this.baseURL}/api/auth/register`, data)
       .pipe(
         tap(response => {
           if (response.token && this.isBrowser) {
@@ -97,7 +100,7 @@ export class ApiService {
   }
 
   logout(): Observable<any> {
-    return this.http.post(`${this.baseURL}/auth/logout`, {}, { headers: this.getHeaders() })
+    return this.http.post(`${this.baseURL}/api/auth/logout`, {}, { headers: this.getHeaders() })
       .pipe(
         tap(() => this.clearToken()),
         catchError(this.handleError)
@@ -105,7 +108,7 @@ export class ApiService {
   }
 
   getCurrentUser(): Observable<User> {
-    return this.http.get<User>(`${this.baseURL}/auth/me`, { headers: this.getHeaders() })
+    return this.http.get<User>(`${this.baseURL}/api/auth/me`, { headers: this.getHeaders() })
       .pipe(
         retry(1),
         catchError(this.handleError)
@@ -114,28 +117,35 @@ export class ApiService {
 
   // Profile Methods
   updateProfile(data: UpdateProfileRequest): Observable<User> {
-    return this.http.put<User>(`${this.baseURL}/users/me/profile`, data, { headers: this.getHeaders() })
+    return this.http.put<User>(`${this.baseURL}/api/users/me/profile`, data, { headers: this.getHeaders() })
       .pipe(catchError(this.handleError));
   }
 
   changePassword(data: ChangePasswordRequest): Observable<{ message: string }> {
-    return this.http.put<{ message: string }>(`${this.baseURL}/users/me/password`, data, { headers: this.getHeaders() })
+    return this.http.put<{ message: string }>(`${this.baseURL}/api/users/me/password`, data, { headers: this.getHeaders() })
       .pipe(catchError(this.handleError));
   }
 
   // Post Methods
   getPosts(params?: PostQueryParams): Observable<PaginatedResponse<Post>> {
-    return this.http.get<PaginatedResponse<Post>>(`${this.baseURL}/posts`, {
+    return this.http.get<any>(`${this.baseURL}/api/posts`, {
       params: params as any,
       headers: this.getHeaders()
     }).pipe(
       retry(1),
+      // Transform backend response to match frontend interface
+      map(response => ({
+        data: response.posts || response.data || [],
+        currentPage: response.currentPage,
+        totalPages: response.totalPages,
+        totalItems: response.totalPosts || response.totalItems || 0
+      })),
       catchError(this.handleError)
     );
   }
 
   getPostBySlug(slug: string): Observable<Post> {
-    return this.http.get<Post>(`${this.baseURL}/posts/slug/${slug}`, { headers: this.getHeaders() })
+    return this.http.get<Post>(`${this.baseURL}/api/posts/slug/${slug}`, { headers: this.getHeaders() })
       .pipe(
         retry(1),
         catchError(this.handleError)
@@ -143,7 +153,7 @@ export class ApiService {
   }
 
   getTrendingPosts(): Observable<Post[]> {
-    return this.http.get<Post[]>(`${this.baseURL}/posts/trending`, { headers: this.getHeaders() })
+    return this.http.get<Post[]>(`${this.baseURL}/api/posts/trending`, { headers: this.getHeaders() })
       .pipe(
         retry(1),
         catchError(this.handleError)
@@ -151,32 +161,32 @@ export class ApiService {
   }
 
   createPost(data: CreatePostRequest): Observable<Post> {
-    return this.http.post<Post>(`${this.baseURL}/posts`, data, { headers: this.getHeaders() })
+    return this.http.post<Post>(`${this.baseURL}/api/posts`, data, { headers: this.getHeaders() })
       .pipe(catchError(this.handleError));
   }
 
   updatePost(id: string, data: UpdatePostRequest): Observable<Post> {
-    return this.http.put<Post>(`${this.baseURL}/posts/${id}`, data, { headers: this.getHeaders() })
+    return this.http.put<Post>(`${this.baseURL}/api/posts/${id}`, data, { headers: this.getHeaders() })
       .pipe(catchError(this.handleError));
   }
 
   deletePost(id: string): Observable<{ message: string }> {
-    return this.http.delete<{ message: string }>(`${this.baseURL}/posts/${id}`, { headers: this.getHeaders() })
+    return this.http.delete<{ message: string }>(`${this.baseURL}/api/posts/${id}`, { headers: this.getHeaders() })
       .pipe(catchError(this.handleError));
   }
 
   likePost(id: string): Observable<{ message: string; likes: number }> {
-    return this.http.post<{ message: string; likes: number }>(`${this.baseURL}/posts/${id}/like`, {}, { headers: this.getHeaders() })
+    return this.http.post<{ message: string; likes: number }>(`${this.baseURL}/api/posts/${id}/like`, {}, { headers: this.getHeaders() })
       .pipe(catchError(this.handleError));
   }
 
   unlikePost(id: string): Observable<{ message: string; likes: number }> {
-    return this.http.delete<{ message: string; likes: number }>(`${this.baseURL}/posts/${id}/like`, { headers: this.getHeaders() })
+    return this.http.delete<{ message: string; likes: number }>(`${this.baseURL}/api/posts/${id}/like`, { headers: this.getHeaders() })
       .pipe(catchError(this.handleError));
   }
 
   getPostById(id: string): Observable<Post> {
-    return this.http.get<Post>(`${this.baseURL}/posts/${id}`, { headers: this.getHeaders() })
+    return this.http.get<Post>(`${this.baseURL}/api/posts/${id}`, { headers: this.getHeaders() })
       .pipe(
         retry(1),
         catchError(this.handleError)
@@ -184,7 +194,7 @@ export class ApiService {
   }
 
   getRelatedPosts(id: string): Observable<Post[]> {
-    return this.http.get<Post[]>(`${this.baseURL}/posts/${id}/related`, { headers: this.getHeaders() })
+    return this.http.get<Post[]>(`${this.baseURL}/api/posts/${id}/related`, { headers: this.getHeaders() })
       .pipe(
         retry(1),
         catchError(this.handleError)
@@ -193,7 +203,7 @@ export class ApiService {
 
   // User Methods
   getUserById(id: string): Observable<User> {
-    return this.http.get<User>(`${this.baseURL}/users/${id}`, { headers: this.getHeaders() })
+    return this.http.get<User>(`${this.baseURL}/api/users/${id}`, { headers: this.getHeaders() })
       .pipe(
         retry(1),
         catchError(this.handleError)
@@ -201,18 +211,18 @@ export class ApiService {
   }
 
   followUser(id: string): Observable<{ message: string }> {
-    return this.http.post<{ message: string }>(`${this.baseURL}/users/${id}/follow`, {}, { headers: this.getHeaders() })
+    return this.http.post<{ message: string }>(`${this.baseURL}/api/users/${id}/follow`, {}, { headers: this.getHeaders() })
       .pipe(catchError(this.handleError));
   }
 
   unfollowUser(id: string): Observable<{ message: string }> {
-    return this.http.delete<{ message: string }>(`${this.baseURL}/users/${id}/follow`, { headers: this.getHeaders() })
+    return this.http.delete<{ message: string }>(`${this.baseURL}/api/users/${id}/follow`, { headers: this.getHeaders() })
       .pipe(catchError(this.handleError));
   }
 
   // Tag Methods
   getTags(): Observable<Tag[]> {
-    return this.http.get<Tag[]>(`${this.baseURL}/tags`, { headers: this.getHeaders() })
+    return this.http.get<Tag[]>(`${this.baseURL}/api/tags`, { headers: this.getHeaders() })
       .pipe(
         retry(1),
         catchError(this.handleError)
@@ -220,7 +230,7 @@ export class ApiService {
   }
 
   getTagBySlug(slug: string): Observable<Tag> {
-    return this.http.get<Tag>(`${this.baseURL}/tags/slug/${slug}`, { headers: this.getHeaders() })
+    return this.http.get<Tag>(`${this.baseURL}/api/tags/slug/${slug}`, { headers: this.getHeaders() })
       .pipe(
         retry(1),
         catchError(this.handleError)
@@ -229,7 +239,7 @@ export class ApiService {
 
   // Comment Methods
   getComments(params?: any): Observable<Comment[]> {
-    return this.http.get<Comment[]>(`${this.baseURL}/comments`, {
+    return this.http.get<Comment[]>(`${this.baseURL}/api/comments`, {
       params: params as any,
       headers: this.getHeaders()
     }).pipe(
@@ -239,19 +249,19 @@ export class ApiService {
   }
 
   createComment(data: CreateCommentRequest): Observable<Comment> {
-    return this.http.post<Comment>(`${this.baseURL}/comments`, data, { headers: this.getHeaders() })
+    return this.http.post<Comment>(`${this.baseURL}/api/comments`, data, { headers: this.getHeaders() })
       .pipe(catchError(this.handleError));
   }
 
   // Bookmark Methods
   checkBookmarkStatus(postId: string): Observable<BookmarkStatusResponse> {
-    return this.http.get<BookmarkStatusResponse>(`${this.baseURL}/bookmarks/check/${postId}`, { headers: this.getHeaders() })
+    return this.http.get<BookmarkStatusResponse>(`${this.baseURL}/api/bookmarks/check/${postId}`, { headers: this.getHeaders() })
       .pipe(catchError(this.handleError));
   }
 
   // Search Methods
   searchPosts(query: string): Observable<Post[]> {
-    return this.http.get<Post[]>(`${this.baseURL}/search/posts?q=${encodeURIComponent(query)}`, { headers: this.getHeaders() })
+    return this.http.get<Post[]>(`${this.baseURL}/api/search/posts?q=${encodeURIComponent(query)}`, { headers: this.getHeaders() })
       .pipe(
         retry(1),
         catchError(this.handleError)
@@ -259,7 +269,7 @@ export class ApiService {
   }
 
   searchUsers(query: string): Observable<User[]> {
-    return this.http.get<User[]>(`${this.baseURL}/search/users?q=${encodeURIComponent(query)}`, { headers: this.getHeaders() })
+    return this.http.get<User[]>(`${this.baseURL}/api/search/users?q=${encodeURIComponent(query)}`, { headers: this.getHeaders() })
       .pipe(
         retry(1),
         catchError(this.handleError)
