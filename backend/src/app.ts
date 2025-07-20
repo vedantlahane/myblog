@@ -69,6 +69,20 @@ app.use('/api/drafts', draftRoutes);
 app.use('/api/bookmarks', bookmarkRoutes);
 app.use('/api/collections', collectionRoutes);
 
+// Root route
+app.get('/', (_req, res) => {
+  res.json({ 
+    message: 'Blog API Server',
+    version: '1.0.0',
+    endpoints: {
+      health: '/health',
+      auth: '/api/auth',
+      posts: '/api/posts',
+      users: '/api/users'
+    }
+  });
+});
+
 // Health check
 app.get('/health', (_req, res) => {
   res.json({ status: 'OK', timestamp: new Date().toISOString() });

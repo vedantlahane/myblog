@@ -8,8 +8,8 @@ POST http://localhost:5000/api/auth/register
 Content-Type: application/json
 
 {
-  "name": "Test User",
-  "email": "test@example.com",
+  "name": "Vedant",
+  "email": "vedant@example.com",
   "password": "Password123!"
 }
 
@@ -24,4 +24,4 @@ Content-Type: application/json
 
 ### Get Current User (requires token)
 GET http://localhost:5000/api/auth/me
-Authorization: Bearer YOUR_TOKEN_HERE
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODdjZmRjNTY1MjczYTA0ZWQwNDI0ZDkiLCJpYXQiOjE3NTMwMjMwNzMsImV4cCI6MTc1MzYyNzg3M30.UrChzCdd2hUvTj3e2JbXkP3KMDALOXSV_AGK3qoQRyc
