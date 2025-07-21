@@ -1,7 +1,7 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { HeaderComponent } from './components/header/header';
-import { ApiService } from './services/api';
+import { HeaderComponent } from './components/header/header.component';
+import { ApiService } from './services/api.service';
 import { CommonModule } from '@angular/common';
 
 @Component({

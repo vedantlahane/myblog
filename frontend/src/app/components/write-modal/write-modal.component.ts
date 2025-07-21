@@ -1,0 +1,347 @@
+import { Component, Output, EventEmitter, OnInit, inject, signal } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { ApiService } from '../../services/api.service';
+import { Post, Tag, Category, CreatePostRequest } from '../../../types/api';
+import { Subject, forkJoin, of } from 'rxjs';
+import { takeUntil, catchError, finalize } from 'rxjs/operators';
+
+@Component({
+  selector: 'app-write-modal',
+  standalone: true,
+  imports: [CommonModule, ReactiveFormsModule],
+  template: `
+    <!-- Modal Backdrop -->
+    <div class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+      <div class="bg-white rounded-xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden">
+        <!-- Modal Header -->
+        <div class="flex items-center justify-between p-6 border-b border-gray-200">
+          <h2 class="text-2xl font-bold text-gray-900">Write New Story</h2>
+          <button 
+            (click)="close.emit()"
+            class="text-gray-500 hover:text-gray-700 p-2 rounded-lg hover:bg-gray-100 transition-colors">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+          </button>
+        </div>
+
+        <!-- Modal Body -->
+        <div class="p-6 overflow-y-auto" style="max-height: calc(90vh - 140px);">
+          <form [formGroup]="postForm" (ngSubmit)="onSubmit()">
+            <!-- Title -->
+            <div class="mb-6">
+              <label class="block text-sm font-semibold text-gray-700 mb-2">Title</label>
+              <input 
+                type="text" 
+                formControlName="title"
+                placeholder="Enter your story title..."
+                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 text-lg"
+                [class.border-red-500]="postForm.get('title')?.invalid && postForm.get('title')?.touched">
+              @if (postForm.get('title')?.invalid && postForm.get('title')?.touched) {
+                <p class="mt-1 text-sm text-red-600">Title is required</p>
+              }
+            </div>
+
+            <!-- Excerpt -->
+            <div class="mb-6">
+              <label class="block text-sm font-semibold text-gray-700 mb-2">
+                Excerpt <span class="text-gray-500 font-normal">(optional)</span>
+              </label>
+              <textarea 
+                formControlName="excerpt"
+                placeholder="Write a brief description of your story..."
+                rows="2"
+                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 resize-none">
+              </textarea>
+            </div>
+
+            <!-- Content -->
+            <div class="mb-6">
+              <label class="block text-sm font-semibold text-gray-700 mb-2">Content</label>
+              <textarea 
+                formControlName="content"
+                placeholder="Tell your story..."
+                rows="12"
+                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 resize-none font-mono text-sm"
+                [class.border-red-500]="postForm.get('content')?.invalid && postForm.get('content')?.touched">
+              </textarea>
+              @if (postForm.get('content')?.invalid && postForm.get('content')?.touched) {
+                <p class="mt-1 text-sm text-red-600">Content is required</p>
+              }
+            </div>
+
+            <!-- Cover Image URL -->
+            <div class="mb-6">
+              <label class="block text-sm font-semibold text-gray-700 mb-2">
+                Cover Image URL <span class="text-gray-500 font-normal">(optional)</span>
+              </label>
+              <input 
+                type="url" 
+                formControlName="coverImage"
+                placeholder="https://example.com/image.jpg"
+                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500">
+              @if (postForm.get('coverImage')?.invalid && postForm.get('coverImage')?.touched) {
+                <p class="mt-1 text-sm text-red-600">Please enter a valid URL</p>
+              }
+            </div>
+
+            <!-- Tags and Categories Row -->
+            <div class="grid md:grid-cols-2 gap-6 mb-6">
+              <!-- Tags -->
+              <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">Tags</label>
+                <div class="space-y-2">
+                  <!-- Tag Input -->
+                  <div class="flex gap-2">
+                    <input 
+                      type="text" 
+                      #tagInput
+                      (keydown.enter)="addTag(tagInput.value, tagInput); $event.preventDefault()"
+                      placeholder="Type and press Enter"
+                      class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 text-sm">
+                    <button 
+                      type="button"
+                      (click)="addTag(tagInput.value, tagInput)"
+                      class="px-4 py-2 bg-amber-500 text-white rounded-lg hover:bg-amber-600 transition-colors text-sm font-medium">
+                      Add
+                    </button>
+                  </div>
+                  
+                  <!-- Selected Tags -->
+                  @if (selectedTags().length > 0) {
+                    <div class="flex flex-wrap gap-2">
+                      @for (tag of selectedTags(); track tag) {
+                        <span class="bg-amber-100 text-amber-800 px-3 py-1 rounded-full text-sm font-medium flex items-center gap-2">
+                          {{ tag }}
+                          <button 
+                            type="button"
+                            (click)="removeTag(tag)"
+                            class="hover:text-amber-900">
+                            <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                              <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/>
+                            </svg>
+                          </button>
+                        </span>
+                      }
+                    </div>
+                  }
+
+                  <!-- Available Tags -->
+                  @if (availableTags(); as tags) {
+                    <div class="max-h-32 overflow-y-auto">
+                      <div class="flex flex-wrap gap-1">
+                        @for (tag of tags.slice(0, 20); track tag._id || tag) {
+                          <button 
+                            type="button"
+                            (click)="selectTag(typeof tag === 'string' ? tag : tag.name)"
+                            [disabled]="isTagSelected(typeof tag === 'string' ? tag : tag.name)"
+                            class="text-xs bg-gray-100 hover:bg-gray-200 disabled:bg-gray-50 disabled:text-gray-400 text-gray-700 px-2 py-1 rounded transition-colors">
+                            {{ typeof tag === 'string' ? tag : tag.name }}
+                          </button>
+                        }
+                      </div>
+                    </div>
+                  }
+                </div>
+              </div>
+
+              <!-- Categories -->
+              <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">Category</label>
+                @if (availableCategories(); as categories) {
+                  <select 
+                    formControlName="category"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500">
+                    <option value="">Select a category</option>
+                    @for (category of categories; track category._id || category) {
+                      <option [value]="typeof category === 'string' ? category : category._id">
+                        {{ typeof category === 'string' ? category : category.name }}
+                      </option>
+                    }
+                  </select>
+                } @else {
+                  <div class="animate-pulse">
+                    <div class="h-10 bg-gray-200 rounded-lg"></div>
+                  </div>
+                }
+              </div>
+            </div>
+
+            <!-- Status -->
+            <div class="mb-8">
+              <label class="block text-sm font-semibold text-gray-700 mb-2">Status</label>
+              <div class="flex gap-4">
+                <label class="flex items-center">
+                  <input 
+                    type="radio" 
+                    formControlName="status"
+                    value="draft"
+                    class="mr-2 text-amber-500 focus:ring-amber-500">
+                  <span class="text-sm">Save as Draft</span>
+                </label>
+                <label class="flex items-center">
+                  <input 
+                    type="radio" 
+                    formControlName="status"
+                    value="published"
+                    class="mr-2 text-amber-500 focus:ring-amber-500">
+                  <span class="text-sm">Publish Now</span>
+                </label>
+              </div>
+            </div>
+
+            <!-- Error Message -->
+            @if (errorMessage()) {
+              <div class="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
+                <p class="text-red-800 text-sm">{{ errorMessage() }}</p>
+              </div>
+            }
+          </form>
+        </div>
+
+        <!-- Modal Footer -->
+        <div class="flex items-center justify-end gap-4 p-6 border-t border-gray-200 bg-gray-50">
+          <button 
+            type="button"
+            (click)="close.emit()"
+            class="px-6 py-2 text-gray-700 hover:text-gray-900 font-medium transition-colors">
+            Cancel
+          </button>
+          <button 
+            type="button"
+            (click)="onSubmit()"
+            [disabled]="postForm.invalid || isSubmitting()"
+            class="px-6 py-2 bg-amber-500 hover:bg-amber-600 disabled:bg-amber-300 text-white rounded-lg font-medium transition-colors flex items-center gap-2">
+            @if (isSubmitting()) {
+              <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+            }
+            {{ postForm.get('status')?.value === 'published' ? 'Publish Story' : 'Save Draft' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  `,
+  styles: [`
+    .modal-backdrop {
+      backdrop-filter: blur(4px);
+    }
+  `]
+})
+export class WriteModalComponent implements OnInit {
+  private apiService = inject(ApiService);
+  private formBuilder = inject(FormBuilder);
+  private destroy$ = new Subject<void>();
+
+  @Output() close = new EventEmitter<void>();
+  @Output() postCreated = new EventEmitter<Post>();
+
+  // State signals
+  selectedTags = signal<string[]>([]);
+  availableTags = signal<Tag[]>([]);
+  availableCategories = signal<Category[]>([]);
+  isSubmitting = signal(false);
+  errorMessage = signal<string | null>(null);
+
+  // Form
+  postForm: FormGroup;
+
+  constructor() {
+    this.postForm = this.formBuilder.group({
+      title: ['', [Validators.required, Validators.minLength(3)]],
+      excerpt: [''],
+      content: ['', [Validators.required, Validators.minLength(10)]],
+      coverImage: [''],
+      category: [''],
+      status: ['draft', Validators.required]
+    });
+  }
+
+  ngOnInit(): void {
+    this.loadFormData();
+    // Focus on title input when modal opens
+    setTimeout(() => {
+      const titleInput = document.querySelector('input[formControlName="title"]') as HTMLInputElement;
+      titleInput?.focus();
+    }, 100);
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  private loadFormData(): void {
+    // Load tags and categories
+    forkJoin({
+      tags: this.apiService.getTags().pipe(catchError(() => of([]))),
+      categories: this.apiService.getCategories().pipe(catchError(() => of([])))
+    }).pipe(
+      takeUntil(this.destroy$)
+    ).subscribe(({ tags, categories }) => {
+      this.availableTags.set(tags);
+      this.availableCategories.set(categories);
+    });
+  }
+
+  addTag(tagName: string, inputElement: HTMLInputElement): void {
+    const trimmedTag = tagName.trim();
+    if (trimmedTag && !this.selectedTags().includes(trimmedTag) && this.selectedTags().length < 5) {
+      this.selectedTags.update(tags => [...tags, trimmedTag]);
+      inputElement.value = '';
+    }
+  }
+
+  selectTag(tagName: string): void {
+    if (!this.selectedTags().includes(tagName) && this.selectedTags().length < 5) {
+      this.selectedTags.update(tags => [...tags, tagName]);
+    }
+  }
+
+  removeTag(tagName: string): void {
+    this.selectedTags.update(tags => tags.filter(tag => tag !== tagName));
+  }
+
+  isTagSelected(tagName: string): boolean {
+    return this.selectedTags().includes(tagName);
+  }
+
+  onSubmit(): void {
+    if (this.postForm.invalid || this.isSubmitting()) {
+      this.markFormGroupTouched();
+      return;
+    }
+
+    this.isSubmitting.set(true);
+    this.errorMessage.set(null);
+
+    const formValue = this.postForm.value;
+    const postData: CreatePostRequest = {
+      title: formValue.title,
+      content: formValue.content,
+      excerpt: formValue.excerpt || undefined,
+      coverImage: formValue.coverImage || undefined,
+      tags: this.selectedTags(),
+      status: formValue.status
+    };
+
+    this.apiService.createPost(postData).pipe(
+      takeUntil(this.destroy$),
+      finalize(() => this.isSubmitting.set(false))
+    ).subscribe({
+      next: (post) => {
+        this.postCreated.emit(post);
+        this.close.emit();
+      },
+      error: (error) => {
+        this.errorMessage.set(error.message || 'Failed to create post. Please try again.');
+      }
+    });
+  }
+
+  private markFormGroupTouched(): void {
+    Object.keys(this.postForm.controls).forEach(key => {
+      this.postForm.get(key)?.markAsTouched();
+    });
+  }
+}
