@@ -77,7 +77,7 @@ import { Post, Comment, User, Tag, CreateCommentRequest } from '../../../types/a
               }
               <div>
                 <div class="font-bold text-amber-800">{{ getAuthor()?.name || 'Anonymous' }}</div>
-                <div class="text-xs">{{ formatDate(post()?.publishedAt || post()?.createdAt) }}</div>
+                <div class="text-xs">{{ formatDate(post()?.publishedAt || post()?.createdAt || '') }}</div>
               </div>
             </div>
 

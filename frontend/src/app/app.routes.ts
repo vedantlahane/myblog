@@ -99,7 +99,7 @@ export const routes: Routes = [
   {
     path: 'profile',
     canActivate: [authGuard],
-    loadComponent: () => import('./pages/user-profile/profile').then(c => c.ProfileComponent),
+    loadComponent: () => import('./pages/user-profile/profile').then(c => c.UserProfileComponent),
     title: 'Profile - MyBlog'
   },
 
@@ -140,7 +140,7 @@ export const routes: Routes = [
     children: [
       {
         path: ':id',
-        loadComponent: () => import('./pages/user-profile/user-profile').then(c => c.UserProfileComponent),
+        loadComponent: () => import('./pages/user-profile/profile').then(c => c.UserProfileComponent),
         title: 'User Profile - MyBlog'
       }
     ]

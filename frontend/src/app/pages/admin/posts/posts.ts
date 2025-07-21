@@ -128,7 +128,7 @@ import { Post, PostQueryParams, PostsResponse, User, Tag } from '../../../../typ
               
               @if (authorFilter()) {
                 <span class="inline-flex items-center gap-1 bg-amber-200 text-amber-800 px-3 py-1 text-xs font-mono">
-                  Author: {{ getAuthorName(authorFilter()) }}
+                  Author: {{ getAuthorNameById(authorFilter()) }}
                   <button (click)="clearAuthorFilter()" class="hover:text-amber-900">×</button>
                 </span>
               }
@@ -166,7 +166,7 @@ import { Post, PostQueryParams, PostsResponse, User, Tag } from '../../../../typ
                 [disabled]="bulkActionLoading()"
                 class="bg-yellow-100 text-yellow-800 px-4 py-2 font-mono text-sm hover:bg-yellow-200 transition-colors border-2 border-yellow-300 disabled:opacity-50"
               >
-                Archive Selected
+                Set to Draft
               </button>
               
               <button
@@ -351,7 +351,7 @@ import { Post, PostQueryParams, PostsResponse, User, Tag } from '../../../../typ
                             [disabled]="statusChanging().includes(post._id)"
                             class="inline-flex items-center justify-center w-8 h-8 hover:bg-amber-200 transition-colors disabled:opacity-50"
                             [class]="post.status === 'published' ? 'bg-yellow-100 text-yellow-800' : 'bg-green-100 text-green-800'"
-                            [title]="post.status === 'published' ? 'Archive' : 'Publish'"
+                            [title]="post.status === 'published' ? 'Set to Draft' : 'Publish'"
                           >
                             @if (statusChanging().includes(post._id)) {
                               <div class="w-3 h-3 border border-current border-t-transparent rounded-full animate-spin"></div>
@@ -579,9 +579,11 @@ export class AdminPostsComponent implements OnInit {
       this.loading.set(true);
       
       const params: PostQueryParams = {
-        page: this.currentPage(),
-        limit: 20,
-        sort: this.sortControl.value || '-createdAt'
+          page: this.currentPage(),
+          limit: 20,
+          sort: this.sortControl.value || '-createdAt',
+          dateTo: '',
+          dateFrom: ''
       };
 
       if (this.searchQuery()) params.search = this.searchQuery();
@@ -668,7 +670,7 @@ export class AdminPostsComponent implements OnInit {
     try {
       this.statusChanging.update(changing => [...changing, post._id]);
       
-      const newStatus = post.status === 'published' ? 'archived' : 'published';
+      const newStatus = post.status === 'published' ? 'draft' : 'published';
       await this.apiService.updatePost(post._id, { status: newStatus });
       
       // Update local state
@@ -737,13 +739,13 @@ export class AdminPostsComponent implements OnInit {
   }
 
   async bulkArchive() {
-    if (!confirm(`Archive ${this.selectedPosts().length} selected posts?`)) return;
+    if (!confirm(`Set ${this.selectedPosts().length} selected posts to draft?`)) return;
 
     try {
       this.bulkActionLoading.set(true);
       
       const updatePromises = this.selectedPosts().map(id => 
-        this.apiService.updatePost(id, { status: 'archived' })
+        this.apiService.updatePost(id, { status: 'draft' })
       );
       
       await Promise.all(updatePromises);
@@ -752,7 +754,7 @@ export class AdminPostsComponent implements OnInit {
       this.posts.update(posts => 
         posts.map(p => 
           this.selectedPosts().includes(p._id) 
-            ? { ...p, status: 'archived' as const } 
+            ? { ...p, status: 'draft' as const } 
             : p
         )
       );
@@ -760,7 +762,7 @@ export class AdminPostsComponent implements OnInit {
       this.selectedPosts.set([]);
       
     } catch (error) {
-      console.error('Failed to bulk archive:', error);
+      console.error('Failed to bulk update to draft:', error);
     } finally {
       this.bulkActionLoading.set(false);
     }
@@ -896,7 +898,7 @@ export class AdminPostsComponent implements OnInit {
     return typeof tag === 'object' ? tag.name : tag;
   }
 
-  getAuthorName(authorId: string): string {
+  getAuthorNameById(authorId: string): string {
     const author = this.authors().find(a => a._id === authorId);
     return author ? author.name : 'Unknown';
   }

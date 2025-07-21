@@ -4,6 +4,7 @@ import { RouterLink, Router } from '@angular/router';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ApiService } from '../../../services/api.service';
 import { User, NotificationQueryParams } from '../../../../types/api';
+import { async } from 'rxjs';
 
 interface NotificationPreferences {
   email: {
@@ -853,9 +854,19 @@ export class NotificationSettingsComponent implements OnInit {
       this.savingEmail.set(true);
 
       const emailPrefs = this.emailForm.value;
+      const sanitizedEmailPrefs = {
+        enabled: emailPrefs.enabled ?? false,
+        frequency: emailPrefs.frequency ?? 'daily',
+        comments: emailPrefs.comments ?? false,
+        likes: emailPrefs.likes ?? false,
+        follows: emailPrefs.follows ?? false,
+        posts: emailPrefs.posts ?? false,
+        mentions: emailPrefs.mentions ?? false,
+        newsletter: emailPrefs.newsletter ?? false
+      };
       const updatedPrefs = {
         ...this.preferences(),
-        email: { ...this.preferences().email, ...emailPrefs }
+        email: sanitizedEmailPrefs
       };
 
       // Save to API
@@ -892,9 +903,17 @@ export class NotificationSettingsComponent implements OnInit {
       this.savingPush.set(true);
 
       const pushPrefs = this.pushForm.value;
+      const sanitizedPushPrefs = {
+        enabled: pushPrefs.enabled ?? false,
+        comments: pushPrefs.comments ?? false,
+        likes: pushPrefs.likes ?? false,
+        follows: pushPrefs.follows ?? false,
+        posts: pushPrefs.posts ?? false,
+        mentions: pushPrefs.mentions ?? false
+      };
       const updatedPrefs = {
         ...this.preferences(),
-        push: { ...this.preferences().push, ...pushPrefs }
+        push: sanitizedPushPrefs
       };
 
       localStorage.setItem('notificationPreferences', JSON.stringify(updatedPrefs));
@@ -915,9 +934,19 @@ export class NotificationSettingsComponent implements OnInit {
       this.savingInApp.set(true);
 
       const inAppPrefs = this.inAppForm.value;
+      const sanitizedInAppPrefs = {
+        enabled: inAppPrefs.enabled ?? false,
+        comments: inAppPrefs.comments ?? false,
+        likes: inAppPrefs.likes ?? false,
+        follows: inAppPrefs.follows ?? false,
+        posts: inAppPrefs.posts ?? false,
+        mentions: inAppPrefs.mentions ?? false,
+        sound: inAppPrefs.sound ?? false,
+        desktop: inAppPrefs.desktop ?? false
+      };
       const updatedPrefs = {
         ...this.preferences(),
-        inApp: { ...this.preferences().inApp, ...inAppPrefs }
+        inApp: sanitizedInAppPrefs
       };
 
       localStorage.setItem('notificationPreferences', JSON.stringify(updatedPrefs));
@@ -996,3 +1025,7 @@ export class NotificationSettingsComponent implements OnInit {
     this.successMessage.set('');
   }
 }
+function saveInAppSettings() {
+  throw new Error('Function not implemented.');
+}
+

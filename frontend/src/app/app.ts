@@ -290,9 +290,11 @@ export class AppComponent implements OnInit {
   // Method to update total posts count
   private async updatePostCount() {
     try {
-      const response = await this.apiService.getPosts({ 
-        limit: 1, 
-        status: 'published' 
+      const response = await this.apiService.getPosts({
+        limit: 1,
+        status: 'published',
+        dateTo: '',
+        dateFrom: ''
       });
       this.totalPosts = response.totalPosts || 0;
     } catch (error) {

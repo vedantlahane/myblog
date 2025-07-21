@@ -416,7 +416,7 @@ export class RegisterComponent implements OnInit {
     acceptTerms: new FormControl(false, [
       Validators.requiredTrue
     ])
-  }, { validators: passwordMatchValidator });
+  }, { validators: passwordMatchValidator as import('@angular/forms').ValidatorFn });
 
   // Password strength computed property
   passwordStrength = signal<boolean[]>([false, false, false, false]);

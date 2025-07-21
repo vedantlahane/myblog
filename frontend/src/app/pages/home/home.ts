@@ -286,10 +286,12 @@ export class HomeComponent implements OnInit {
     try {
       this.loading.set(true);
       const response = await this.apiService.getPosts({
-        status: 'published',
-        limit: 12,
-        page: 1,
-        sort: '-publishedAt'
+          status: 'published',
+          limit: 12,
+          page: 1,
+          sort: '-publishedAt',
+          dateTo: '',
+          dateFrom: ''
       });
       
       this.posts.set(response.posts || response.data || []);
@@ -326,10 +328,12 @@ export class HomeComponent implements OnInit {
       const nextPage = this.currentPage() + 1;
       
       const response = await this.apiService.getPosts({
-        status: 'published',
-        limit: 12,
-        page: nextPage,
-        sort: '-publishedAt'
+          status: 'published',
+          limit: 12,
+          page: nextPage,
+          sort: '-publishedAt',
+          dateTo: '',
+          dateFrom: ''
       });
       
       const newPosts = response.posts || response.data || [];

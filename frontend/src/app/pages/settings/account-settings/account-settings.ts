@@ -1,7 +1,7 @@
 import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, Router } from '@angular/router';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators, FormsModule } from '@angular/forms';
 import { ApiService } from '../../../services/api.service';
 import { User } from '../../../../types/api';
 
@@ -26,7 +26,7 @@ interface SessionInfo {
 @Component({
   selector: 'app-account-settings',
   standalone: true,
-  imports: [CommonModule, RouterLink, ReactiveFormsModule],
+  imports: [CommonModule, RouterLink, ReactiveFormsModule, FormsModule],
   template: `
     <div class="min-h-screen bg-gradient-to-b from-amber-25 to-orange-25">
       <!-- Header -->
@@ -91,7 +91,7 @@ interface SessionInfo {
                   <div class="flex justify-between items-center p-4 bg-amber-100 border-2 border-amber-400">
                     <div>
                       <h4 class="font-bold text-amber-900">Account ID</h4>
-                      <p class="text-amber-700 text-sm font-mono">{{ user()?.id || user()?._id || 'Loading...' }}</p>
+                      <p class="text-amber-700 text-sm font-mono">{{ user()?._id || 'Loading...' }}</p>
                     </div>
                   </div>
                   

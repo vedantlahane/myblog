@@ -441,6 +441,7 @@ export class ArchiveComponent implements OnInit {
   hasActiveFilters = computed(() => 
     !!(this.searchQuery() || this.selectedTag() || this.selectedYear())
   );
+Math: any;
 
   async ngOnInit() {
     await this.loadInitialData();
@@ -453,10 +454,12 @@ export class ArchiveComponent implements OnInit {
       this.loading.set(true);
       const [postsResponse, tagsResponse] = await Promise.all([
         this.apiService.getPosts({
-          status: 'published',
-          limit: 12,
-          page: 1,
-          sort: '-publishedAt'
+            status: 'published',
+            limit: 12,
+            page: 1,
+            sort: '-publishedAt',
+            dateFrom: '',
+            dateTo: ''
         }),
         this.apiService.getTags()
       ]);
@@ -529,10 +532,12 @@ export class ArchiveComponent implements OnInit {
       this.loading.set(true);
       
       const params: PostQueryParams = {
-        status: 'published',
-        limit: 12,
-        page: 1,
-        sort: this.sortControl.value || '-publishedAt'
+          status: 'published',
+          limit: 12,
+          page: 1,
+          sort: this.sortControl.value || '-publishedAt',
+          dateFrom: '',
+          dateTo: ''
       };
 
       if (this.searchQuery()) {
@@ -590,10 +595,12 @@ export class ArchiveComponent implements OnInit {
       this.loading.set(true);
       
       const params: PostQueryParams = {
-        status: 'published',
-        limit: 12,
-        page,
-        sort: this.sortControl.value || '-publishedAt'
+          status: 'published',
+          limit: 12,
+          page,
+          sort: this.sortControl.value || '-publishedAt',
+          dateFrom: '',
+          dateTo: ''
       };
 
       if (this.searchQuery()) params.search = this.searchQuery();

@@ -452,6 +452,8 @@ export interface PaginationParams {
 }
 
 export interface PostQueryParams extends PaginationParams {
+  dateTo: string;
+  dateFrom: string;
   sort?: string;
   status?: 'draft' | 'published' | 'archived';
   author?: string;

@@ -630,8 +630,10 @@ export class CollectionDetailComponent implements OnInit {
       
       // Get user's published posts
       const response = await this.apiService.getPosts({
-        status: 'published',
-        limit: 50
+          status: 'published',
+          limit: 50,
+          dateTo: '',
+          dateFrom: ''
       });
       
       // Filter out posts already in collection

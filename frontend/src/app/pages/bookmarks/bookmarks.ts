@@ -1,792 +1,710 @@
 import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink, ActivatedRoute, Router } from '@angular/router';
+import { RouterLink, Router } from '@angular/router';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { ApiService } from '../../services/api.service';
-import { User, Post, UpdateProfileRequest } from '../../../types/api';
+import { Bookmark, Post, UserCollection, UpdateBookmarkRequest, BookmarkQueryParams } from '../../../types/api';
 
 @Component({
-  selector: 'app-user-profile',
+  selector: 'app-bookmarks',
   standalone: true,
   imports: [CommonModule, RouterLink, ReactiveFormsModule],
   template: `
     <div class="min-h-screen bg-gradient-to-b from-amber-25 to-orange-25">
-      @if (loading()) {
-        <div class="flex justify-center items-center py-16">
-          <div class="inline-flex items-center gap-3 text-amber-700 font-mono text-lg">
-            <div class="w-8 h-8 border-2 border-amber-700 border-t-transparent rounded-full animate-spin"></div>
-            Loading profile...
+      <!-- Header -->
+      <header class="bg-amber-100 border-4 border-amber-800 p-8 mb-12">
+        <div class="text-center border-2 border-dotted border-amber-700 p-6">
+          <div class="inline-block bg-amber-800 text-amber-100 px-4 py-1 text-xs font-mono uppercase tracking-widest mb-4">
+            My Reading List
           </div>
+          
+          <h1 class="font-serif text-3xl md:text-4xl font-bold text-amber-900 mb-3">
+            My Bookmarks
+          </h1>
+          <p class="text-amber-700 text-lg font-mono">
+            {{ totalBookmarks() }} articles saved for later reading
+          </p>
         </div>
-      } @else if (error()) {
-        <div class="text-center py-16">
-          <div class="inline-block border-4 border-red-300 p-8 bg-red-50">
-            <div class="text-red-600 font-mono text-sm mb-2">PROFILE NOT FOUND</div>
-            <p class="text-red-700 mb-4">{{ error() }}</p>
-            <a routerLink="/" class="inline-block bg-amber-600 text-amber-100 px-6 py-2 font-mono text-sm uppercase tracking-wider hover:bg-amber-500 transition-colors">
-              Back to Home
-            </a>
-          </div>
-        </div>
-      } @else if (user()) {
-        <!-- Profile Header -->
-        <header class="bg-amber-100 border-4 border-amber-800 p-8 mb-12">
-          <div class="max-w-4xl mx-auto">
-            <div class="flex flex-col md:flex-row items-start gap-8">
-              <!-- Avatar Section -->
-              <div class="flex flex-col items-center">
-                @if (user()?.avatarUrl) {
-                  <img 
-                    [src]="user()?.avatarUrl" 
-                    [alt]="user()?.name"
-                    class="w-32 h-32 rounded-full border-4 border-amber-600 shadow-lg"
-                  >
-                } @else {
-                  <div class="w-32 h-32 bg-amber-200 border-4 border-amber-600 rounded-full flex items-center justify-center shadow-lg">
-                    <span class="text-4xl font-bold text-amber-800">{{ getUserInitials() }}</span>
-                  </div>
-                }
-                
-                <!-- Avatar Upload for own profile -->
-                @if (isOwnProfile() && !editingProfile()) {
-                  <div class="mt-4 flex gap-2">
-                    <input
-                      #avatarInput
-                      type="file"
-                      accept="image/*"
-                      (change)="onAvatarSelect($event)"
-                      class="hidden"
-                    />
-                    <button
-                      (click)="avatarInput.click()"
-                      [disabled]="uploadingAvatar()"
-                      class="bg-amber-200 text-amber-800 px-4 py-2 font-mono text-xs uppercase tracking-wider hover:bg-amber-300 transition-colors border-2 border-amber-400 disabled:opacity-50"
-                    >
-                      @if (uploadingAvatar()) {
-                        Uploading...
-                      } @else {
-                        Change Photo
-                      }
-                    </button>
-                    
-                    @if (user()?.avatarUrl) {
-                      <button
-                        (click)="removeAvatar()"
-                        class="text-red-600 hover:text-red-800 font-mono text-xs uppercase tracking-wider transition-colors"
-                      >
-                        Remove
-                      </button>
-                    }
-                  </div>
-                }
+      </header>
+
+      <div class="max-w-6xl mx-auto px-4">
+        <!-- Filters & Search -->
+        <section class="mb-8">
+          <div class="bg-amber-50 border-4 border-amber-300 p-6">
+            <div class="grid md:grid-cols-3 gap-6">
+              <!-- Search -->
+              <div>
+                <label class="block text-amber-900 font-mono text-sm font-bold mb-2">
+                  Search Bookmarks
+                </label>
+                <div class="relative">
+                  <input
+                    [formControl]="searchControl"
+                    type="text"
+                    placeholder="Search by title, author, or notes..."
+                    class="w-full px-4 py-3 pl-10 border-2 border-amber-300 focus:border-amber-600 focus:outline-none bg-white font-mono text-sm"
+                  />
+                  <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                  </svg>
+                </div>
               </div>
 
-              <!-- Profile Info -->
-              <div class="flex-1">
-                @if (editingProfile()) {
-                  <!-- Edit Profile Form -->
-                  <form [formGroup]="profileForm" (ngSubmit)="saveProfile()" class="space-y-4">
-                    <div>
-                      <label class="block text-amber-900 font-mono text-sm font-bold mb-2">Name</label>
-                      <input
-                        type="text"
-                        formControlName="name"
-                        class="w-full px-4 py-3 border-2 border-amber-300 focus:border-amber-600 focus:outline-none bg-white font-serif text-xl"
-                        [class.border-red-400]="isFieldInvalid('name')"
-                      />
-                      @if (isFieldInvalid('name')) {
-                        <p class="mt-1 text-red-600 text-xs font-mono">Name is required</p>
-                      }
-                    </div>
+              <!-- Collection Filter -->
+              <div>
+                <label class="block text-amber-900 font-mono text-sm font-bold mb-2">
+                  Filter by Collection
+                </label>
+                <select 
+                  [formControl]="collectionControl"
+                  class="w-full px-4 py-3 border-2 border-amber-300 focus:border-amber-600 focus:outline-none bg-white font-mono text-sm"
+                >
+                  <option value="">All Bookmarks</option>
+                  @for (collection of bookmarkCollections(); track collection._id) {
+                    <option [value]="collection._id">{{ collection._id }} ({{ collection.count }})</option>
+                  }
+                </select>
+              </div>
 
-                    <div>
-                      <label class="block text-amber-900 font-mono text-sm font-bold mb-2">Bio</label>
-                      <textarea
-                        formControlName="bio"
-                        rows="4"
-                        placeholder="Tell us about yourself..."
-                        class="w-full px-4 py-3 border-2 border-amber-300 focus:border-amber-600 focus:outline-none bg-white resize-none"
-                      ></textarea>
-                      <div class="mt-1 text-xs font-mono text-amber-600">
-                        {{ (profileForm.get('bio')?.value || '').length }}/300 characters
-                      </div>
-                    </div>
-
-                    <div class="flex gap-3">
-                      <button
-                        type="submit"
-                        [disabled]="profileForm.invalid || savingProfile()"
-                        class="bg-amber-800 text-amber-100 px-6 py-2 font-mono text-sm uppercase tracking-wider hover:bg-amber-700 transition-colors border-2 border-amber-700 disabled:opacity-50"
-                      >
-                        @if (savingProfile()) {
-                          Saving...
-                        } @else {
-                          Save Changes
-                        }
-                      </button>
-                      
-                      <button
-                        type="button"
-                        (click)="cancelEdit()"
-                        class="bg-amber-200 text-amber-800 px-6 py-2 font-mono text-sm uppercase tracking-wider hover:bg-amber-300 transition-colors border-2 border-amber-400"
-                      >
-                        Cancel
-                      </button>
-                    </div>
-                  </form>
-                } @else {
-                  <!-- Profile Display -->
-                  <div class="border-2 border-dotted border-amber-700 p-6">
-                    <div class="flex items-start justify-between mb-4">
-                      <div>
-                        <h1 class="font-serif text-3xl md:text-4xl font-bold text-amber-900 mb-2">
-                          {{ user()?.name }}
-                          @if (user()?.isVerified) {
-                            <svg class="inline w-6 h-6 text-blue-500 ml-2" fill="currentColor" viewBox="0 0 20 20">
-                              <path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
-                            </svg>
-                          }
-                        </h1>
-                        
-                        @if (user()?.isAdmin) {
-                          <div class="inline-block bg-red-100 text-red-800 px-3 py-1 text-xs font-mono uppercase mb-2">
-                            Administrator
-                          </div>
-                        }
-                      </div>
-
-                      <!-- Action Buttons -->
-                      <div class="flex gap-3">
-                        @if (isOwnProfile()) {
-                          <button
-                            (click)="startEditing()"
-                            class="bg-amber-200 text-amber-800 px-4 py-2 font-mono text-sm uppercase tracking-wider hover:bg-amber-300 transition-colors border-2 border-amber-400"
-                          >
-                            Edit Profile
-                          </button>
-                        } @else if (isAuthenticated()) {
-                          <button
-                            (click)="toggleFollow()"
-                            [disabled]="followLoading()"
-                            [class]="getFollowButtonClass()"
-                          >
-                            @if (followLoading()) {
-                              <div class="flex items-center gap-2">
-                                <div class="w-3 h-3 border border-current border-t-transparent rounded-full animate-spin"></div>
-                                Loading...
-                              </div>
-                            } @else {
-                              {{ isFollowing() ? 'Following' : 'Follow' }}
-                            }
-                          </button>
-                        }
-                      </div>
-                    </div>
-
-                    <!-- Bio -->
-                    @if (user()?.bio) {
-                      <p class="text-amber-800 text-lg leading-relaxed mb-6 italic">
-                        "{{ user()?.bio }}"
-                      </p>
-                    }
-
-                    <!-- Stats -->
-                    <div class="flex items-center gap-8 text-sm font-mono text-amber-600 mb-4">
-                      <div class="text-center">
-                        <div class="text-2xl font-bold text-amber-900">{{ userPosts().length }}</div>
-                        <div>Articles</div>
-                      </div>
-                      <div class="text-center">
-                        <button
-                          (click)="showFollowers()"
-                          class="hover:text-amber-800 transition-colors"
-                        >
-                          <div class="text-2xl font-bold text-amber-900">{{ user()?.followerCount || followers().length }}</div>
-                          <div>Followers</div>
-                        </button>
-                      </div>
-                      <div class="text-center">
-                        <button
-                          (click)="showFollowing()"
-                          class="hover:text-amber-800 transition-colors"
-                        >
-                          <div class="text-2xl font-bold text-amber-900">{{ user()?.followingCount || following().length }}</div>
-                          <div>Following</div>
-                        </button>
-                      </div>
-                      <div class="text-center">
-                        <div class="text-2xl font-bold text-amber-900">{{ formatDate(user()?.createdAt || '') }}</div>
-                        <div>Joined</div>
-                      </div>
-                    </div>
-                  </div>
-                }
+              <!-- Sort -->
+              <div>
+                <label class="block text-amber-900 font-mono text-sm font-bold mb-2">
+                  Sort By
+                </label>
+                <select 
+                  [formControl]="sortControl"
+                  class="w-full px-4 py-3 border-2 border-amber-300 focus:border-amber-600 focus:outline-none bg-white font-mono text-sm"
+                >
+                  <option value="-createdAt">Recently Bookmarked</option>
+                  <option value="createdAt">Oldest Bookmarks</option>
+                  <option value="post.title">Title (A-Z)</option>
+                  <option value="-post.title">Title (Z-A)</option>
+                </select>
               </div>
             </div>
-          </div>
-        </header>
 
-        <!-- Profile Navigation -->
-        <section class="mb-8">
-          <div class="bg-amber-50 border-4 border-amber-300 p-4">
-            <nav class="flex justify-center">
-              <div class="flex gap-6">
-                <button
-                  (click)="setActiveTab('posts')"
-                  [class]="getTabClass('posts')"
-                >
-                  Articles ({{ userPosts().length }})
-                </button>
-                
-                @if (showFollowersModal() || showFollowingModal()) {
-                  <button
-                    (click)="setActiveTab('followers')"
-                    [class]="getTabClass('followers')"
-                  >
-                    Followers ({{ followers().length }})
-                  </button>
+            <!-- Active Filters -->
+            @if (hasActiveFilters()) {
+              <div class="mt-6 pt-4 border-t-2 border-dotted border-amber-300">
+                <div class="flex flex-wrap items-center gap-2">
+                  <span class="text-amber-700 font-mono text-sm font-bold">Active filters:</span>
+                  
+                  @if (searchQuery()) {
+                    <span class="inline-flex items-center gap-1 bg-amber-200 text-amber-800 px-3 py-1 text-xs font-mono">
+                      Search: {{ searchQuery() }}
+                      <button (click)="clearSearch()" class="hover:text-amber-900">×</button>
+                    </span>
+                  }
+                  
+                  @if (collectionFilter()) {
+                    <span class="inline-flex items-center gap-1 bg-amber-200 text-amber-800 px-3 py-1 text-xs font-mono">
+                      Collection: {{ getCollectionName(collectionFilter()) }}
+                      <button (click)="clearCollectionFilter()" class="hover:text-amber-900">×</button>
+                    </span>
+                  }
                   
                   <button
-                    (click)="setActiveTab('following')"
-                    [class]="getTabClass('following')"
+                    (click)="clearAllFilters()"
+                    class="text-amber-600 hover:text-amber-800 text-xs font-mono underline ml-2"
                   >
-                    Following ({{ following().length }})
+                    Clear All
                   </button>
-                }
+                </div>
               </div>
-            </nav>
+            }
           </div>
         </section>
 
-        <!-- Tab Content -->
+        <!-- Bookmarks List -->
         <section class="mb-12">
-          @if (activeTab() === 'posts') {
-            <!-- User Posts -->
-            @if (postsLoading()) {
-              <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                @for (i of [1,2,3,4,5,6]; track i) {
-                  <div class="bg-amber-50 border-2 border-amber-200 p-6 animate-pulse">
-                    <div class="h-6 bg-amber-200 rounded mb-4"></div>
-                    <div class="h-4 bg-amber-200 rounded mb-2"></div>
-                    <div class="h-4 bg-amber-200 rounded mb-2"></div>
-                    <div class="h-4 bg-amber-200 rounded w-2/3"></div>
+          @if (loading()) {
+            <!-- Loading Skeleton -->
+            <div class="space-y-6">
+              @for (i of [1,2,3]; track i) {
+                <div class="bg-amber-50 border-2 border-amber-200 p-6 animate-pulse">
+                  <div class="flex gap-6">
+                    <div class="w-32 h-24 bg-amber-200"></div>
+                    <div class="flex-1 space-y-3">
+                      <div class="h-6 bg-amber-200 rounded"></div>
+                      <div class="h-4 bg-amber-200 rounded w-5/6"></div>
+                      <div class="h-4 bg-amber-200 rounded w-2/3"></div>
+                    </div>
                   </div>
+                </div>
+              }
+            </div>
+          } @else if (filteredBookmarks().length === 0) {
+            <!-- Empty State -->
+            <div class="text-center py-16">
+              <div class="inline-block border-4 border-amber-300 p-12 bg-amber-100">
+                <div class="text-amber-600 font-mono text-lg mb-4">📚 EMPTY BOOKSHELF</div>
+                <p class="text-amber-700 mb-6">
+                  @if (hasActiveFilters()) {
+                    No bookmarks match your current filters.
+                  } @else {
+                    You haven't bookmarked any articles yet.
+                  }
+                </p>
+                @if (hasActiveFilters()) {
+                  <button
+                    (click)="clearAllFilters()"
+                    class="bg-amber-600 text-amber-100 px-6 py-2 font-mono text-sm uppercase tracking-wider hover:bg-amber-500 transition-colors"
+                  >
+                    Clear Filters
+                  </button>
+                } @else {
+                  <a
+                    routerLink="/"
+                    class="inline-block bg-amber-800 text-amber-100 px-8 py-3 font-mono text-sm uppercase tracking-wider hover:bg-amber-700 transition-colors border-2 border-amber-700"
+                  >
+                    Discover Articles
+                  </a>
                 }
               </div>
-            } @else if (userPosts().length === 0) {
-              <div class="text-center py-16">
-                <div class="inline-block border-4 border-amber-300 p-12 bg-amber-100">
-                  <div class="text-amber-600 font-mono text-lg mb-4">📝 NO ARTICLES YET</div>
-                  <p class="text-amber-700 mb-6">
-                    @if (isOwnProfile()) {
-                      You haven't published any articles yet. Start writing to share your thoughts!
-                    } @else {
-                      {{ user()?.name }} hasn't published any articles yet.
-                    }
-                  </p>
-                  @if (isOwnProfile()) {
-                    <a
-                      routerLink="/write"
-                      class="inline-block bg-amber-800 text-amber-100 px-8 py-3 font-mono text-sm uppercase tracking-wider hover:bg-amber-700 transition-colors border-2 border-amber-700"
-                    >
-                      Write Your First Article
-                    </a>
-                  }
-                </div>
-              </div>
-            } @else {
-              <!-- Posts Grid -->
-              <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                @for (post of userPosts(); track post._id) {
-                  <article class="bg-amber-50 border-2 border-amber-200 hover:border-amber-400 hover:shadow-lg transition-all duration-300 group">
-                    @if (post.coverImage) {
-                      <img 
-                        [src]="post.coverImage" 
-                        [alt]="post.title"
-                        class="w-full h-48 object-cover border-b-2 border-amber-200 group-hover:sepia-[20%] transition-all"
-                      >
-                    }
-                    
+            </div>
+          } @else {
+            <!-- Bookmarks List -->
+            <div class="space-y-6">
+              @for (bookmark of filteredBookmarks(); track bookmark._id) {
+                @if (getPost(bookmark)) {
+                  <article class="bg-amber-50 border-2 border-amber-200 hover:border-amber-400 transition-all duration-300 group">
                     <div class="p-6">
-                      @if (post.status === 'draft') {
-                        <div class="inline-block bg-yellow-200 text-yellow-800 px-2 py-1 text-xs font-mono uppercase mb-3">
-                          Draft
+                      <div class="flex items-start gap-6">
+                        <!-- Post Cover Image -->
+                        <div class="w-48 h-32 flex-shrink-0">
+                          <img 
+                            [src]="getPost(bookmark)?.coverImage || '/assets/placeholder-image.png'" 
+                            [alt]="getPost(bookmark)?.title"
+                            class="w-full h-full object-cover border-2 border-amber-300 group-hover:sepia-[20%] transition-all"
+                          >
                         </div>
-                      }
-                      
-                      <h3 class="font-serif text-xl font-bold text-amber-900 mb-3 leading-tight">
-                        <a 
-                          [routerLink]="['/post', post.slug]"
-                          class="hover:text-amber-700 transition-colors"
-                        >
-                          {{ post.title }}
-                        </a>
-                      </h3>
-                      
-                      @if (post.excerpt) {
-                        <p class="text-amber-700 text-sm mb-4 leading-relaxed line-clamp-3">
-                          {{ post.excerpt }}
-                        </p>
-                      }
-                      
-                      <!-- Meta Info -->
-                      <div class="flex items-center justify-between text-xs font-mono text-amber-600">
-                        <span>{{ formatDate(post.publishedAt || post.createdAt) }}</span>
-                        <div class="flex items-center gap-3">
-                          <span>{{ post.readingTime || calculateReadingTime(post.content) }} min</span>
-                          <div class="flex items-center gap-1">
-                            <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-                              <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"></path>
-                            </svg>
-                            <span>{{ post.likeCount || 0 }}</span>
+                        
+                        <!-- Bookmark Content -->
+                        <div class="flex-1">
+                          <div class="flex items-start justify-between mb-2">
+                            <h3 class="font-serif text-xl font-bold text-amber-900 leading-tight">
+                              <a 
+                                [routerLink]="['/post', getPost(bookmark)?.slug]"
+                                class="hover:text-amber-700 transition-colors"
+                              >
+                                {{ getPost(bookmark)?.title }}
+                              </a>
+                            </h3>
+                            
+                            <!-- Actions -->
+                            <div class="flex items-center gap-2">
+                              <button
+                                (click)="editBookmark(bookmark)"
+                                class="inline-flex items-center justify-center w-8 h-8 bg-amber-200 text-amber-800 hover:bg-amber-300 transition-colors"
+                                title="Edit Notes/Collections"
+                              >
+                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                  <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"></path>
+                                </svg>
+                              </button>
+                              
+                              <button
+                                (click)="removeBookmark(bookmark._id)"
+                                [disabled]="deleting().includes(bookmark._id)"
+                                class="inline-flex items-center justify-center w-8 h-8 bg-red-100 text-red-800 hover:bg-red-200 transition-colors disabled:opacity-50"
+                                title="Remove Bookmark"
+                              >
+                                @if (deleting().includes(bookmark._id)) {
+                                  <div class="w-3 h-3 border border-red-800 border-t-transparent rounded-full animate-spin"></div>
+                                } @else {
+                                  <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z" clip-rule="evenodd"></path>
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
+                                  </svg>
+                                }
+                              </button>
+                            </div>
                           </div>
+
+                          <!-- Post Meta -->
+                          <div class="flex items-center gap-4 text-xs font-mono text-amber-600 mb-4">
+                            <span>By {{ getPostAuthor(bookmark) }}</span>
+                            <span>•</span>
+                            <span>{{ getPost(bookmark)?.readingTime || 1 }} min read</span>
+                            <span>•</span>
+                            <span>Bookmarked {{ formatDate(bookmark.createdAt) }}</span>
+                          </div>
+                          
+                          @if (bookmark.notes) {
+                            <div class="p-3 bg-yellow-50 border-2 border-dotted border-yellow-300 mb-4">
+                              <h4 class="font-bold text-yellow-900 text-sm mb-1">My Notes:</h4>
+                              <p class="text-yellow-800 text-sm italic">"{{ bookmark.notes }}"</p>
+                            </div>
+                          }
+
+                          <!-- Collections -->
+                          @if (bookmark.collections && bookmark.collections.length > 0) {
+                            <div class="flex flex-wrap items-center gap-2">
+                              <span class="text-amber-700 font-mono text-xs">In collections:</span>
+                              @for (collectionId of bookmark.collections; track collectionId) {
+                                <span class="inline-block bg-amber-200 text-amber-800 px-2 py-1 text-xs font-mono">
+                                  {{ getCollectionName(collectionId) }}
+                                </span>
+                              }
+                            </div>
+                          }
                         </div>
                       </div>
                     </div>
                   </article>
                 }
-              </div>
-            }
-          } @else if (activeTab() === 'followers') {
-            <!-- Followers List -->
-            @if (followers().length === 0) {
-              <div class="text-center py-16">
-                <div class="inline-block border-4 border-amber-300 p-8 bg-amber-100">
-                  <div class="text-amber-600 font-mono text-lg mb-2">👥 NO FOLLOWERS YET</div>
-                  <p class="text-amber-700">
-                    @if (isOwnProfile()) {
-                      Share great content to build your following!
+              }
+            </div>
+            
+            <!-- Pagination -->
+            @if (totalPages() > 1) {
+              <div class="mt-12 flex justify-center">
+                <div class="flex items-center gap-2">
+                  <button
+                    (click)="goToPage(currentPage() - 1)"
+                    [disabled]="currentPage() === 1"
+                    class="px-4 py-2 bg-amber-100 text-amber-900 font-mono text-sm hover:bg-amber-200 transition-colors border-2 border-amber-300 disabled:opacity-50"
+                  >
+                    ← Previous
+                  </button>
+                  
+                  @for (page of getPaginationPages(); track page) {
+                    @if (page === '...') {
+                      <span class="px-3 py-2 text-amber-600 font-mono text-sm">...</span>
                     } @else {
-                      {{ user()?.name }} doesn't have any followers yet.
+                      <button
+                        (click)="goToPage(+page)"
+                        [class]="getPageButtonClass(+page)"
+                      >
+                        {{ page }}
+                      </button>
                     }
-                  </p>
+                  }
+                  
+                  <button
+                    (click)="goToPage(currentPage() + 1)"
+                    [disabled]="currentPage() === totalPages()"
+                    class="px-4 py-2 bg-amber-100 text-amber-900 font-mono text-sm hover:bg-amber-200 transition-colors border-2 border-amber-300 disabled:opacity-50"
+                  >
+                    Next →
+                  </button>
                 </div>
-              </div>
-            } @else {
-              <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                @for (follower of followers(); track follower._id) {
-                  <div class="bg-amber-50 border-2 border-amber-200 p-4 hover:border-amber-400 transition-colors">
-                    <div class="flex items-center gap-3">
-                      @if (follower.avatarUrl) {
-                        <img 
-                          [src]="follower.avatarUrl" 
-                          [alt]="follower.name"
-                          class="w-12 h-12 rounded-full border-2 border-amber-300"
-                        >
-                      } @else {
-                        <div class="w-12 h-12 bg-amber-200 border-2 border-amber-300 rounded-full flex items-center justify-center font-bold text-amber-800">
-                          {{ getInitials(follower.name) }}
-                        </div>
-                      }
-                      
-                      <div class="flex-1">
-                        <h4 class="font-bold text-amber-900">
-                          <a [routerLink]="['/user', follower._id]" class="hover:text-amber-700">
-                            {{ follower.name }}
-                          </a>
-                        </h4>
-                        @if (follower.bio) {
-                          <p class="text-amber-700 text-sm line-clamp-1">{{ follower.bio }}</p>
-                        }
-                      </div>
-                    </div>
-                  </div>
-                }
-              </div>
-            }
-          } @else if (activeTab() === 'following') {
-            <!-- Following List -->
-            @if (following().length === 0) {
-              <div class="text-center py-16">
-                <div class="inline-block border-4 border-amber-300 p-8 bg-amber-100">
-                  <div class="text-amber-600 font-mono text-lg mb-2">👤 NOT FOLLOWING ANYONE YET</div>
-                  <p class="text-amber-700">
-                    @if (isOwnProfile()) {
-                      Discover interesting authors to follow!
-                    } @else {
-                      {{ user()?.name }} isn't following anyone yet.
-                    }
-                  </p>
-                </div>
-              </div>
-            } @else {
-              <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                @for (followedUser of following(); track followedUser._id) {
-                  <div class="bg-amber-50 border-2 border-amber-200 p-4 hover:border-amber-400 transition-colors">
-                    <div class="flex items-center gap-3">
-                      @if (followedUser.avatarUrl) {
-                        <img 
-                          [src]="followedUser.avatarUrl" 
-                          [alt]="followedUser.name"
-                          class="w-12 h-12 rounded-full border-2 border-amber-300"
-                        >
-                      } @else {
-                        <div class="w-12 h-12 bg-amber-200 border-2 border-amber-300 rounded-full flex items-center justify-center font-bold text-amber-800">
-                          {{ getInitials(followedUser.name) }}
-                        </div>
-                      }
-                      
-                      <div class="flex-1">
-                        <h4 class="font-bold text-amber-900">
-                          <a [routerLink]="['/user', followedUser._id]" class="hover:text-amber-700">
-                            {{ followedUser.name }}
-                          </a>
-                        </h4>
-                        @if (followedUser.bio) {
-                          <p class="text-amber-700 text-sm line-clamp-1">{{ followedUser.bio }}</p>
-                        }
-                      </div>
-                    </div>
-                  </div>
-                }
               </div>
             }
           }
         </section>
-      }
+      </div>
     </div>
+
+    <!-- Edit Bookmark Modal -->
+    @if (showModal()) {
+      <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" (click)="closeModal()">
+        <div class="bg-amber-50 border-4 border-amber-800 p-6 max-w-lg w-full mx-4" (click)="$event.stopPropagation()">
+          <h3 class="font-serif text-xl font-bold text-amber-900 mb-4">
+            Edit Bookmark
+          </h3>
+          
+          <form [formGroup]="bookmarkForm" (ngSubmit)="saveBookmark()">
+            <div class="space-y-4">
+              <!-- Notes -->
+              <div>
+                <label class="block text-amber-900 font-mono text-sm font-bold mb-2">My Notes</label>
+                <textarea
+                  formControlName="notes"
+                  rows="3"
+                  placeholder="Add your thoughts about this article..."
+                  class="w-full px-4 py-3 border-2 border-amber-300 focus:border-amber-600 focus:outline-none bg-white resize-none"
+                ></textarea>
+              </div>
+              
+              <!-- Collections -->
+              <div>
+                <label class="block text-amber-900 font-mono text-sm font-bold mb-2">Add to Collections</label>
+                <div class="max-h-40 overflow-y-auto space-y-2 p-2 border-2 border-amber-300 bg-white">
+                  @if (userCollections().length === 0) {
+                    <p class="text-amber-600 text-sm italic">No collections available.</p>
+                  } @else {
+                    @for (collection of userCollections(); track collection._id) {
+                      <label class="flex items-center p-2 hover:bg-amber-100 transition-colors">
+                        <input
+                          type="checkbox"
+                          (change)="onCollectionChange(collection._id, $event)"
+                          [checked]="bookmarkForm.get('collections')?.value?.includes(collection._id) || false"
+                          class="mr-3 text-amber-600"
+                        />
+                        <span class="text-amber-800">{{ collection.title }}</span>
+                      </label>
+                    }
+                  }
+                </div>
+              </div>
+            </div>
+            
+            <div class="flex justify-end gap-3 mt-6">
+              <button
+                type="button"
+                (click)="closeModal()"
+                class="bg-amber-200 text-amber-800 px-4 py-2 font-mono text-sm hover:bg-amber-300 transition-colors"
+              >
+                Cancel
+              </button>
+              
+              <button
+                type="submit"
+                [disabled]="bookmarkForm.invalid || saving()"
+                class="bg-amber-800 text-amber-100 px-4 py-2 font-mono text-sm hover:bg-amber-700 transition-colors disabled:opacity-50"
+              >
+                {{ saving() ? 'Saving...' : 'Save Changes' }}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    }
   `,
   styles: [`
-    .line-clamp-1 {
-      display: -webkit-box;
-      -webkit-line-clamp: 1;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
+    /* Custom checkbox styling */
+    input[type="checkbox"] {
+      appearance: none;
+      background-color: white;
+      border: 2px solid #d97706;
+      width: 1rem;
+      height: 1rem;
+      position: relative;
+      cursor: pointer;
     }
 
-    .line-clamp-3 {
-      display: -webkit-box;
-      -webkit-line-clamp: 3;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
+    input[type="checkbox"]:checked {
+      background-color: #d97706;
     }
 
-    /* Vintage paper texture */
-    article {
-      background-image: 
-        radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.03) 0%, transparent 50%),
-        radial-gradient(circle at 80% 20%, rgba(255, 200, 124, 0.03) 0%, transparent 50%);
-    }
-
-    /* Avatar hover effect */
-    .avatar-container:hover {
-      transform: scale(1.02);
-      transition: transform 0.3s ease-in-out;
-    }
-
-    /* Profile card shadow */
-    .profile-card {
-      box-shadow: 0 8px 16px -4px rgba(146, 64, 14, 0.2);
+    input[type="checkbox"]:checked::before {
+      content: '✓';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: white;
+      font-size: 0.75rem;
+      font-weight: bold;
     }
   `]
 })
-export class UserProfileComponent implements OnInit {
-  private route = inject(ActivatedRoute);
-  private router = inject(Router);
+export class BookmarksComponent implements OnInit {
   private apiService = inject(ApiService);
+  private router = inject(Router);
 
   // Reactive Signals
   loading = signal(false);
-  postsLoading = signal(false);
-  uploadingAvatar = signal(false);
-  savingProfile = signal(false);
-  followLoading = signal(false);
-  error = signal('');
+  saving = signal(false);
+  bookmarks = signal<Bookmark[]>([]);
+  bookmarkCollections = signal<UserCollection[]>([]);
+  userCollections = signal<any[]>([]);
+  totalBookmarks = signal(0);
+  currentPage = signal(1);
+  totalPages = signal(1);
   
-  user = signal<User | null>(null);
-  currentUser = signal<User | null>(null);
-  userPosts = signal<Post[]>([]);
-  followers = signal<User[]>([]);
-  following = signal<User[]>([]);
-  
-  editingProfile = signal(false);
-  activeTab = signal<'posts' | 'followers' | 'following'>('posts');
-  showFollowersModal = signal(false);
-  showFollowingModal = signal(false);
-  isFollowing = signal(false);
+  deleting = signal<string[]>([]);
+  showModal = signal(false);
+  editingBookmark = signal<Bookmark | null>(null);
 
-  // Profile Form
-  profileForm = new FormGroup({
-    name: new FormControl('', [Validators.required, Validators.minLength(2)]),
-    bio: new FormControl('', [Validators.maxLength(300)])
+  // Form Controls
+  searchControl = new FormControl('');
+  collectionControl = new FormControl('');
+  sortControl = new FormControl('-createdAt');
+
+  // Filter states
+  searchQuery = signal('');
+  collectionFilter = signal('');
+
+  // Bookmark Form
+  bookmarkForm = new FormGroup({
+    notes: new FormControl(''),
+    collections: new FormControl<string[]>([])
   });
 
   // Computed values
-  isOwnProfile = computed(() => {
-    const user = this.user();
-    const currentUser = this.currentUser();
-    return user && currentUser && user._id === currentUser._id;
+  filteredBookmarks = computed(() => {
+    // In a real implementation with a proper backend,
+    // these filters would be passed to the API.
+    // For now, we filter client-side.
+    let filtered = [...this.bookmarks()];
+    
+    if (this.searchQuery()) {
+      const query = this.searchQuery().toLowerCase();
+      filtered = filtered.filter(bookmark => 
+        (bookmark.notes?.toLowerCase().includes(query)) ||
+        (this.getPost(bookmark)?.title.toLowerCase().includes(query)) ||
+        (this.getPostAuthor(bookmark).toLowerCase().includes(query))
+      );
+    }
+    
+    if (this.collectionFilter()) {
+      const collectionId = this.collectionFilter();
+      filtered = filtered.filter(bookmark => bookmark.collections?.includes(collectionId));
+    }
+    
+    return this.sortBookmarks(filtered);
   });
 
+  hasActiveFilters = computed(() => 
+    !!(this.searchQuery() || this.collectionFilter())
+  );
+
   async ngOnInit() {
-    await this.loadCurrentUser();
+    if (!this.apiService.isAuthenticated()) {
+      this.router.navigate(['/auth/login']);
+      return;
+    }
     
-    const userId = this.route.snapshot.paramMap.get('id');
-    if (userId) {
-      await this.loadUserProfile(userId);
-    }
+    await this.loadBookmarks();
+    await this.loadBookmarkCollections();
+    await this.loadUserCollections();
   }
 
-  private async loadCurrentUser() {
-    if (this.apiService.isAuthenticated()) {
-      try {
-        const currentUser = await this.apiService.getCurrentUser();
-        this.currentUser.set(currentUser);
-      } catch (error) {
-        console.error('Failed to load current user:', error);
-      }
-    }
-  }
-
-  private async loadUserProfile(userId: string) {
+  private async loadBookmarks() {
     try {
       this.loading.set(true);
-      this.error.set('');
+      
+      const params: BookmarkQueryParams = {
+        page: this.currentPage(),
+        limit: 10
+      };
 
-      const user = await this.apiService.getUserById(userId);
-      this.user.set(user);
-
-      // Load user's posts
-      await this.loadUserPosts(userId);
-
-      // Check if following (for authenticated users)
-      if (this.isAuthenticated() && !this.isOwnProfile()) {
-        await this.checkFollowStatus(userId);
-      }
-
+      const response = await this.apiService.getBookmarks(params);
+      
+      this.bookmarks.set(response.bookmarks || response.data || []);
+      this.totalBookmarks.set(response.totalBookmarks || response.totalItems || 0);
+      this.totalPages.set(response.totalPages || 1);
+      
     } catch (error) {
-      console.error('Failed to load user profile:', error);
-      this.error.set('Profile not found or failed to load');
+      console.error('Failed to load bookmarks:', error);
+      this.bookmarks.set([]);
     } finally {
       this.loading.set(false);
     }
   }
 
-  private async loadUserPosts(userId: string) {
+  private async loadBookmarkCollections() {
     try {
-      this.postsLoading.set(true);
-      const posts = await this.apiService.getUserPosts(userId);
-      this.userPosts.set(posts);
+      const collections = await this.apiService.getBookmarkCollections();
+      this.bookmarkCollections.set(collections);
     } catch (error) {
-      console.error('Failed to load user posts:', error);
-      this.userPosts.set([]);
-    } finally {
-      this.postsLoading.set(false);
+      console.error('Failed to load bookmark collections:', error);
     }
   }
 
-  private async checkFollowStatus(userId: string) {
+  private async loadUserCollections() {
     try {
-      // This would need an API method to check follow status
-      // For now, we'll assume not following
-      this.isFollowing.set(false);
+      const collections = await this.apiService.getUserCollections();
+      this.userCollections.set(collections);
     } catch (error) {
-      console.error('Failed to check follow status:', error);
+      console.error('Failed to load user collections:', error);
     }
   }
 
-  // Profile Editing
-  startEditing() {
-    const user = this.user();
-    if (!user) return;
+  private sortBookmarks(bookmarks: Bookmark[]): Bookmark[] {
+    const sortBy = this.sortControl.value || '-createdAt';
+    const [direction, field] = sortBy.startsWith('-') 
+      ? ['desc', sortBy.slice(1)] 
+      : ['asc', sortBy];
 
-    this.profileForm.patchValue({
-      name: user.name,
-      bio: user.bio || ''
+    return [...bookmarks].sort((a, b) => {
+      let aVal, bVal;
+      
+      switch (field) {
+        case 'createdAt':
+          aVal = new Date(a.createdAt).getTime();
+          bVal = new Date(b.createdAt).getTime();
+          break;
+        case 'post.title':
+          const aPost = this.getPost(a);
+          const bPost = this.getPost(b);
+          aVal = aPost ? aPost.title.toLowerCase() : '';
+          bVal = bPost ? bPost.title.toLowerCase() : '';
+          break;
+        default:
+          return 0;
+      }
+      
+      if (direction === 'desc') {
+        return aVal < bVal ? 1 : aVal > bVal ? -1 : 0;
+      } else {
+        return aVal > bVal ? 1 : aVal < bVal ? -1 : 0;
+      }
     });
-    this.editingProfile.set(true);
   }
 
-  cancelEdit() {
-    this.editingProfile.set(false);
-    this.profileForm.reset();
+  // Modal Management
+  editBookmark(bookmark: Bookmark) {
+    this.editingBookmark.set(bookmark);
+    this.bookmarkForm.patchValue({
+      notes: bookmark.notes || '',
+      collections: bookmark.collections || []
+    });
+    this.showModal.set(true);
   }
 
-  async saveProfile() {
-    if (this.profileForm.invalid) return;
+  closeModal() {
+    this.showModal.set(false);
+    this.editingBookmark.set(null);
+    this.bookmarkForm.reset();
+  }
+
+  onCollectionChange(collectionId: string, event: any) {
+    const collections = this.bookmarkForm.get('collections')?.value as string[];
+    if (event.target.checked) {
+      collections.push(collectionId);
+    } else {
+      const index = collections.indexOf(collectionId);
+      if (index > -1) {
+        collections.splice(index, 1);
+      }
+    }
+    this.bookmarkForm.get('collections')?.setValue(collections);
+  }
+
+  async saveBookmark() {
+    const editing = this.editingBookmark();
+    if (!editing || this.bookmarkForm.invalid) return;
 
     try {
-      this.savingProfile.set(true);
+      this.saving.set(true);
 
-      const formValue = this.profileForm.value;
-      const updateData: UpdateProfileRequest = {
-        name: formValue.name!,
-        bio: formValue.bio || undefined
+      const formValue = this.bookmarkForm.value;
+      const updateData: UpdateBookmarkRequest = {
+        notes: formValue.notes || undefined,
+        collections: formValue.collections || []
       };
 
-      const updatedUser = await this.apiService.updateProfile(updateData);
-      this.user.set(updatedUser);
-      this.currentUser.set(updatedUser);
-      this.editingProfile.set(false);
-
-    } catch (error) {
-      console.error('Failed to update profile:', error);
-    } finally {
-      this.savingProfile.set(false);
-    }
-  }
-
-  // Avatar Management
-  async onAvatarSelect(event: any) {
-    const file = event.target.files?.[0];
-    if (!file) return;
-
-    try {
-      this.uploadingAvatar.set(true);
+      const updatedBookmark = await this.apiService.updateBookmark(editing._id, updateData);
       
-      const result = await this.apiService.uploadAvatar(file);
-      
-      // Update user avatar
-      this.user.update(current => 
-        current ? { ...current, avatarUrl: result.avatarUrl } : current
+      // Update in list
+      this.bookmarks.update(bookmarks => 
+        bookmarks.map(b => b._id === updatedBookmark._id ? updatedBookmark : b)
       );
-      
-      if (this.currentUser()) {
-        this.currentUser.update(current => 
-          current ? { ...current, avatarUrl: result.avatarUrl } : current
-        );
-      }
+
+      this.closeModal();
 
     } catch (error) {
-      console.error('Failed to upload avatar:', error);
+      console.error('Failed to save bookmark:', error);
     } finally {
-      this.uploadingAvatar.set(false);
+      this.saving.set(false);
     }
   }
 
-  async removeAvatar() {
-    if (!confirm('Are you sure you want to remove your profile photo?')) return;
+  // Bookmark Actions
+  async removeBookmark(bookmarkId: string) {
+    if (!confirm('Are you sure you want to remove this bookmark?')) return;
 
     try {
-      await this.apiService.deleteAvatar();
+      this.deleting.update(deleting => [...deleting, bookmarkId]);
       
-      // Update user avatar
-      this.user.update(current => 
-        current ? { ...current, avatarUrl: undefined } : current
-      );
+      await this.apiService.deleteBookmark(bookmarkId);
       
-      if (this.currentUser()) {
-        this.currentUser.update(current => 
-          current ? { ...current, avatarUrl: undefined } : current
-        );
-      }
-
+      this.bookmarks.update(bookmarks => bookmarks.filter(b => b._id !== bookmarkId));
+      this.totalBookmarks.update(count => count - 1);
+      
     } catch (error) {
-      console.error('Failed to remove avatar:', error);
-    }
-  }
-
-  // Follow/Unfollow
-  async toggleFollow() {
-    const userId = this.user()?._id;
-    if (!userId || !this.isAuthenticated()) return;
-
-    try {
-      this.followLoading.set(true);
-
-      if (this.isFollowing()) {
-        await this.apiService.unfollowUser(userId);
-        this.isFollowing.set(false);
-        
-        // Update follower count
-        this.user.update(current => 
-          current ? { ...current, followerCount: (current.followerCount || 0) - 1 } : current
-        );
-      } else {
-        await this.apiService.followUser(userId);
-        this.isFollowing.set(true);
-        
-        // Update follower count
-        this.user.update(current => 
-          current ? { ...current, followerCount: (current.followerCount || 0) + 1 } : current
-        );
-      }
-
-    } catch (error) {
-      console.error('Failed to toggle follow:', error);
+      console.error('Failed to remove bookmark:', error);
     } finally {
-      this.followLoading.set(false);
+      this.deleting.update(deleting => deleting.filter(id => id !== bookmarkId));
     }
   }
 
-  // Followers/Following
-  async showFollowers() {
-    const userId = this.user()?._id;
-    if (!userId) return;
+  // Filter Management
+  clearSearch() {
+    this.searchControl.setValue('');
+  }
 
-    try {
-      const followers = await this.apiService.getFollowers(userId);
-      this.followers.set(followers);
-      this.showFollowersModal.set(true);
-      this.setActiveTab('followers');
-    } catch (error) {
-      console.error('Failed to load followers:', error);
+  clearCollectionFilter() {
+    this.collectionControl.setValue('');
+  }
+
+  clearAllFilters() {
+    this.searchControl.setValue('');
+    this.collectionControl.setValue('');
+    this.sortControl.setValue('-createdAt');
+  }
+
+  // Pagination
+  async goToPage(page: number) {
+    if (page < 1 || page > this.totalPages() || page === this.currentPage()) return;
+    
+    this.currentPage.set(page);
+    await this.loadBookmarks();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  getPaginationPages(): (number | string)[] {
+    const current = this.currentPage();
+    const total = this.totalPages();
+    const pages: (number | string)[] = [];
+    
+    if (total <= 7) {
+      for (let i = 1; i <= total; i++) {
+        pages.push(i);
+      }
+    } else {
+      pages.push(1);
+      if (current > 4) pages.push('...');
+      
+      const start = Math.max(2, current - 1);
+      const end = Math.min(total - 1, current + 1);
+      
+      for (let i = start; i <= end; i++) {
+        pages.push(i);
+      }
+      
+      if (current < total - 3) pages.push('...');
+      pages.push(total);
     }
+    
+    return pages;
   }
 
-  async showFollowing() {
-    const userId = this.user()?._id;
-    if (!userId) return;
-
-    try {
-      const following = await this.apiService.getFollowing(userId);
-      this.following.set(following);
-      this.showFollowingModal.set(true);
-      this.setActiveTab('following');
-    } catch (error) {
-      console.error('Failed to load following:', error);
-    }
-  }
-
-  // Tab Management
-  setActiveTab(tab: 'posts' | 'followers' | 'following') {
-    this.activeTab.set(tab);
-  }
-
-  getTabClass(tab: 'posts' | 'followers' | 'following'): string {
-    const baseClass = "px-6 py-3 font-mono text-sm uppercase tracking-wider border-2 transition-colors";
-    return this.activeTab() === tab
+  getPageButtonClass(page: number): string {
+    const baseClass = "px-3 py-2 font-mono text-sm border-2 transition-colors";
+    return page === this.currentPage()
       ? `${baseClass} bg-amber-800 text-amber-100 border-amber-700`
       : `${baseClass} bg-amber-100 text-amber-900 border-amber-300 hover:bg-amber-200 hover:border-amber-400`;
   }
 
-  getFollowButtonClass(): string {
-    const baseClass = "px-4 py-2 font-mono text-sm uppercase tracking-wider transition-colors border-2 disabled:opacity-50";
-    return this.isFollowing()
-      ? `${baseClass} bg-green-100 text-green-800 border-green-300 hover:bg-green-200`
-      : `${baseClass} bg-blue-100 text-blue-800 border-blue-300 hover:bg-blue-200`;
-  }
-
   // Helper Methods
-  isAuthenticated(): boolean {
-    return this.apiService.isAuthenticated();
+  getPost(bookmark: Bookmark): Post | null {
+    if (typeof bookmark.post === 'object') {
+      return bookmark.post;
+    }
+    return null;
   }
 
-  isFieldInvalid(fieldName: string): boolean {
-    const field = this.profileForm.get(fieldName);
-    return !!(field && field.invalid && (field.dirty || field.touched));
+  getPostAuthor(bookmark: Bookmark): string {
+    const post = this.getPost(bookmark);
+    if (post && typeof post.author === 'object') {
+      return post.author.name;
+    }
+    return 'Unknown';
   }
 
-  getUserInitials(): string {
-    const user = this.user();
-    if (!user?.name) return 'U';
-    return user.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
-  }
-
-  getInitials(name: string): string {
-    if (!name) return 'U';
-    return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+  getCollectionName(collectionId: string): string {
+    const collection = this.userCollections().find(c => c._id === collectionId);
+    return collection ? collection.title : 'Unknown Collection';
   }
 
   formatDate(dateString: string): string {
-    if (!dateString) return '';
     const date = new Date(dateString);
-    return date.getFullYear().toString();
-  }
-
-  calculateReadingTime(content: string): number {
-    if (!content) return 1;
-    const words = content.split(' ').length;
-    return Math.ceil(words / 200);
+    const now = new Date();
+    const diffInDays = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60 * 24));
+    
+    if (diffInDays === 0) return 'today';
+    if (diffInDays === 1) return 'yesterday';
+    if (diffInDays < 7) return `${diffInDays} days ago`;
+    
+    return date.toLocaleDateString('en-US', { 
+      month: 'short', 
+      day: 'numeric',
+      year: date.getFullYear() !== now.getFullYear() ? 'numeric' : undefined
+    });
   }
 }

@@ -410,7 +410,9 @@ export class AboutComponent implements OnInit {
       // Load total articles count
       const response = await this.apiService.getPosts({
         status: 'published',
-        limit: 1
+        limit: 1,
+        dateTo: '',
+        dateFrom: ''
       });
       this.totalArticles.set(response.totalPosts || 0);
       

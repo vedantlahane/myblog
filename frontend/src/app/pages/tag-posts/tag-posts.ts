@@ -475,7 +475,9 @@ export class TagPostsComponent implements OnInit {
         tags: [this.tag()!.slug],
         limit: 12,
         page: this.currentPage(),
-        sort: this.sortControl.value || '-publishedAt'
+        sort: this.sortControl.value || '-publishedAt',
+        dateTo: '',
+        dateFrom: ''
       };
 
       if (this.searchQuery()) {
