@@ -1,5 +1,4 @@
-/* Import the configuration first */
-@import "./tailwind.config.css";
+
 
 /* Import Tailwind's base, components, and utilities */
 @import "tailwindcss";

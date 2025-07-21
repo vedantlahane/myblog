@@ -575,7 +575,7 @@ export interface ApiClient {
   updateBookmark(id: string, data: UpdateBookmarkRequest): Promise<Bookmark>;
   deleteBookmark(id: string): Promise<{ message: string }>;
   removeBookmarkByPost(postId: string): Promise<{ message: string }>;
-  getUserCollections(): Promise<UserCollection[]>;
+  getBookmarkCollections(): Promise<UserCollection[]>;
   checkBookmarkStatus(postId: string): Promise<BookmarkStatusResponse>;
 
   // Collection endpoints
