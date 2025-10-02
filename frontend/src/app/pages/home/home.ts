@@ -11,48 +11,48 @@ import { Post, Tag, PostsResponse } from '../../../types/api';
   template: `
     <!-- Hero Section with Featured Post -->
     @if (featuredPost()) {
-      <section class="mb-12 bg-amber-100 border-4 border-amber-800 p-8 shadow-lg">
-        <div class="border-2 border-dotted border-amber-700 p-6">
-          <div class="text-center mb-6">
-            <div class="inline-block bg-amber-800 text-amber-100 px-4 py-1 text-xs font-mono uppercase tracking-widest">
+      <section class="mb-12 rounded-2xl border border-ui-border bg-ui-surface p-8 shadow-sm">
+        <div class="rounded-xl border border-dashed border-ui-border/70 bg-ui-background/60 p-6">
+          <div class="mb-6 text-center">
+            <div class="inline-flex items-center rounded-full bg-brand-blue/10 px-4 py-1 text-xs font-mono uppercase tracking-[0.35em] text-brand-blue">
               Featured Article
             </div>
           </div>
-          
-          <article class="text-center">
+
+          <article class="space-y-6 text-center">
             @if (featuredPost()?.coverImage) {
-              <img 
-                [src]="featuredPost()?.coverImage" 
+              <img
+                [src]="featuredPost()?.coverImage"
                 [alt]="featuredPost()?.title"
-                class="w-full h-64 object-cover border-2 border-amber-700 mb-6 sepia-[30%] contrast-[110%]"
+                class="mx-auto h-64 w-full max-w-4xl rounded-xl object-cover"
               >
             }
-            
-            <h1 class="font-serif text-3xl md:text-4xl font-bold text-amber-900 mb-4 leading-tight">
-              <a 
+
+            <h1 class="text-3xl font-semibold leading-tight text-text-primary md:text-4xl">
+              <a
                 [routerLink]="['/post', featuredPost()?.slug]"
-                class="hover:text-amber-700 transition-colors"
+                class="transition-colors hover:text-brand-blue"
               >
                 {{ featuredPost()?.title }}
               </a>
             </h1>
-            
-            <p class="text-amber-800 text-lg mb-6 leading-relaxed max-w-3xl mx-auto">
+
+            <p class="mx-auto max-w-3xl text-lg leading-relaxed text-text-secondary">
               {{ featuredPost()?.excerpt }}
             </p>
-            
-            <div class="flex items-center justify-center gap-4 text-sm font-mono text-amber-600 mb-4">
+
+            <div class="flex items-center justify-center gap-4 text-sm font-mono text-text-secondary">
               <span>{{ getAuthorName(featuredPost()?.author) }}</span>
-              <span>•</span>
+              <span aria-hidden="true">•</span>
               <span>{{ formatDate(featuredPost()?.publishedAt || featuredPost()?.createdAt) }}</span>
-              <span>•</span>
+              <span aria-hidden="true">•</span>
               <span>{{ featuredPost()?.readingTime || 5 }} min read</span>
             </div>
-            
+
             <div class="flex justify-center">
-              <a 
+              <a
                 [routerLink]="['/post', featuredPost()?.slug]"
-                class="inline-block bg-amber-800 text-amber-100 px-8 py-3 font-mono text-sm uppercase tracking-wider hover:bg-amber-700 transition-colors border-2 border-amber-700 hover:border-amber-600"
+                class="btn-primary px-8 py-3 text-sm uppercase tracking-wide"
               >
                 Read Full Article
               </a>
@@ -64,93 +64,90 @@ import { Post, Tag, PostsResponse } from '../../../types/api';
 
     <!-- Latest Articles Grid -->
     <section class="mb-12">
-      <div class="flex items-center justify-between mb-8">
-        <div class="border-b-2 border-dotted border-amber-800 pb-2">
-          <h2 class="font-serif text-2xl font-bold text-amber-900">Latest Articles</h2>
-          <p class="text-amber-700 text-sm font-mono mt-1">Fresh thoughts and insights</p>
+      <div class="mb-8 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+        <div>
+          <h2 class="text-2xl font-semibold text-text-primary">Latest Articles</h2>
+          <p class="text-sm font-mono text-text-secondary">Fresh thoughts and insights</p>
         </div>
-        
-        <a 
-          routerLink="/archive" 
-          class="text-amber-700 hover:text-amber-900 font-mono text-sm uppercase tracking-wide border-b border-transparent hover:border-amber-700 transition-all"
+
+        <a
+          routerLink="/archive"
+          class="text-sm font-semibold text-brand-blue transition-colors hover:text-brand-blue/80"
         >
           View Archive →
         </a>
       </div>
 
       @if (loading()) {
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
           @for (i of [1,2,3,4,5,6]; track i) {
-            <div class="bg-amber-50 border-2 border-amber-200 p-6 animate-pulse">
-              <div class="h-4 bg-amber-200 rounded mb-4"></div>
-              <div class="h-3 bg-amber-200 rounded mb-2"></div>
-              <div class="h-3 bg-amber-200 rounded mb-2"></div>
-              <div class="h-3 bg-amber-200 rounded w-2/3"></div>
+            <div class="animate-pulse rounded-xl border border-ui-border bg-ui-surface p-6">
+              <div class="mb-4 h-40 rounded-lg bg-ui-border/50"></div>
+              <div class="mb-2 h-4 rounded bg-ui-border/40"></div>
+              <div class="mb-2 h-3 rounded bg-ui-border/40"></div>
+              <div class="h-3 w-2/3 rounded bg-ui-border/40"></div>
             </div>
           }
         </div>
       } @else if (latestPosts().length === 0) {
-        <div class="text-center py-12">
-          <div class="inline-block border-4 border-amber-300 p-8">
-            <div class="text-amber-600 font-mono text-sm mb-2">NO ARTICLES YET</div>
-            <p class="text-amber-700">The first article is coming soon!</p>
-          </div>
+        <div class="rounded-2xl border border-dashed border-ui-border p-12 text-center">
+          <div class="mb-2 text-sm font-mono uppercase tracking-widest text-text-secondary">No articles yet</div>
+          <p class="text-text-secondary">The first article is coming soon!</p>
         </div>
       } @else {
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
           @for (post of latestPosts(); track post._id) {
-            <article class="bg-amber-50 border-2 border-amber-200 hover:border-amber-400 hover:shadow-lg transition-all duration-300 group">
+            <article class="blog-card group transition-shadow duration-200 hover:shadow-md focus-within:shadow-md">
               @if (post.coverImage) {
-                <img 
-                  [src]="post.coverImage" 
-                  [alt]="post.title"
-                  class="w-full h-48 object-cover border-b-2 border-amber-200 group-hover:sepia-[20%] transition-all"
-                >
+                <div class="blog-card__media">
+                  <img
+                    [src]="post.coverImage"
+                    [alt]="post.title"
+                  >
+                </div>
               }
-              
-              <div class="p-6">
-                <h3 class="font-serif text-xl font-bold text-amber-900 mb-3 leading-tight">
-                  <a 
+
+              <div class="blog-card__content">
+                <h3 class="text-xl font-semibold leading-tight text-text-primary">
+                  <a
                     [routerLink]="['/post', post.slug]"
-                    class="hover:text-amber-700 transition-colors"
+                    class="transition-colors hover:text-brand-blue"
                   >
                     {{ post.title }}
                   </a>
                 </h3>
-                
+
                 @if (post.excerpt) {
-                  <p class="text-amber-700 text-sm mb-4 leading-relaxed line-clamp-3">
+                  <p class="line-clamp-3 text-sm leading-relaxed text-text-secondary">
                     {{ post.excerpt }}
                   </p>
                 }
-                
-                <!-- Tags -->
+
                 @if (getPostTags(post.tags).length > 0) {
-                  <div class="flex flex-wrap gap-2 mb-4">
+                  <div class="flex flex-wrap gap-2">
                     @for (tag of getPostTags(post.tags).slice(0, 3); track tag._id || tag) {
-                      <a 
+                      <a
                         [routerLink]="['/tag', getTagSlug(tag)]"
-                        class="inline-block bg-amber-200 text-amber-800 px-2 py-1 text-xs font-mono uppercase tracking-wide hover:bg-amber-300 transition-colors"
+                        class="btn-pill font-mono uppercase tracking-wide"
                       >
                         {{ getTagName(tag) }}
                       </a>
                     }
                   </div>
                 }
-                
-                <!-- Meta Info -->
-                <div class="flex items-center justify-between text-xs font-mono text-amber-600">
+
+                <div class="flex items-center justify-between text-xs font-mono text-text-secondary">
                   <div class="flex items-center gap-2">
                     <span>{{ getAuthorName(post.author) }}</span>
-                    <span>•</span>
+                    <span aria-hidden="true">•</span>
                     <span>{{ formatDate(post.publishedAt || post.createdAt) }}</span>
                   </div>
-                  
+
                   <div class="flex items-center gap-3">
                     <span>{{ post.readingTime || calculateReadingTime(post.content) }} min</span>
-                    <span>•</span>
-                    <div class="flex items-center gap-1">
-                      <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                    <span aria-hidden="true">•</span>
+                    <div class="flex items-center gap-1 text-brand-blue">
+                      <svg class="h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
                         <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"></path>
                       </svg>
                       <span>{{ post.likeCount || 0 }}</span>
@@ -161,14 +158,13 @@ import { Post, Tag, PostsResponse } from '../../../types/api';
             </article>
           }
         </div>
-        
-        <!-- Load More Button -->
+
         @if (hasMore()) {
-          <div class="text-center mt-12">
-            <button 
+          <div class="mt-12 text-center">
+            <button
               (click)="loadMore()"
               [disabled]="loadingMore()"
-              class="inline-block bg-amber-100 text-amber-900 px-8 py-3 font-mono text-sm uppercase tracking-wider hover:bg-amber-200 transition-colors border-2 border-amber-300 hover:border-amber-400 disabled:opacity-50 disabled:cursor-not-allowed"
+              class="btn-secondary inline-flex px-8 py-3 text-sm uppercase tracking-wide disabled:cursor-not-allowed disabled:opacity-50"
             >
               @if (loadingMore()) {
                 Loading More...
@@ -183,38 +179,37 @@ import { Post, Tag, PostsResponse } from '../../../types/api';
 
     <!-- Popular Tags Sidebar -->
     <aside class="mb-12">
-      <div class="bg-amber-100 border-4 border-amber-800 p-6">
-        <h3 class="font-serif text-xl font-bold text-amber-900 mb-4 text-center">Popular Topics</h3>
-        
+      <div class="rounded-2xl border border-ui-border bg-ui-surface p-6 text-center shadow-sm">
+        <h3 class="mb-4 text-xl font-semibold text-text-primary">Popular Topics</h3>
+
         @if (popularTags().length > 0) {
-          <div class="flex flex-wrap gap-2 justify-center">
+          <div class="flex flex-wrap justify-center gap-2">
             @for (tag of popularTags(); track tag._id) {
-              <a 
+              <a
                 [routerLink]="['/tag', tag.slug]"
-                class="inline-block bg-amber-200 text-amber-800 px-3 py-2 text-sm font-mono uppercase tracking-wide hover:bg-amber-300 transition-colors border border-amber-400 hover:border-amber-500"
+                class="btn-pill font-mono uppercase tracking-wide"
               >
                 {{ tag.name }} ({{ tag.postCount }})
               </a>
             }
           </div>
         } @else {
-          <p class="text-center text-amber-600 font-mono text-sm">No tags yet</p>
+          <p class="text-sm font-mono text-text-secondary">No tags yet</p>
         }
       </div>
     </aside>
 
-    <!-- Newsletter Signup Section (if not authenticated) -->
     @if (!isAuthenticated()) {
       <section class="mb-12">
-        <div class="bg-amber-900 text-amber-100 border-4 border-amber-700 p-8 text-center">
-          <div class="border-2 border-dotted border-amber-600 p-6">
-            <h3 class="font-serif text-2xl font-bold mb-3">Join the Community</h3>
-            <p class="text-amber-200 mb-6 max-w-2xl mx-auto">
+        <div class="rounded-2xl bg-brand-navy p-8 text-white shadow-md">
+          <div class="rounded-xl border border-white/10 bg-white/5 p-6 text-center">
+            <h3 class="mb-3 text-2xl font-semibold">Join the Community</h3>
+            <p class="mx-auto mb-6 max-w-2xl text-base leading-relaxed text-white/80">
               Get notified when new articles are published. Join our growing community of readers and thinkers.
             </p>
-            <a 
+            <a
               routerLink="/auth/register"
-              class="inline-block bg-amber-600 text-amber-100 px-8 py-3 font-mono text-sm uppercase tracking-wider hover:bg-amber-500 transition-colors border-2 border-amber-500 hover:border-amber-400"
+              class="btn-primary px-8 py-3 text-sm uppercase tracking-wide"
             >
               Join MyBlog
             </a>
@@ -229,30 +224,6 @@ import { Post, Tag, PostsResponse } from '../../../types/api';
       -webkit-line-clamp: 3;
       -webkit-box-orient: vertical;
       overflow: hidden;
-    }
-
-    .sepia-20 {
-      filter: sepia(20%) contrast(110%);
-    }
-
-    /* Vintage paper texture effect */
-    article {
-      background-image: 
-        radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.03) 0%, transparent 50%),
-        radial-gradient(circle at 80% 20%, rgba(255, 200, 124, 0.03) 0%, transparent 50%);
-    }
-
-    /* Typewriter loading animation */
-    .loading-dots::after {
-      content: '';
-      animation: dots 1.5s steps(5, end) infinite;
-    }
-
-    @keyframes dots {
-      0%, 20% { content: ''; }
-      40% { content: '.'; }
-      60% { content: '..'; }
-      80%, 100% { content: '...'; }
     }
   `]
 })

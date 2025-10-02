@@ -11,90 +11,83 @@ import { Post, Comment, User, Tag, CreateCommentRequest } from '../../../types/a
   imports: [CommonModule, RouterLink, ReactiveFormsModule],
   template: `
     @if (loading()) {
-      <div class="flex justify-center items-center py-16">
-        <div class="inline-flex items-center gap-3 text-amber-700 font-mono text-sm">
-          <div class="w-6 h-6 border-2 border-amber-700 border-t-transparent rounded-full animate-spin"></div>
+      <div class="flex items-center justify-center py-16">
+        <div class="inline-flex items-center gap-3 font-mono text-sm text-brand-blue">
+          <div class="h-6 w-6 animate-spin rounded-full border-2 border-brand-blue border-t-transparent"></div>
           Loading article...
         </div>
       </div>
     } @else if (error()) {
-      <div class="text-center py-16">
-        <div class="inline-block border-4 border-red-300 p-8 bg-red-50">
-          <div class="text-red-600 font-mono text-sm mb-2">ARTICLE NOT FOUND</div>
-          <p class="text-red-700 mb-4">{{ error() }}</p>
-          <a routerLink="/" class="inline-block bg-amber-600 text-amber-100 px-6 py-2 font-mono text-sm uppercase tracking-wider hover:bg-amber-500 transition-colors">
+      <div class="py-16 text-center">
+        <div class="inline-block rounded-2xl border border-feedback-red bg-feedback-red/10 px-8 py-6">
+          <div class="mb-2 font-mono text-sm uppercase tracking-wide text-feedback-red">ARTICLE NOT FOUND</div>
+          <p class="mb-4 text-text-secondary">{{ error() }}</p>
+          <a routerLink="/" class="btn-primary px-6 py-2 text-sm uppercase tracking-wide">
             Back to Home
           </a>
         </div>
       </div>
     } @else if (post()) {
-      <!-- Post Header -->
-      <article class="mb-12">
-        <header class="mb-8 pb-8 border-b-4 border-dotted border-amber-800">
-          <!-- Article Meta -->
-          <div class="text-center mb-6">
-            <div class="inline-block bg-amber-800 text-amber-100 px-4 py-1 text-xs font-mono uppercase tracking-widest">
+      <article class="mb-12 rounded-3xl border border-ui-border bg-ui-surface p-8 shadow-sm">
+        <header class="mb-8 border-b border-ui-border pb-8">
+          <div class="mb-6 text-center">
+            <div class="inline-flex items-center rounded-full bg-brand-blue/10 px-4 py-1 text-xs font-mono uppercase tracking-[0.35em] text-brand-blue">
               Article
             </div>
           </div>
 
-          <!-- Cover Image -->
           @if (post()?.coverImage) {
             <div class="mb-8">
-              <img 
-                [src]="post()?.coverImage" 
+              <img
+                [src]="post()?.coverImage"
                 [alt]="post()?.title"
-                class="w-full h-96 object-cover border-4 border-amber-700 sepia-[20%] contrast-[110%]"
+                class="h-96 w-full rounded-2xl object-cover"
               >
             </div>
           }
 
-          <!-- Title -->
-          <h1 class="font-serif text-3xl md:text-5xl font-bold text-amber-900 mb-6 leading-tight text-center">
+          <h1 class="mb-6 text-center text-3xl font-semibold leading-tight text-text-primary md:text-5xl">
             {{ post()?.title }}
           </h1>
 
-          <!-- Excerpt -->
           @if (post()?.excerpt) {
-            <p class="text-amber-800 text-lg md:text-xl mb-8 leading-relaxed text-center max-w-4xl mx-auto italic">
+            <p class="mx-auto mb-8 max-w-4xl text-center text-lg italic leading-relaxed text-text-secondary">
               "{{ post()?.excerpt }}"
             </p>
           }
 
-          <!-- Author & Meta Info -->
-          <div class="flex flex-col md:flex-row items-center justify-center gap-6 text-sm font-mono text-amber-600">
+          <div class="flex flex-col items-center justify-center gap-6 text-sm font-mono text-text-secondary md:flex-row">
             <div class="flex items-center gap-3">
               @if (getAuthor()?.avatarUrl) {
-                <img 
-                  [src]="getAuthor()?.avatarUrl" 
+                <img
+                  [src]="getAuthor()?.avatarUrl"
                   [alt]="getAuthor()?.name"
-                  class="w-12 h-12 rounded-full border-2 border-amber-400"
+                  class="h-12 w-12 rounded-full border border-ui-border object-cover"
                 >
               } @else {
-                <div class="w-12 h-12 bg-amber-200 border-2 border-amber-400 flex items-center justify-center font-bold text-amber-800">
+                <div class="flex h-12 w-12 items-center justify-center rounded-full border border-ui-border bg-ui-background text-sm font-semibold text-text-primary">
                   {{ getAuthorInitials() }}
                 </div>
               }
               <div>
-                <div class="font-bold text-amber-800">{{ getAuthor()?.name || 'Anonymous' }}</div>
-                <div class="text-xs">{{ formatDate(post()?.publishedAt || post()?.createdAt || '') }}</div>
+                <div class="font-semibold text-text-primary">{{ getAuthor()?.name || 'Anonymous' }}</div>
+                <div class="text-xs text-text-secondary/80">{{ formatDate(post()?.publishedAt || post()?.createdAt || '') }}</div>
               </div>
             </div>
 
             <div class="flex items-center gap-4 text-xs">
               <span>{{ post()?.readingTime || calculateReadingTime(post()?.content || '') }} min read</span>
-              <span>•</span>
+              <span aria-hidden="true">•</span>
               <span>{{ post()?.viewCount || 0 }} views</span>
             </div>
           </div>
 
-          <!-- Tags -->
           @if (getPostTags().length > 0) {
-            <div class="flex flex-wrap gap-2 justify-center mt-6">
+            <div class="mt-6 flex flex-wrap justify-center gap-2">
               @for (tag of getPostTags(); track getTagId(tag)) {
-                <a 
+                <a
                   [routerLink]="['/tag', getTagSlug(tag)]"
-                  class="inline-block bg-amber-200 text-amber-800 px-3 py-1 text-xs font-mono uppercase tracking-wide hover:bg-amber-300 transition-colors border border-amber-400 hover:border-amber-500"
+                  class="btn-pill font-mono uppercase tracking-wide"
                 >
                   {{ getTagName(tag) }}
                 </a>
@@ -103,48 +96,43 @@ import { Post, Comment, User, Tag, CreateCommentRequest } from '../../../types/a
           }
         </header>
 
-        <!-- Post Content -->
-        <div class="max-w-4xl mx-auto">
-          <div 
-            class="prose prose-lg prose-amber max-w-none leading-relaxed text-amber-900"
+        <div class="mx-auto max-w-4xl">
+          <div
+            class="prose prose-lg max-w-none text-text-primary"
             [innerHTML]="post()?.content"
           ></div>
         </div>
 
-        <!-- Post Actions -->
-        <footer class="mt-12 pt-8 border-t-2 border-dotted border-amber-300">
-          <div class="flex items-center justify-center gap-6">
-            <!-- Like Button -->
-            <button 
+        <footer class="mt-12 border-t border-ui-border pt-8">
+          <div class="flex flex-wrap items-center justify-center gap-4">
+            <button
               (click)="toggleLike()"
               [disabled]="!isAuthenticated()"
               [class]="likeButtonClass()"
             >
-              <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+              <svg class="mr-2 h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
                 <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"></path>
               </svg>
               {{ post()?.likeCount || 0 }} {{ (post()?.likeCount || 0) === 1 ? 'Like' : 'Likes' }}
             </button>
 
-            <!-- Bookmark Button -->
             @if (isAuthenticated()) {
-              <button 
+              <button
                 (click)="toggleBookmark()"
                 [class]="bookmarkButtonClass()"
               >
-                <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                <svg class="mr-2 h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
                   <path d="M5 4a2 2 0 012-2h6a2 2 0 012 2v14l-5-2.5L5 18V4z"></path>
                 </svg>
                 {{ isBookmarked() ? 'Bookmarked' : 'Bookmark' }}
               </button>
             }
 
-            <!-- Share Button -->
-            <button 
+            <button
               (click)="sharePost()"
-              class="inline-flex items-center px-4 py-2 bg-amber-100 text-amber-800 font-mono text-sm hover:bg-amber-200 transition-colors border border-amber-300 hover:border-amber-400"
+              class="btn-secondary inline-flex items-center gap-2 text-sm"
             >
-              <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z"></path>
               </svg>
               Share
@@ -152,34 +140,30 @@ import { Post, Comment, User, Tag, CreateCommentRequest } from '../../../types/a
           </div>
 
           @if (!isAuthenticated()) {
-            <p class="text-center text-amber-600 text-sm font-mono mt-4">
-              <a routerLink="/auth/login" class="underline hover:text-amber-800">Login</a> to like and bookmark articles
+            <p class="mt-4 text-center text-sm font-mono text-text-secondary">
+              <a routerLink="/auth/login" class="font-semibold text-brand-blue hover:text-brand-blue/80">Login</a> to like and bookmark articles
             </p>
           }
         </footer>
       </article>
 
-      <!-- Related Posts -->
       @if (relatedPosts().length > 0) {
-        <section class="mb-12 bg-amber-100 border-4 border-amber-800 p-6">
-          <h3 class="font-serif text-2xl font-bold text-amber-900 mb-6 text-center">Related Articles</h3>
-          
-          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <section class="mb-12 rounded-3xl border border-ui-border bg-ui-surface p-6 shadow-sm">
+          <h3 class="mb-6 text-center text-2xl font-semibold text-text-primary">Related Articles</h3>
+          <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
             @for (relatedPost of relatedPosts().slice(0, 3); track relatedPost._id) {
-              <article class="bg-amber-50 border-2 border-amber-200 p-4 hover:border-amber-400 transition-colors">
-                <h4 class="font-serif font-bold text-amber-900 mb-2 line-clamp-2">
-                  <a [routerLink]="['/post', relatedPost.slug]" class="hover:text-amber-700">
+              <article class="rounded-2xl border border-ui-border bg-ui-background p-4 shadow-sm transition-shadow hover:shadow-md">
+                <h4 class="mb-2 line-clamp-2 text-lg font-semibold text-text-primary">
+                  <a [routerLink]="['/post', relatedPost.slug]" class="transition-colors hover:text-brand-blue">
                     {{ relatedPost.title }}
                   </a>
                 </h4>
-                
                 @if (relatedPost.excerpt) {
-                  <p class="text-amber-700 text-sm mb-3 line-clamp-2">
+                  <p class="mb-3 line-clamp-2 text-sm leading-relaxed text-text-secondary">
                     {{ relatedPost.excerpt }}
                   </p>
                 }
-                
-                <div class="text-xs font-mono text-amber-600">
+                <div class="text-xs font-mono text-text-secondary/80">
                   {{ formatDate(relatedPost.publishedAt || relatedPost.createdAt) }}
                 </div>
               </article>
@@ -188,36 +172,33 @@ import { Post, Comment, User, Tag, CreateCommentRequest } from '../../../types/a
         </section>
       }
 
-      <!-- Comments Section -->
       <section class="mb-12">
-        <div class="border-t-4 border-amber-900 pt-8">
-          <h3 class="font-serif text-2xl font-bold text-amber-900 mb-6 text-center">
+        <div class="rounded-3xl border border-ui-border bg-ui-surface p-8 shadow-sm">
+          <h3 class="mb-6 text-center text-2xl font-semibold text-text-primary">
             Comments ({{ comments().length }})
           </h3>
 
-          <!-- Comment Form -->
           @if (isAuthenticated()) {
-            <div class="bg-amber-50 border-2 border-amber-200 p-6 mb-8">
+            <div class="mb-8 rounded-2xl border border-ui-border bg-ui-background p-6">
               <form [formGroup]="commentForm" (ngSubmit)="submitComment()">
                 <div class="mb-4">
-                  <label class="block text-amber-800 font-mono text-sm mb-2">Add your comment</label>
-                  <textarea 
+                  <label class="mb-2 block text-sm font-mono text-text-secondary">Add your comment</label>
+                  <textarea
                     formControlName="content"
                     rows="4"
                     placeholder="Share your thoughts..."
-                    class="w-full p-3 border-2 border-amber-300 focus:border-amber-500 focus:outline-none bg-white font-mono text-sm"
+                    class="w-full rounded-lg border border-ui-border bg-white p-3 text-sm font-mono text-text-primary transition-colors focus:border-brand-blue focus:outline-none"
                   ></textarea>
-                  
                   @if (commentForm.get('content')?.invalid && commentForm.get('content')?.touched) {
-                    <p class="text-red-600 text-xs font-mono mt-1">Comment is required</p>
+                    <p class="mt-1 text-xs font-mono text-feedback-red">Comment is required</p>
                   }
                 </div>
-                
+
                 <div class="flex justify-end">
-                  <button 
+                  <button
                     type="submit"
                     [disabled]="commentForm.invalid || submittingComment()"
-                    class="bg-amber-800 text-amber-100 px-6 py-2 font-mono text-sm uppercase tracking-wider hover:bg-amber-700 transition-colors border-2 border-amber-700 hover:border-amber-600 disabled:opacity-50 disabled:cursor-not-allowed"
+                    class="btn-primary px-6 py-2 text-sm uppercase tracking-wide disabled:cursor-not-allowed disabled:opacity-50"
                   >
                     @if (submittingComment()) {
                       Posting...
@@ -229,68 +210,67 @@ import { Post, Comment, User, Tag, CreateCommentRequest } from '../../../types/a
               </form>
             </div>
           } @else {
-            <div class="text-center mb-8">
-              <p class="text-amber-600 font-mono text-sm mb-4">
-                <a routerLink="/auth/login" class="underline hover:text-amber-800">Login</a> to join the discussion
+            <div class="mb-8 text-center">
+              <p class="text-sm font-mono text-text-secondary">
+                <a routerLink="/auth/login" class="font-semibold text-brand-blue hover:text-brand-blue/80">Login</a> to join the discussion
               </p>
             </div>
           }
 
-          <!-- Comments List -->
           @if (loadingComments()) {
-            <div class="text-center py-8">
-              <div class="inline-flex items-center gap-3 text-amber-700 font-mono text-sm">
-                <div class="w-5 h-5 border-2 border-amber-700 border-t-transparent rounded-full animate-spin"></div>
+            <div class="py-8 text-center">
+              <div class="inline-flex items-center gap-3 font-mono text-sm text-brand-blue">
+                <div class="h-5 w-5 animate-spin rounded-full border-2 border-brand-blue border-t-transparent"></div>
                 Loading comments...
               </div>
             </div>
           } @else if (comments().length === 0) {
-            <div class="text-center py-12">
-              <div class="inline-block border-2 border-dotted border-amber-300 p-6">
-                <div class="text-amber-600 font-mono text-sm mb-2">NO COMMENTS YET</div>
-                <p class="text-amber-700">Be the first to share your thoughts!</p>
+            <div class="py-12 text-center">
+              <div class="inline-block rounded-2xl border border-ui-border bg-ui-background px-6 py-8">
+                <div class="mb-2 font-mono text-sm uppercase tracking-wide text-text-secondary">No comments yet</div>
+                <p class="text-text-secondary">Be the first to share your thoughts!</p>
               </div>
             </div>
           } @else {
             <div class="space-y-6">
               @for (comment of comments(); track comment._id) {
-                <div class="bg-amber-50 border-l-4 border-amber-400 p-6">
+                <div class="rounded-2xl border border-ui-border bg-ui-background p-6">
                   <div class="flex items-start gap-4">
                     @if (getCommentAuthor(comment)?.avatarUrl) {
-                      <img 
-                        [src]="getCommentAuthor(comment)?.avatarUrl" 
+                      <img
+                        [src]="getCommentAuthor(comment)?.avatarUrl"
                         [alt]="getCommentAuthor(comment)?.name"
-                        class="w-10 h-10 rounded-full border-2 border-amber-300"
+                        class="h-10 w-10 rounded-full border border-ui-border object-cover"
                       >
                     } @else {
-                      <div class="w-10 h-10 bg-amber-200 border-2 border-amber-300 rounded-full flex items-center justify-center font-bold text-amber-800 text-sm">
+                      <div class="flex h-10 w-10 items-center justify-center rounded-full border border-ui-border bg-ui-surface text-sm font-semibold text-text-primary">
                         {{ getCommentAuthorInitials(comment) }}
                       </div>
                     }
-                    
+
                     <div class="flex-1">
-                      <div class="flex items-center gap-3 mb-2">
-                        <span class="font-bold text-amber-900">{{ getCommentAuthor(comment)?.name || 'Anonymous' }}</span>
-                        <span class="text-xs font-mono text-amber-600">{{ formatDate(comment.createdAt) }}</span>
+                      <div class="mb-2 flex items-center gap-3">
+                        <span class="font-semibold text-text-primary">{{ getCommentAuthor(comment)?.name || 'Anonymous' }}</span>
+                        <span class="text-xs font-mono text-text-secondary/80">{{ formatDate(comment.createdAt) }}</span>
                         @if (comment.isEdited) {
-                          <span class="text-xs font-mono text-amber-500">(edited)</span>
+                          <span class="text-xs font-mono text-text-secondary/70">(edited)</span>
                         }
                       </div>
-                      
-                      <p class="text-amber-800 leading-relaxed mb-3">{{ comment.content }}</p>
-                      
-                      <div class="flex items-center gap-4 text-xs font-mono text-amber-600">
-                        <button 
+
+                      <p class="mb-3 leading-relaxed text-text-secondary">{{ comment.content }}</p>
+
+                      <div class="flex items-center gap-4 text-xs font-mono text-text-secondary">
+                        <button
                           (click)="toggleCommentLike(comment._id)"
                           [disabled]="!isAuthenticated()"
-                          class="hover:text-amber-800 transition-colors disabled:cursor-not-allowed"
+                          class="inline-flex items-center gap-1 text-text-secondary transition-colors hover:text-brand-blue disabled:cursor-not-allowed"
                         >
-                          <svg class="w-4 h-4 inline mr-1" fill="currentColor" viewBox="0 0 20 20">
+                          <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
                             <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"></path>
                           </svg>
                           {{ comment.likeCount || 0 }}
                         </button>
-                        
+
                         @if (comment.replies && comment.replies.length > 0) {
                           <span>{{ comment.replies.length }} replies</span>
                         }
@@ -319,73 +299,6 @@ import { Post, Comment, User, Tag, CreateCommentRequest } from '../../../types/a
       -webkit-box-orient: vertical;
       overflow: hidden;
     }
-
-    /* Custom prose styles for content */
-    .prose {
-      font-family: 'Georgia', serif;
-    }
-
-    .prose h1, .prose h2, .prose h3, .prose h4, .prose h5, .prose h6 {
-      font-family: 'Georgia', serif;
-      font-weight: 700;
-      color: #92400e;
-      margin-top: 2em;
-      margin-bottom: 1em;
-    }
-
-    .prose p {
-      margin-bottom: 1.5em;
-      line-height: 1.8;
-    }
-
-    .prose blockquote {
-      border-left: 4px solid #d97706;
-      background: #fef3cd;
-      padding: 1rem 1.5rem;
-      margin: 2rem 0;
-      font-style: italic;
-    }
-
-    .prose code {
-      background: #fef3cd;
-      padding: 0.25rem 0.5rem;
-      border-radius: 0.25rem;
-      font-family: 'Monaco', monospace;
-      font-size: 0.875em;
-    }
-
-    .prose pre {
-      background: #92400e;
-      color: #fef3cd;
-      padding: 1.5rem;
-      overflow-x: auto;
-      margin: 2rem 0;
-    }
-
-    .prose a {
-      color: #b45309;
-      text-decoration: underline;
-    }
-
-    .prose a:hover {
-      color: #92400e;
-    }
-
-    .prose ul, .prose ol {
-      padding-left: 2rem;
-      margin-bottom: 1.5em;
-    }
-
-    .prose li {
-      margin-bottom: 0.5em;
-    }
-
-    /* Vintage paper texture */
-    article {
-      background-image: 
-        radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.02) 0%, transparent 50%),
-        radial-gradient(circle at 80% 20%, rgba(255, 200, 124, 0.02) 0%, transparent 50%);
-    }
   `]
 })
 export class PostDetailComponent implements OnInit {
@@ -411,17 +324,17 @@ export class PostDetailComponent implements OnInit {
 
   // Computed values
   likeButtonClass = computed(() => {
-    const baseClass = "inline-flex items-center px-4 py-2 font-mono text-sm transition-colors border";
-    return this.isLiked() 
-      ? `${baseClass} bg-red-100 text-red-800 border-red-300 hover:bg-red-200 hover:border-red-400`
-      : `${baseClass} bg-amber-100 text-amber-800 border-amber-300 hover:bg-amber-200 hover:border-amber-400`;
+    const baseClass = 'btn-secondary inline-flex items-center gap-2 text-sm disabled:cursor-not-allowed disabled:opacity-50';
+    return this.isLiked()
+      ? `${baseClass} border-feedback-red text-feedback-red bg-feedback-red/10 hover:bg-feedback-red/20`
+      : baseClass;
   });
 
   bookmarkButtonClass = computed(() => {
-    const baseClass = "inline-flex items-center px-4 py-2 font-mono text-sm transition-colors border";
-    return this.isBookmarked() 
-      ? `${baseClass} bg-blue-100 text-blue-800 border-blue-300 hover:bg-blue-200 hover:border-blue-400`
-      : `${baseClass} bg-amber-100 text-amber-800 border-amber-300 hover:bg-amber-200 hover:border-amber-400`;
+    const baseClass = 'btn-secondary inline-flex items-center gap-2 text-sm disabled:cursor-not-allowed disabled:opacity-50';
+    return this.isBookmarked()
+      ? `${baseClass} border-brand-blue text-brand-blue bg-brand-blue/10 hover:bg-brand-blue/20`
+      : baseClass;
   });
 
   async ngOnInit() {

@@ -17,15 +17,15 @@ interface SearchResults {
   standalone: true,
   imports: [CommonModule, RouterLink, ReactiveFormsModule],
   template: `
-    <div class="min-h-screen bg-gradient-to-b from-amber-25 to-orange-25">
+    <div class="min-h-screen">
       <!-- Search Header -->
-      <header class="bg-amber-100 border-4 border-amber-800 p-8 mb-12">
-        <div class="text-center border-2 border-dotted border-amber-700 p-6">
-          <div class="inline-block bg-amber-800 text-amber-100 px-4 py-1 text-xs font-mono uppercase tracking-widest mb-4">
+      <header class="mb-12 rounded-2xl border border-ui-border bg-ui-surface p-8 shadow-sm">
+        <div class="text-center">
+          <div class="mb-4 inline-flex items-center rounded-full bg-brand-blue/10 px-4 py-1 text-xs font-mono uppercase tracking-[0.35em] text-brand-blue">
             Search Results
           </div>
           
-          <h1 class="font-serif text-3xl md:text-4xl font-bold text-amber-900 mb-4">
+          <h1 class="mb-4 text-3xl font-semibold text-text-primary md:text-4xl">
             @if (searchQuery()) {
               Results for "{{ searchQuery() }}"
             } @else {
@@ -34,7 +34,7 @@ interface SearchResults {
           </h1>
           
           @if (searchQuery() && !loading()) {
-            <p class="text-amber-700 text-lg font-mono mb-6">
+            <p class="mb-6 font-mono text-lg text-text-secondary">
               Found {{ totalResults() }} result{{ totalResults() === 1 ? '' : 's' }} 
               @if (searchTime()) {
                 in {{ searchTime() }}ms
@@ -43,22 +43,22 @@ interface SearchResults {
           }
           
           <!-- Search Bar -->
-          <div class="max-w-2xl mx-auto">
+          <div class="mx-auto max-w-2xl">
             <div class="relative">
               <input
                 [formControl]="searchControl"
                 type="text"
                 placeholder="Search articles, authors, or topics..."
-                class="w-full px-6 py-4 pl-12 text-lg border-4 border-amber-300 focus:border-amber-600 focus:outline-none bg-white font-mono text-amber-900 placeholder-amber-400"
+                class="w-full rounded-xl border-2 border-ui-border bg-white px-6 py-4 pl-12 font-mono text-lg text-text-primary placeholder-text-secondary/50 transition-colors focus:border-brand-blue focus:outline-none"
               />
-              <svg class="absolute left-4 top-1/2 transform -translate-y-1/2 w-6 h-6 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg class="absolute left-4 top-1/2 h-6 w-6 -translate-y-1/2 text-text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
               </svg>
               
               @if (searchQuery()) {
                 <button
                   (click)="clearSearch()"
-                  class="absolute right-4 top-1/2 transform -translate-y-1/2 text-amber-600 hover:text-amber-800 transition-colors"
+                  class="absolute right-4 top-1/2 -translate-y-1/2 text-text-secondary transition-colors hover:text-text-primary"
                 >
                   <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
                     <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
@@ -72,32 +72,32 @@ interface SearchResults {
 
       @if (loading()) {
         <!-- Loading State -->
-        <div class="flex justify-center items-center py-16">
-          <div class="inline-flex items-center gap-3 text-amber-700 font-mono text-lg">
-            <div class="w-8 h-8 border-2 border-amber-700 border-t-transparent rounded-full animate-spin"></div>
+        <div class="flex items-center justify-center py-16">
+          <div class="inline-flex items-center gap-3 font-mono text-lg text-brand-blue">
+            <div class="h-8 w-8 animate-spin rounded-full border-2 border-brand-blue border-t-transparent"></div>
             Searching...
           </div>
         </div>
       } @else if (!searchQuery()) {
         <!-- Empty State - No Search -->
         <section class="mb-12">
-          <div class="text-center py-16">
-            <div class="inline-block border-4 border-amber-300 p-12 bg-amber-100">
-              <div class="text-6xl mb-6">🔍</div>
-              <h2 class="font-serif text-2xl font-bold text-amber-900 mb-4">Discover MyBlog</h2>
-              <p class="text-amber-700 mb-8 max-w-lg mx-auto">
+          <div class="py-16 text-center">
+            <div class="inline-block rounded-2xl border border-ui-border bg-ui-surface p-12">
+              <div class="mb-6 text-6xl">🔍</div>
+              <h2 class="mb-4 text-2xl font-semibold text-text-primary">Discover MyBlog</h2>
+              <p class="mx-auto mb-8 max-w-lg text-text-secondary">
                 Search through our collection of articles, discover new authors, and explore topics that interest you.
               </p>
               
               <!-- Popular Searches -->
               @if (popularTags().length > 0) {
                 <div class="mb-8">
-                  <h3 class="font-mono text-sm font-bold text-amber-800 mb-4">Popular Topics</h3>
-                  <div class="flex flex-wrap gap-3 justify-center">
+                  <h3 class="mb-4 text-sm font-mono font-bold text-text-primary">Popular Topics</h3>
+                  <div class="flex flex-wrap justify-center gap-3">
                     @for (tag of popularTags().slice(0, 8); track tag._id) {
                       <button
                         (click)="searchForTag(tag.name)"
-                        class="inline-block bg-amber-200 text-amber-800 px-4 py-2 font-mono text-sm hover:bg-amber-300 transition-colors border border-amber-400"
+                        class="btn-pill font-mono uppercase tracking-wide"
                       >
                         {{ tag.name }} ({{ tag.postCount }})
                       </button>
@@ -106,16 +106,16 @@ interface SearchResults {
                 </div>
               }
               
-              <div class="flex justify-center gap-4">
+              <div class="flex flex-wrap justify-center gap-4">
                 <a
                   routerLink="/archive"
-                  class="inline-block bg-amber-800 text-amber-100 px-6 py-3 font-mono text-sm uppercase tracking-wider hover:bg-amber-700 transition-colors border-2 border-amber-700"
+                  class="btn-primary"
                 >
                   Browse All Articles
                 </a>
                 <a
                   routerLink="/write"
-                  class="inline-block bg-amber-200 text-amber-900 px-6 py-3 font-mono text-sm uppercase tracking-wider hover:bg-amber-300 transition-colors border-2 border-amber-400"
+                  class="btn-secondary"
                 >
                   Write Article
                 </a>
@@ -126,23 +126,23 @@ interface SearchResults {
       } @else if (totalResults() === 0) {
         <!-- Empty State - No Results -->
         <section class="mb-12">
-          <div class="text-center py-16">
-            <div class="inline-block border-4 border-amber-300 p-12 bg-amber-100">
-              <div class="text-6xl mb-6">🔍</div>
-              <h2 class="font-serif text-2xl font-bold text-amber-900 mb-4">No Results Found</h2>
-              <p class="text-amber-700 mb-8 max-w-lg mx-auto">
+          <div class="py-16 text-center">
+            <div class="inline-block rounded-2xl border border-ui-border bg-ui-surface p-12">
+              <div class="mb-6 text-6xl">🔍</div>
+              <h2 class="mb-4 text-2xl font-semibold text-text-primary">No Results Found</h2>
+              <p class="mx-auto mb-8 max-w-lg text-text-secondary">
                 We couldn't find anything matching <strong>"{{ searchQuery() }}"</strong>. 
                 Try different keywords or browse our popular topics below.
               </p>
               
               @if (popularTags().length > 0) {
                 <div class="mb-8">
-                  <h3 class="font-mono text-sm font-bold text-amber-800 mb-4">Try These Topics</h3>
-                  <div class="flex flex-wrap gap-3 justify-center">
+                  <h3 class="mb-4 text-sm font-mono font-bold text-text-primary">Try These Topics</h3>
+                  <div class="flex flex-wrap justify-center gap-3">
                     @for (tag of popularTags().slice(0, 6); track tag._id) {
                       <button
                         (click)="searchForTag(tag.name)"
-                        class="inline-block bg-amber-200 text-amber-800 px-4 py-2 font-mono text-sm hover:bg-amber-300 transition-colors border border-amber-400"
+                        class="btn-pill font-mono uppercase tracking-wide"
                       >
                         {{ tag.name }}
                       </button>
@@ -153,7 +153,7 @@ interface SearchResults {
               
               <button
                 (click)="clearSearch()"
-                class="bg-amber-600 text-amber-100 px-6 py-3 font-mono text-sm uppercase tracking-wider hover:bg-amber-500 transition-colors border-2 border-amber-500"
+                class="btn-primary"
               >
                 New Search
               </button>
@@ -165,8 +165,8 @@ interface SearchResults {
         <div class="space-y-12">
           
           <!-- Results Filter Tabs -->
-          <section class="bg-amber-50 border-4 border-amber-300 p-6">
-            <div class="flex flex-wrap items-center gap-4 justify-center">
+          <section class="rounded-xl border border-ui-border bg-ui-surface p-6 shadow-sm">
+            <div class="flex flex-wrap items-center justify-center gap-4">
               <button
                 (click)="setActiveTab('all')"
                 [class]="getTabClass('all')"
@@ -206,54 +206,54 @@ interface SearchResults {
           <!-- Articles Results -->
           @if ((activeTab() === 'all' || activeTab() === 'posts') && searchResults().posts.length > 0) {
             <section>
-              <div class="flex items-center justify-between mb-6">
-                <h2 class="font-serif text-2xl font-bold text-amber-900 border-b-2 border-dotted border-amber-400 pb-2">
+              <div class="mb-6 flex items-center justify-between">
+                <h2 class="border-b-2 border-brand-blue pb-2 text-2xl font-semibold text-text-primary">
                   Articles
                 </h2>
                 @if (activeTab() === 'all' && searchResults().posts.length > 3) {
                   <button
                     (click)="setActiveTab('posts')"
-                    class="text-amber-600 hover:text-amber-800 font-mono text-sm underline"
+                    class="font-mono text-sm text-brand-blue underline hover:text-brand-blue/80"
                   >
                     View all {{ searchResults().posts.length }} articles →
                   </button>
                 }
               </div>
               
-              <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
                 @for (post of getDisplayedPosts(); track post._id) {
-                  <article class="bg-amber-50 border-2 border-amber-200 hover:border-amber-400 hover:shadow-lg transition-all duration-300 group">
+                  <article class="blog-card group">
                     @if (post.coverImage) {
                       <img 
                         [src]="post.coverImage" 
                         [alt]="post.title"
-                        class="w-full h-48 object-cover border-b-2 border-amber-200 group-hover:sepia-[20%] transition-all"
+                        class="h-48 w-full border-b border-ui-border object-cover transition-all group-hover:opacity-90"
                       >
                     }
                     
                     <div class="p-6">
-                      <h3 class="font-serif text-xl font-bold text-amber-900 mb-3 leading-tight">
+                      <h3 class="mb-3 text-xl font-semibold leading-tight text-text-primary">
                         <a 
                           [routerLink]="['/post', post.slug]"
-                          class="hover:text-amber-700 transition-colors"
+                          class="transition-colors hover:text-brand-blue"
                           [innerHTML]="highlightSearchTerm(post.title)"
                         ></a>
                       </h3>
                       
                       @if (post.excerpt) {
                         <p 
-                          class="text-amber-700 text-sm mb-4 leading-relaxed line-clamp-3"
+                          class="mb-4 line-clamp-3 text-sm leading-relaxed text-text-secondary"
                           [innerHTML]="highlightSearchTerm(post.excerpt)"
                         ></p>
                       }
                       
                       <!-- Tags -->
                       @if (getPostTags(post.tags).length > 0) {
-                        <div class="flex flex-wrap gap-2 mb-4">
+                        <div class="mb-4 flex flex-wrap gap-2">
                           @for (tag of getPostTags(post.tags).slice(0, 3); track getTagId(tag)) {
                             <a 
                               [routerLink]="['/tag', getTagSlug(tag)]"
-                              class="inline-block bg-amber-200 text-amber-800 px-2 py-1 text-xs font-mono uppercase tracking-wide hover:bg-amber-300 transition-colors"
+                              class="inline-block rounded-full bg-ui-background px-3 py-1 font-mono text-xs uppercase tracking-wide text-text-primary transition-colors hover:bg-brand-blue/10 hover:text-brand-blue"
                             >
                               {{ getTagName(tag) }}
                             </a>
@@ -262,7 +262,7 @@ interface SearchResults {
                       }
                       
                       <!-- Meta -->
-                      <div class="flex items-center justify-between text-xs font-mono text-amber-600">
+                      <div class="flex items-center justify-between font-mono text-xs text-text-secondary">
                         <div class="flex items-center gap-2">
                           <span>{{ getAuthorName(post.author) }}</span>
                           <span>•</span>
@@ -280,41 +280,41 @@ interface SearchResults {
           <!-- Authors Results -->
           @if ((activeTab() === 'all' || activeTab() === 'users') && searchResults().users.length > 0) {
             <section>
-              <div class="flex items-center justify-between mb-6">
-                <h2 class="font-serif text-2xl font-bold text-amber-900 border-b-2 border-dotted border-amber-400 pb-2">
+              <div class="mb-6 flex items-center justify-between">
+                <h2 class="border-b-2 border-brand-blue pb-2 text-2xl font-semibold text-text-primary">
                   Authors
                 </h2>
                 @if (activeTab() === 'all' && searchResults().users.length > 6) {
                   <button
                     (click)="setActiveTab('users')"
-                    class="text-amber-600 hover:text-amber-800 font-mono text-sm underline"
+                    class="font-mono text-sm text-brand-blue underline hover:text-brand-blue/80"
                   >
                     View all {{ searchResults().users.length }} authors →
                   </button>
                 }
               </div>
               
-              <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
                 @for (user of getDisplayedUsers(); track user._id) {
-                  <div class="bg-amber-50 border-2 border-amber-200 p-6 hover:border-amber-400 transition-colors group">
-                    <div class="flex items-center gap-4 mb-4">
+                  <div class="group rounded-xl border border-ui-border bg-ui-surface p-6 transition-all hover:border-brand-blue hover:shadow-md">
+                    <div class="mb-4 flex items-center gap-4">
                       @if (user.avatarUrl) {
                         <img 
                           [src]="user.avatarUrl" 
                           [alt]="user.name"
-                          class="w-16 h-16 rounded-full border-2 border-amber-300"
+                          class="h-16 w-16 rounded-full border-2 border-ui-border"
                         >
                       } @else {
-                        <div class="w-16 h-16 bg-amber-200 border-2 border-amber-300 rounded-full flex items-center justify-center font-bold text-amber-800 text-xl">
+                        <div class="flex h-16 w-16 items-center justify-center rounded-full border-2 border-ui-border bg-brand-blue/10 text-xl font-bold text-brand-blue">
                           {{ getUserInitials(user) }}
                         </div>
                       }
                       
                       <div class="flex-1">
-                        <h3 class="font-serif text-lg font-bold text-amber-900 mb-1">
+                        <h3 class="mb-1 text-lg font-semibold text-text-primary">
                           <a 
                             [routerLink]="['/user', user._id]"
-                            class="hover:text-amber-700 transition-colors"
+                            class="transition-colors hover:text-brand-blue"
                             [innerHTML]="highlightSearchTerm(user.name)"
                           ></a>
                         </h3>
@@ -328,7 +328,7 @@ interface SearchResults {
                           </div>
                         }
                         
-                        <div class="flex items-center gap-4 text-xs font-mono text-amber-600">
+                        <div class="flex items-center gap-4 font-mono text-xs text-text-secondary">
                           <span>{{ user.followerCount || 0 }} followers</span>
                           <span>•</span>
                           <span>{{ formatDate(user.createdAt) }}</span>
@@ -338,15 +338,15 @@ interface SearchResults {
                     
                     @if (user.bio) {
                       <p 
-                        class="text-amber-700 text-sm leading-relaxed line-clamp-2 mb-4"
+                        class="mb-4 line-clamp-2 text-sm leading-relaxed text-text-secondary"
                         [innerHTML]="highlightSearchTerm(user.bio)"
                       ></p>
                     }
                     
-                    <div class="flex justify-between items-center">
+                    <div class="flex items-center justify-between">
                       <a 
                         [routerLink]="['/user', user._id]"
-                        class="text-amber-600 hover:text-amber-800 font-mono text-sm underline"
+                        class="font-mono text-sm text-brand-blue underline hover:text-brand-blue/80"
                       >
                         View Profile
                       </a>
@@ -354,7 +354,7 @@ interface SearchResults {
                       @if (isAuthenticated()) {
                         <button
                           (click)="toggleFollow(user._id)"
-                          class="bg-amber-200 text-amber-800 px-3 py-1 font-mono text-xs uppercase hover:bg-amber-300 transition-colors border border-amber-400"
+                          class="btn-pill font-mono text-xs uppercase tracking-wide"
                         >
                           Follow
                         </button>
@@ -369,14 +369,14 @@ interface SearchResults {
           <!-- Topics Results -->
           @if ((activeTab() === 'all' || activeTab() === 'tags') && searchResults().tags.length > 0) {
             <section>
-              <div class="flex items-center justify-between mb-6">
-                <h2 class="font-serif text-2xl font-bold text-amber-900 border-b-2 border-dotted border-amber-400 pb-2">
+              <div class="mb-6 flex items-center justify-between">
+                <h2 class="border-b-2 border-brand-blue pb-2 text-2xl font-semibold text-text-primary">
                   Topics
                 </h2>
                 @if (activeTab() === 'all' && searchResults().tags.length > 12) {
                   <button
                     (click)="setActiveTab('tags')"
-                    class="text-amber-600 hover:text-amber-800 font-mono text-sm underline"
+                    class="font-mono text-sm text-brand-blue underline hover:text-brand-blue/80"
                   >
                     View all {{ searchResults().tags.length }} topics →
                   </button>
@@ -387,16 +387,16 @@ interface SearchResults {
                 @for (tag of getDisplayedTags(); track tag._id) {
                   <a 
                     [routerLink]="['/tag', tag.slug]"
-                    class="inline-block bg-amber-200 text-amber-800 px-6 py-3 font-mono text-sm hover:bg-amber-300 transition-colors border-2 border-amber-400 hover:border-amber-500 group"
-                    [style.background-color]="tag.color ? tag.color + '40' : undefined"
+                    class="group inline-block rounded-full border-2 border-ui-border bg-ui-surface px-6 py-3 font-mono text-sm transition-all hover:border-brand-blue hover:bg-brand-blue/5"
+                    [style.background-color]="tag.color ? tag.color + '08' : undefined"
                   >
                     <div class="flex items-center gap-2">
-                      <span [innerHTML]="highlightSearchTerm('#' + tag.name)"></span>
-                      <span class="text-amber-600 text-xs">({{ tag.postCount }})</span>
+                      <span class="text-text-primary" [innerHTML]="highlightSearchTerm('#' + tag.name)"></span>
+                      <span class="font-mono text-xs text-text-secondary">({{ tag.postCount }})</span>
                     </div>
                     @if (tag.description) {
                       <div 
-                        class="text-xs text-amber-700 mt-1 line-clamp-1"
+                        class="mt-1 line-clamp-1 text-xs text-text-secondary"
                         [innerHTML]="highlightSearchTerm(tag.description)"
                       ></div>
                     }
@@ -410,14 +410,14 @@ interface SearchResults {
 
       <!-- Related Searches -->
       @if (searchQuery() && totalResults() > 0 && relatedSearches().length > 0) {
-        <section class="mt-12 bg-amber-100 border-4 border-amber-800 p-6">
-          <h3 class="font-serif text-xl font-bold text-amber-900 mb-4 text-center">Related Searches</h3>
+        <section class="mt-12 rounded-2xl border border-ui-border bg-ui-surface p-6 shadow-sm">
+          <h3 class="mb-4 text-center text-xl font-semibold text-text-primary">Related Searches</h3>
           
-          <div class="flex flex-wrap gap-3 justify-center">
+          <div class="flex flex-wrap justify-center gap-3">
             @for (relatedSearch of relatedSearches(); track relatedSearch) {
               <button
                 (click)="performSearch(relatedSearch)"
-                class="inline-block bg-amber-200 text-amber-800 px-4 py-2 font-mono text-sm hover:bg-amber-300 transition-colors border border-amber-400"
+                class="btn-pill font-mono uppercase tracking-wide"
               >
                 {{ relatedSearch }}
               </button>
@@ -427,23 +427,23 @@ interface SearchResults {
       }
 
       <!-- Footer CTA -->
-      <section class="mt-12 bg-amber-50 border-4 border-amber-300 p-6 text-center">
-        <div class="border-2 border-dotted border-amber-400 p-6">
-          <h3 class="font-serif text-xl font-bold text-amber-900 mb-3">Can't find what you're looking for?</h3>
-          <p class="text-amber-700 mb-6">
+      <section class="mt-12 rounded-2xl border border-ui-border bg-ui-surface p-6 text-center shadow-sm">
+        <div class="p-6">
+          <h3 class="mb-3 text-xl font-semibold text-text-primary">Can't find what you're looking for?</h3>
+          <p class="mb-6 text-text-secondary">
             Try browsing by topic or check out our latest articles.
           </p>
-          <div class="flex justify-center gap-4">
-            <a routerLink="/archive" class="text-amber-600 hover:text-amber-800 font-mono text-sm underline">
+          <div class="flex flex-wrap justify-center gap-4">
+            <a routerLink="/archive" class="font-mono text-sm text-brand-blue underline hover:text-brand-blue/80">
               Browse All Articles
             </a>
-            <span class="text-amber-400">•</span>
-            <a routerLink="/" class="text-amber-600 hover:text-amber-800 font-mono text-sm underline">
+            <span class="text-text-secondary">•</span>
+            <a routerLink="/" class="font-mono text-sm text-brand-blue underline hover:text-brand-blue/80">
               Latest Posts
             </a>
             @if (isAuthenticated()) {
-              <span class="text-amber-400">•</span>
-              <a routerLink="/write" class="text-amber-600 hover:text-amber-800 font-mono text-sm underline">
+              <span class="text-text-secondary">•</span>
+              <a routerLink="/write" class="font-mono text-sm text-brand-blue underline hover:text-brand-blue/80">
                 Write Article
               </a>
             }
@@ -476,22 +476,16 @@ interface SearchResults {
 
     /* Highlight styling */
     ::ng-deep .search-highlight {
-      background-color: #fbbf24;
-      color: #92400e;
-      font-weight: bold;
+      background-color: rgba(32, 64, 154, 0.15);
+      color: #20409A;
+      font-weight: 600;
       padding: 0 2px;
-    }
-
-    /* Vintage paper texture */
-    article, .bg-amber-50 {
-      background-image: 
-        radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.03) 0%, transparent 50%),
-        radial-gradient(circle at 80% 20%, rgba(255, 200, 124, 0.03) 0%, transparent 50%);
+      border-radius: 2px;
     }
 
     /* Search input focus */
     input:focus {
-      box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.1);
+      box-shadow: 0 0 0 3px rgba(32, 64, 154, 0.1);
     }
   `]
 })
@@ -646,10 +640,10 @@ export class SearchComponent implements OnInit {
   }
 
   getTabClass(tab: 'all' | 'posts' | 'users' | 'tags'): string {
-    const baseClass = "px-4 py-2 font-mono text-sm border-2 transition-colors";
+    const baseClass = "px-4 py-2 font-mono text-sm rounded-lg transition-all";
     return this.activeTab() === tab
-      ? `${baseClass} bg-amber-800 text-amber-100 border-amber-700`
-      : `${baseClass} bg-amber-100 text-amber-900 border-amber-300 hover:bg-amber-200 hover:border-amber-400`;
+      ? `${baseClass} bg-brand-blue text-white`
+      : `${baseClass} bg-ui-background text-text-primary hover:bg-brand-blue/10 hover:text-brand-blue`;
   }
 
   highlightSearchTerm(text: string): string {
