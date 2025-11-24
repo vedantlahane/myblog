@@ -8,7 +8,6 @@ const cors_1 = __importDefault(require("cors"));
 const helmet_1 = __importDefault(require("helmet"));
 const morgan_1 = __importDefault(require("morgan"));
 const compression_1 = __importDefault(require("compression"));
-const express_mongo_sanitize_1 = __importDefault(require("express-mongo-sanitize"));
 const database_1 = require("./config/database");
 const env_1 = require("./config/env");
 const error_1 = require("./middleware/error");
@@ -30,6 +29,10 @@ const app = (0, express_1.default)();
 // Connect to MongoDB
 (0, database_1.connectDB)();
 // Middleware
+//helmet is a middleware that helps to secure Express apps by setting various HTTP headers
+// It helps to protect against common vulnerabilities like clickjacking, cross-site scripting (XSS), and other attacks
+// It sets various HTTP headers to help protect the app from well-known web vulnerabilities
+// It is a collection of smaller middleware functions that set security-related HTTP headers
 app.use((0, helmet_1.default)());
 app.use((0, cors_1.default)({
     origin: env_1.config.clientUrl,
@@ -38,7 +41,6 @@ app.use((0, cors_1.default)({
 app.use((0, compression_1.default)());
 app.use(express_1.default.json({ limit: '10mb' }));
 app.use(express_1.default.urlencoded({ extended: true, limit: '10mb' }));
-app.use((0, express_mongo_sanitize_1.default)());
 // Logging
 if (env_1.config.nodeEnv === 'development') {
     app.use((0, morgan_1.default)('dev'));
@@ -63,6 +65,19 @@ app.use('/api/media', media_routes_1.default);
 app.use('/api/drafts', draft_routes_1.default);
 app.use('/api/bookmarks', bookmark_routes_1.default);
 app.use('/api/collections', collection_routes_1.default);
+// Root route
+app.get('/', (_req, res) => {
+    res.json({
+        message: 'Blog API Server',
+        version: '1.0.0',
+        endpoints: {
+            health: '/health',
+            auth: '/api/auth',
+            posts: '/api/posts',
+            users: '/api/users'
+        }
+    });
+});
 // Health check
 app.get('/health', (_req, res) => {
     res.json({ status: 'OK', timestamp: new Date().toISOString() });

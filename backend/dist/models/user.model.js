@@ -39,6 +39,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.User = void 0;
 const mongoose_1 = __importStar(require("mongoose"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
+// Mongoose schema for User, this defines the structure of the user document in the database, including field types, validation rules, and default values, it also includes indexes for better query performance and middleware for password hashing
 const userSchema = new mongoose_1.Schema({
     name: {
         type: String,
@@ -95,6 +96,7 @@ userSchema.index({ createdAt: -1 });
 userSchema.index({ email: 1, isVerified: 1 });
 userSchema.index({ isAdmin: 1, isVerified: 1 });
 // Configure virtuals to appear in JSON
+// virtuals are properties that are not stored in the database but can be computed from the document's data, here we are using virtuals to get the ollower and following counts, .set method is used to configure the schema to include virtuals when converting to JSON or an object
 userSchema.set('toJSON', { virtuals: true });
 userSchema.set('toObject', { virtuals: true });
 // Password hashing middleware
@@ -129,6 +131,7 @@ userSchema.statics.findByEmail = async function (email) {
     return this.findOne({ email: email.toLowerCase() });
 };
 // Virtual for follower count
+// so here we are creating virtual properties for the number of followers and following, these 
 userSchema.virtual('followerCount').get(function () {
     return this.followers?.length || 0;
 });

@@ -9,6 +9,7 @@ const auth_1 = require("../middleware/auth");
 const router = express_1.default.Router();
 router.get('/', tag_controller_1.getTags);
 router.get('/popular', tag_controller_1.getPopularTags);
+router.get('/slug/:slug', tag_controller_1.getTagBySlug);
 router.get('/:id', tag_controller_1.getTagById);
 router.get('/:id/posts', tag_controller_1.getPostsByTag);
 // Admin only

@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getPostsByTag = exports.getPopularTags = exports.deleteTag = exports.updateTag = exports.getTagById = exports.getTags = exports.createTag = void 0;
+exports.getPostsByTag = exports.getPopularTags = exports.deleteTag = exports.updateTag = exports.getTagBySlug = exports.getTagById = exports.getTags = exports.createTag = void 0;
 const tag_model_1 = require("../models/tag.model");
 const post_model_1 = require("../models/post.model");
 const mongoose_1 = require("mongoose");
@@ -59,6 +59,21 @@ const getTagById = async (req, res) => {
     }
 };
 exports.getTagById = getTagById;
+const getTagBySlug = async (req, res) => {
+    try {
+        const slug = req.params.slug;
+        const tag = await tag_model_1.Tag.findOne({ slug });
+        if (!tag) {
+            res.status(404).json({ error: 'Tag not found' });
+            return;
+        }
+        res.json(tag);
+    }
+    catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+exports.getTagBySlug = getTagBySlug;
 const updateTag = async (req, res) => {
     try {
         const { name, description } = req.body;

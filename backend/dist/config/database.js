@@ -8,17 +8,21 @@ const mongoose_1 = __importDefault(require("mongoose"));
 const connectDB = async () => {
     try {
         const conn = await mongoose_1.default.connect(process.env.MONGODB_URI, {
-        // No need for useNewUrlParser, useUnifiedTopology in mongoose 6+
-        });
-        console.log(`MongoDB Connected: ${conn.connection.host}`);
+        // ! is used in typescript to assert that the value is not null or undefined
+        }); //{} means we are passing an empty object, which means we are using default options
+        // console.log(`MongoDB Connected: ${conn.connection.host}`);
+        //conn.connection.host, here wweare using the connection object to get the host
+        console.log('MongoDB Connected');
         // Handle connection events
         mongoose_1.default.connection.on('error', (err) => {
             console.error(`MongoDB connection error: ${err}`);
         });
+        // disconnected event is emitted when the connection to the database is lost, disconnected is a built-in event in mongoose
         mongoose_1.default.connection.on('disconnected', () => {
             console.log('MongoDB disconnected');
         });
         // Graceful shutdown
+        // thsi helps to close the connection when the app is terminated to avoid memory leaks
         process.on('SIGINT', async () => {
             await mongoose_1.default.connection.close();
             console.log('MongoDB connection closed through app termination');

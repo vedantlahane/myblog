@@ -72,6 +72,17 @@ A modern full-stack blog platform for creating, managing, and sharing articles.
 
 The application will be available at `http://localhost:4200`
 
+### Seeding Sample Content
+
+Use the automated seeding script to populate demo authors, tags, categories, and posts:
+
+```bash
+cd backend
+npm run seed
+```
+
+The script connects to the MongoDB instance referenced by `MONGODB_URI`, upserts the sample documents, and safely increments tag post counts. It can be run multiple times without creating duplicates.
+
 ---
 
 *Built with ❤️ by [Vedant Lahane](https://github.com/vedantlahane)*
