@@ -9,7 +9,6 @@ import { CreatePostRequest, UpdatePostRequest, Post, Tag, Media } from '../../..
 
 @Component({
   selector: 'app-write',
-  standalone: true,
   imports: [ ReactiveFormsModule],
   template: `
     <div class="min-h-screen bg-gradient-to-b from-amber-25 to-orange-25 pb-12">
