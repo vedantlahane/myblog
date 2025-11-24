@@ -29,7 +29,7 @@ export const connectDB = async (): Promise<void> => {
       process.exit(0);
     });
   } catch (error) {
-    console.error(`Error: ${(error as Error).message}`);// error as Error is a typescript syntex to treat error as an Error object, so that we can access the messagfe property, like error.message, Error is provided by typescript and it is a class 
-    process.exit(1);// Exit process with failure status, 1 states failure
+    console.error(`Error: ${(error as Error).message}`);
+    process.exit(1);
   }
 };

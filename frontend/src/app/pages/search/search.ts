@@ -19,7 +19,7 @@ interface SearchResults {
   template: `
     <div class="min-h-screen">
       <!-- Search Header -->
-      <header class="mb-12 rounded-2xl border border-ui-border bg-ui-surface p-8 shadow-sm">
+  <header class="mb-12 rounded-2xl border border-border-default bg-surface p-8 shadow-card dark:border-border-dark dark:bg-surface-dark">
         <div class="text-center">
           <div class="mb-4 inline-flex items-center rounded-full bg-brand-blue/10 px-4 py-1 text-xs font-mono uppercase tracking-[0.35em] text-brand-blue">
             Search Results
@@ -49,7 +49,7 @@ interface SearchResults {
                 [formControl]="searchControl"
                 type="text"
                 placeholder="Search articles, authors, or topics..."
-                class="w-full rounded-xl border-2 border-ui-border bg-white px-6 py-4 pl-12 font-mono text-lg text-text-primary placeholder-text-secondary/50 transition-colors focus:border-brand-blue focus:outline-none"
+                class="w-full rounded-xl border-2 border-border-default bg-white px-6 py-4 pl-12 font-mono text-lg text-text-primary placeholder:text-text-secondary/50 transition-colors focus:border-brand-blue focus:outline-none focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-brand-blue/10 dark:border-border-dark dark:bg-surface-dark dark:text-white"
               />
               <svg class="absolute left-4 top-1/2 h-6 w-6 -translate-y-1/2 text-text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
@@ -82,7 +82,7 @@ interface SearchResults {
         <!-- Empty State - No Search -->
         <section class="mb-12">
           <div class="py-16 text-center">
-            <div class="inline-block rounded-2xl border border-ui-border bg-ui-surface p-12">
+            <div class="inline-block rounded-2xl border border-border-default bg-surface p-12 shadow-card dark:border-border-dark dark:bg-surface-dark">
               <div class="mb-6 text-6xl">🔍</div>
               <h2 class="mb-4 text-2xl font-semibold text-text-primary">Discover MyBlog</h2>
               <p class="mx-auto mb-8 max-w-lg text-text-secondary">
@@ -97,7 +97,7 @@ interface SearchResults {
                     @for (tag of popularTags().slice(0, 8); track tag._id) {
                       <button
                         (click)="searchForTag(tag.name)"
-                        class="btn-pill font-mono uppercase tracking-wide"
+                        class="inline-flex items-center gap-2 rounded-full border border-border-default bg-surface-muted px-3 py-1 font-mono text-xs uppercase tracking-[0.3em] text-text-secondary transition-colors duration-200 hover:border-brand-blue hover:text-brand-blue focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue/30 dark:border-white/10 dark:bg-white/10 dark:text-slate-200 dark:hover:border-brand-accent dark:hover:text-brand-accent"
                       >
                         {{ tag.name }} ({{ tag.postCount }})
                       </button>
@@ -109,13 +109,13 @@ interface SearchResults {
               <div class="flex flex-wrap justify-center gap-4">
                 <a
                   routerLink="/archive"
-                  class="btn-primary"
+                  class="inline-flex items-center justify-center gap-2 rounded-xl bg-brand-blue px-6 py-3 font-mono text-sm font-semibold uppercase tracking-wide text-white transition-all duration-200 hover:bg-brand-blue-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue/30"
                 >
                   Browse All Articles
                 </a>
                 <a
                   routerLink="/write"
-                  class="btn-secondary"
+                  class="inline-flex items-center justify-center gap-2 rounded-xl border border-border-default px-6 py-3 font-mono text-sm font-semibold uppercase tracking-wide text-text-secondary transition-colors duration-200 hover:border-brand-blue hover:text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue/30 dark:border-white/10 dark:text-slate-200 dark:hover:border-brand-accent dark:hover:text-white"
                 >
                   Write Article
                 </a>
@@ -127,7 +127,7 @@ interface SearchResults {
         <!-- Empty State - No Results -->
         <section class="mb-12">
           <div class="py-16 text-center">
-            <div class="inline-block rounded-2xl border border-ui-border bg-ui-surface p-12">
+            <div class="inline-block rounded-2xl border border-border-default bg-surface p-12 shadow-card dark:border-border-dark dark:bg-surface-dark">
               <div class="mb-6 text-6xl">🔍</div>
               <h2 class="mb-4 text-2xl font-semibold text-text-primary">No Results Found</h2>
               <p class="mx-auto mb-8 max-w-lg text-text-secondary">
@@ -142,7 +142,7 @@ interface SearchResults {
                     @for (tag of popularTags().slice(0, 6); track tag._id) {
                       <button
                         (click)="searchForTag(tag.name)"
-                        class="btn-pill font-mono uppercase tracking-wide"
+                        class="inline-flex items-center gap-2 rounded-full border border-border-default bg-surface-muted px-3 py-1 font-mono text-xs uppercase tracking-[0.3em] text-text-secondary transition-colors duration-200 hover:border-brand-blue hover:text-brand-blue focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue/30 dark:border-white/10 dark:bg-white/10 dark:text-slate-200 dark:hover:border-brand-accent dark:hover:text-brand-accent"
                       >
                         {{ tag.name }}
                       </button>
@@ -153,7 +153,7 @@ interface SearchResults {
               
               <button
                 (click)="clearSearch()"
-                class="btn-primary"
+                class="inline-flex items-center justify-center gap-2 rounded-xl bg-brand-blue px-6 py-3 font-mono text-sm font-semibold uppercase tracking-wide text-white transition-all duration-200 hover:bg-brand-blue-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue/30"
               >
                 New Search
               </button>
@@ -165,7 +165,7 @@ interface SearchResults {
         <div class="space-y-12">
           
           <!-- Results Filter Tabs -->
-          <section class="rounded-xl border border-ui-border bg-ui-surface p-6 shadow-sm">
+          <section class="rounded-xl border border-border-default bg-surface p-6 shadow-card dark:border-border-dark dark:bg-surface-dark">
             <div class="flex flex-wrap items-center justify-center gap-4">
               <button
                 (click)="setActiveTab('all')"
@@ -222,17 +222,17 @@ interface SearchResults {
               
               <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
                 @for (post of getDisplayedPosts(); track post._id) {
-                  <article class="blog-card group">
+                  <article class="group flex h-full flex-col overflow-hidden rounded-2xl border border-border-default bg-surface shadow-card transition-transform duration-200 ease-out hover:-translate-y-0.5 hover:shadow-card-hover focus-within:-translate-y-0.5 focus-within:shadow-card-hover dark:border-border-dark dark:bg-surface-dark">
                     @if (post.coverImage) {
                       <img 
                         [src]="post.coverImage" 
                         [alt]="post.title"
-                        class="h-48 w-full border-b border-ui-border object-cover transition-all group-hover:opacity-90"
+                        class="h-48 w-full border-b border-border-default object-cover transition-transform duration-300 ease-out group-hover:scale-105"
                       >
                     }
                     
-                    <div class="p-6">
-                      <h3 class="mb-3 text-xl font-semibold leading-tight text-text-primary">
+                    <div class="flex flex-1 flex-col gap-4 p-6">
+                      <h3 class="text-xl font-semibold leading-tight text-text-primary transition-colors duration-200 group-hover:text-brand-blue dark:text-white">
                         <a 
                           [routerLink]="['/post', post.slug]"
                           class="transition-colors hover:text-brand-blue"
@@ -242,18 +242,18 @@ interface SearchResults {
                       
                       @if (post.excerpt) {
                         <p 
-                          class="mb-4 line-clamp-3 text-sm leading-relaxed text-text-secondary"
+                          class="line-clamp-3 text-sm leading-relaxed text-text-secondary dark:text-slate-300"
                           [innerHTML]="highlightSearchTerm(post.excerpt)"
                         ></p>
                       }
                       
                       <!-- Tags -->
                       @if (getPostTags(post.tags).length > 0) {
-                        <div class="mb-4 flex flex-wrap gap-2">
+                        <div class="flex flex-wrap gap-2">
                           @for (tag of getPostTags(post.tags).slice(0, 3); track getTagId(tag)) {
                             <a 
                               [routerLink]="['/tag', getTagSlug(tag)]"
-                              class="inline-block rounded-full bg-ui-background px-3 py-1 font-mono text-xs uppercase tracking-wide text-text-primary transition-colors hover:bg-brand-blue/10 hover:text-brand-blue"
+                              class="inline-flex items-center gap-2 rounded-full border border-border-default bg-surface-muted px-3 py-1 font-mono text-xs uppercase tracking-[0.25em] text-text-secondary transition-colors duration-200 hover:border-brand-blue hover:text-brand-blue focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue/30 dark:border-white/10 dark:bg-white/10 dark:text-slate-200 dark:hover:border-brand-accent dark:hover:text-brand-accent"
                             >
                               {{ getTagName(tag) }}
                             </a>
@@ -262,7 +262,7 @@ interface SearchResults {
                       }
                       
                       <!-- Meta -->
-                      <div class="flex items-center justify-between font-mono text-xs text-text-secondary">
+                      <div class="mt-auto flex items-center justify-between font-mono text-xs uppercase tracking-[0.25em] text-text-secondary dark:text-slate-400">
                         <div class="flex items-center gap-2">
                           <span>{{ getAuthorName(post.author) }}</span>
                           <span>•</span>
@@ -296,22 +296,22 @@ interface SearchResults {
               
               <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
                 @for (user of getDisplayedUsers(); track user._id) {
-                  <div class="group rounded-xl border border-ui-border bg-ui-surface p-6 transition-all hover:border-brand-blue hover:shadow-md">
+                  <div class="group rounded-2xl border border-border-default bg-surface p-6 transition-all duration-200 hover:-translate-y-0.5 hover:border-brand-blue hover:shadow-card-hover dark:border-border-dark dark:bg-surface-dark">
                     <div class="mb-4 flex items-center gap-4">
                       @if (user.avatarUrl) {
                         <img 
                           [src]="user.avatarUrl" 
                           [alt]="user.name"
-                          class="h-16 w-16 rounded-full border-2 border-ui-border"
+                          class="h-16 w-16 rounded-full border-2 border-border-default dark:border-white/10"
                         >
                       } @else {
-                        <div class="flex h-16 w-16 items-center justify-center rounded-full border-2 border-ui-border bg-brand-blue/10 text-xl font-bold text-brand-blue">
+                        <div class="flex h-16 w-16 items-center justify-center rounded-full border-2 border-border-default bg-brand-blue/10 text-xl font-bold text-brand-blue dark:border-white/10">
                           {{ getUserInitials(user) }}
                         </div>
                       }
                       
                       <div class="flex-1">
-                        <h3 class="mb-1 text-lg font-semibold text-text-primary">
+                        <h3 class="mb-1 text-lg font-semibold text-text-primary transition-colors duration-200 group-hover:text-brand-blue dark:text-white">
                           <a 
                             [routerLink]="['/user', user._id]"
                             class="transition-colors hover:text-brand-blue"
@@ -320,15 +320,15 @@ interface SearchResults {
                         </h3>
                         
                         @if (user.isVerified) {
-                          <div class="inline-flex items-center gap-1 text-blue-600 text-xs mb-2">
-                            <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                          <div class="mb-2 inline-flex items-center gap-1 text-xs text-brand-blue">
+                            <svg class="h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
                               <path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
                             </svg>
-                            <span class="font-mono">Verified</span>
+                            <span class="font-mono uppercase tracking-[0.3em]">Verified</span>
                           </div>
                         }
                         
-                        <div class="flex items-center gap-4 font-mono text-xs text-text-secondary">
+                        <div class="flex items-center gap-4 font-mono text-xs uppercase tracking-[0.25em] text-text-secondary dark:text-slate-400">
                           <span>{{ user.followerCount || 0 }} followers</span>
                           <span>•</span>
                           <span>{{ formatDate(user.createdAt) }}</span>
@@ -338,7 +338,7 @@ interface SearchResults {
                     
                     @if (user.bio) {
                       <p 
-                        class="mb-4 line-clamp-2 text-sm leading-relaxed text-text-secondary"
+                        class="mb-4 line-clamp-2 text-sm leading-relaxed text-text-secondary dark:text-slate-300"
                         [innerHTML]="highlightSearchTerm(user.bio)"
                       ></p>
                     }
@@ -346,7 +346,7 @@ interface SearchResults {
                     <div class="flex items-center justify-between">
                       <a 
                         [routerLink]="['/user', user._id]"
-                        class="font-mono text-sm text-brand-blue underline hover:text-brand-blue/80"
+                        class="font-mono text-sm text-brand-blue underline decoration-2 underline-offset-4 transition-colors hover:text-brand-blue/80"
                       >
                         View Profile
                       </a>
@@ -354,7 +354,7 @@ interface SearchResults {
                       @if (isAuthenticated()) {
                         <button
                           (click)="toggleFollow(user._id)"
-                          class="btn-pill font-mono text-xs uppercase tracking-wide"
+                          class="inline-flex items-center gap-2 rounded-full border border-border-default bg-surface-muted px-3 py-1 font-mono text-xs uppercase tracking-[0.3em] text-text-secondary transition-colors duration-200 hover:border-brand-blue hover:text-brand-blue focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue/30 dark:border-white/10 dark:bg-white/10 dark:text-slate-200 dark:hover:border-brand-accent dark:hover:text-brand-accent"
                         >
                           Follow
                         </button>
@@ -387,7 +387,7 @@ interface SearchResults {
                 @for (tag of getDisplayedTags(); track tag._id) {
                   <a 
                     [routerLink]="['/tag', tag.slug]"
-                    class="group inline-block rounded-full border-2 border-ui-border bg-ui-surface px-6 py-3 font-mono text-sm transition-all hover:border-brand-blue hover:bg-brand-blue/5"
+                    class="group inline-block rounded-full border-2 border-border-default bg-surface px-6 py-3 font-mono text-sm transition-all duration-200 hover:border-brand-blue hover:bg-brand-blue/5 dark:border-border-dark dark:bg-surface-dark"
                     [style.background-color]="tag.color ? tag.color + '08' : undefined"
                   >
                     <div class="flex items-center gap-2">
@@ -396,7 +396,7 @@ interface SearchResults {
                     </div>
                     @if (tag.description) {
                       <div 
-                        class="mt-1 line-clamp-1 text-xs text-text-secondary"
+                        class="mt-1 line-clamp-1 text-xs text-text-secondary dark:text-slate-300"
                         [innerHTML]="highlightSearchTerm(tag.description)"
                       ></div>
                     }
@@ -410,14 +410,14 @@ interface SearchResults {
 
       <!-- Related Searches -->
       @if (searchQuery() && totalResults() > 0 && relatedSearches().length > 0) {
-        <section class="mt-12 rounded-2xl border border-ui-border bg-ui-surface p-6 shadow-sm">
+  <section class="mt-12 rounded-2xl border border-border-default bg-surface p-6 shadow-card dark:border-border-dark dark:bg-surface-dark">
           <h3 class="mb-4 text-center text-xl font-semibold text-text-primary">Related Searches</h3>
           
           <div class="flex flex-wrap justify-center gap-3">
             @for (relatedSearch of relatedSearches(); track relatedSearch) {
               <button
                 (click)="performSearch(relatedSearch)"
-                class="btn-pill font-mono uppercase tracking-wide"
+                class="inline-flex items-center gap-2 rounded-full border border-border-default bg-surface-muted px-3 py-1 font-mono text-xs uppercase tracking-[0.3em] text-text-secondary transition-colors duration-200 hover:border-brand-blue hover:text-brand-blue focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue/30 dark:border-white/10 dark:bg-white/10 dark:text-slate-200 dark:hover:border-brand-accent dark:hover:text-brand-accent"
               >
                 {{ relatedSearch }}
               </button>
@@ -427,7 +427,7 @@ interface SearchResults {
       }
 
       <!-- Footer CTA -->
-      <section class="mt-12 rounded-2xl border border-ui-border bg-ui-surface p-6 text-center shadow-sm">
+  <section class="mt-12 rounded-2xl border border-border-default bg-surface p-6 text-center shadow-card dark:border-border-dark dark:bg-surface-dark">
         <div class="p-6">
           <h3 class="mb-3 text-xl font-semibold text-text-primary">Can't find what you're looking for?</h3>
           <p class="mb-6 text-text-secondary">
@@ -451,43 +451,7 @@ interface SearchResults {
         </div>
       </section>
     </div>
-  `,
-  styles: [`
-    .line-clamp-1 {
-      display: -webkit-box;
-      -webkit-line-clamp: 1;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-    }
-
-    .line-clamp-2 {
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-    }
-
-    .line-clamp-3 {
-      display: -webkit-box;
-      -webkit-line-clamp: 3;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-    }
-
-    /* Highlight styling */
-    ::ng-deep .search-highlight {
-      background-color: rgba(32, 64, 154, 0.15);
-      color: #20409A;
-      font-weight: 600;
-      padding: 0 2px;
-      border-radius: 2px;
-    }
-
-    /* Search input focus */
-    input:focus {
-      box-shadow: 0 0 0 3px rgba(32, 64, 154, 0.1);
-    }
-  `]
+  `
 })
 export class SearchComponent implements OnInit {
   private route = inject(ActivatedRoute);
@@ -640,10 +604,10 @@ export class SearchComponent implements OnInit {
   }
 
   getTabClass(tab: 'all' | 'posts' | 'users' | 'tags'): string {
-    const baseClass = "px-4 py-2 font-mono text-sm rounded-lg transition-all";
+    const baseClass = 'inline-flex items-center gap-2 rounded-lg border border-border-default px-4 py-2 font-mono text-xs uppercase tracking-[0.25em] transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue/30 dark:border-white/10';
     return this.activeTab() === tab
-      ? `${baseClass} bg-brand-blue text-white`
-      : `${baseClass} bg-ui-background text-text-primary hover:bg-brand-blue/10 hover:text-brand-blue`;
+      ? `${baseClass} bg-brand-blue text-white shadow-card`
+      : `${baseClass} bg-surface-muted text-text-secondary hover:-translate-y-0.5 hover:border-brand-blue hover:text-brand-blue dark:bg-white/5`;
   }
 
   highlightSearchTerm(text: string): string {
@@ -651,7 +615,7 @@ export class SearchComponent implements OnInit {
     
     const query = this.searchQuery().toLowerCase();
     const regex = new RegExp(`(${query})`, 'gi');
-    return text.replace(regex, '<span class="search-highlight">$1</span>');
+    return text.replace(regex, '<mark class="rounded-sm bg-brand-blue/15 px-1 font-semibold text-brand-blue">$1</mark>');
   }
 
   // User interactions

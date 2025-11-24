@@ -3,20 +3,27 @@ import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { ApiService } from '../../services/api.service';
 import { Post, Tag, PostsResponse } from '../../../types/api';
+import { BlogCardComponent } from '../../ui/common/blog-card.component';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, BlogCardComponent],
   template: `
     <!-- Hero Section with Featured Post -->
     @if (featuredPost()) {
-      <section class="mb-12 rounded-2xl border border-ui-border bg-ui-surface p-8 shadow-sm">
-        <div class="rounded-xl border border-dashed border-ui-border/70 bg-ui-background/60 p-6">
+      <section class="mb-12 rounded-2xl border border-border-default bg-surface p-8 shadow-card dark:border-border-dark dark:bg-surface-dark">
+        <div class="rounded-xl border border-dashed border-border-default/70 bg-surface-muted/80 p-6 dark:border-white/10 dark:bg-surface-dark">
           <div class="mb-6 text-center">
             <div class="inline-flex items-center rounded-full bg-brand-blue/10 px-4 py-1 text-xs font-mono uppercase tracking-[0.35em] text-brand-blue">
               Featured Article
             </div>
+            @if (totalPosts() > 0) {
+              <div class="mt-3 inline-flex items-center gap-2 rounded-full border border-border-default/60 bg-surface px-5 py-2 text-[0.65rem] font-mono uppercase tracking-[0.4em] text-text-secondary transition-colors duration-200 dark:border-white/10 dark:bg-surface-dark">
+                <span class="inline-flex h-2 w-2 rounded-full bg-brand-blue"></span>
+                {{ totalPosts() }} Published Posts
+              </div>
+            }
           </div>
 
           <article class="space-y-6 text-center">
@@ -28,20 +35,20 @@ import { Post, Tag, PostsResponse } from '../../../types/api';
               >
             }
 
-            <h1 class="text-3xl font-semibold leading-tight text-text-primary md:text-4xl">
+            <h1 class="text-3xl font-semibold leading-tight text-text-primary transition-colors duration-200 dark:text-white md:text-4xl">
               <a
                 [routerLink]="['/post', featuredPost()?.slug]"
-                class="transition-colors hover:text-brand-blue"
+                class="transition-colors duration-200 hover:text-brand-blue"
               >
                 {{ featuredPost()?.title }}
               </a>
             </h1>
 
-            <p class="mx-auto max-w-3xl text-lg leading-relaxed text-text-secondary">
+            <p class="mx-auto max-w-3xl text-lg leading-relaxed text-text-secondary dark:text-slate-300">
               {{ featuredPost()?.excerpt }}
             </p>
 
-            <div class="flex items-center justify-center gap-4 text-sm font-mono text-text-secondary">
+            <div class="flex items-center justify-center gap-4 text-sm font-mono uppercase tracking-[0.2em] text-text-subtle dark:text-slate-400">
               <span>{{ getAuthorName(featuredPost()?.author) }}</span>
               <span aria-hidden="true">•</span>
               <span>{{ formatDate(featuredPost()?.publishedAt || featuredPost()?.createdAt) }}</span>
@@ -52,7 +59,7 @@ import { Post, Tag, PostsResponse } from '../../../types/api';
             <div class="flex justify-center">
               <a
                 [routerLink]="['/post', featuredPost()?.slug]"
-                class="btn-primary px-8 py-3 text-sm uppercase tracking-wide"
+                class="inline-flex items-center justify-center gap-2 rounded-xl bg-brand-blue px-8 py-3 text-sm font-semibold uppercase tracking-wide text-white transition-all duration-200 hover:bg-brand-blue-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue/30"
               >
                 Read Full Article
               </a>
@@ -67,7 +74,11 @@ import { Post, Tag, PostsResponse } from '../../../types/api';
       <div class="mb-8 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
         <div>
           <h2 class="text-2xl font-semibold text-text-primary">Latest Articles</h2>
-          <p class="text-sm font-mono text-text-secondary">Fresh thoughts and insights</p>
+          @if (totalPosts() > 0) {
+            <p class="text-sm font-mono text-text-secondary">{{ totalPosts() }} published posts and counting</p>
+          } @else {
+            <p class="text-sm font-mono text-text-secondary">Fresh thoughts and insights</p>
+          }
         </div>
 
         <a
@@ -81,81 +92,27 @@ import { Post, Tag, PostsResponse } from '../../../types/api';
       @if (loading()) {
         <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
           @for (i of [1,2,3,4,5,6]; track i) {
-            <div class="animate-pulse rounded-xl border border-ui-border bg-ui-surface p-6">
-              <div class="mb-4 h-40 rounded-lg bg-ui-border/50"></div>
-              <div class="mb-2 h-4 rounded bg-ui-border/40"></div>
-              <div class="mb-2 h-3 rounded bg-ui-border/40"></div>
-              <div class="h-3 w-2/3 rounded bg-ui-border/40"></div>
+            <div class="animate-pulse rounded-xl border border-border-default bg-surface p-6 dark:border-border-dark dark:bg-surface-dark">
+              <div class="mb-4 h-40 rounded-lg bg-border-default/40 dark:bg-white/10"></div>
+              <div class="mb-2 h-4 rounded bg-border-default/30 dark:bg-white/10"></div>
+              <div class="mb-2 h-3 rounded bg-border-default/30 dark:bg-white/10"></div>
+              <div class="h-3 w-2/3 rounded bg-border-default/30 dark:bg-white/10"></div>
             </div>
           }
         </div>
       } @else if (latestPosts().length === 0) {
-        <div class="rounded-2xl border border-dashed border-ui-border p-12 text-center">
-          <div class="mb-2 text-sm font-mono uppercase tracking-widest text-text-secondary">No articles yet</div>
-          <p class="text-text-secondary">The first article is coming soon!</p>
+        <div class="rounded-2xl border border-dashed border-border-default p-12 text-center dark:border-white/10">
+          <div class="mb-2 text-sm font-mono uppercase tracking-[0.3em] text-text-subtle dark:text-slate-400">No articles yet</div>
+          <p class="text-text-secondary dark:text-slate-300">The first article is coming soon!</p>
         </div>
       } @else {
         <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
           @for (post of latestPosts(); track post._id) {
-            <article class="blog-card group transition-shadow duration-200 hover:shadow-md focus-within:shadow-md">
-              @if (post.coverImage) {
-                <div class="blog-card__media">
-                  <img
-                    [src]="post.coverImage"
-                    [alt]="post.title"
-                  >
-                </div>
-              }
-
-              <div class="blog-card__content">
-                <h3 class="text-xl font-semibold leading-tight text-text-primary">
-                  <a
-                    [routerLink]="['/post', post.slug]"
-                    class="transition-colors hover:text-brand-blue"
-                  >
-                    {{ post.title }}
-                  </a>
-                </h3>
-
-                @if (post.excerpt) {
-                  <p class="line-clamp-3 text-sm leading-relaxed text-text-secondary">
-                    {{ post.excerpt }}
-                  </p>
-                }
-
-                @if (getPostTags(post.tags).length > 0) {
-                  <div class="flex flex-wrap gap-2">
-                    @for (tag of getPostTags(post.tags).slice(0, 3); track tag._id || tag) {
-                      <a
-                        [routerLink]="['/tag', getTagSlug(tag)]"
-                        class="btn-pill font-mono uppercase tracking-wide"
-                      >
-                        {{ getTagName(tag) }}
-                      </a>
-                    }
-                  </div>
-                }
-
-                <div class="flex items-center justify-between text-xs font-mono text-text-secondary">
-                  <div class="flex items-center gap-2">
-                    <span>{{ getAuthorName(post.author) }}</span>
-                    <span aria-hidden="true">•</span>
-                    <span>{{ formatDate(post.publishedAt || post.createdAt) }}</span>
-                  </div>
-
-                  <div class="flex items-center gap-3">
-                    <span>{{ post.readingTime || calculateReadingTime(post.content) }} min</span>
-                    <span aria-hidden="true">•</span>
-                    <div class="flex items-center gap-1 text-brand-blue">
-                      <svg class="h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"></path>
-                      </svg>
-                      <span>{{ post.likeCount || 0 }}</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </article>
+            <app-blog-card
+              [post]="post"
+              [showEngagement]="true"
+              [priorityImage]="false"
+            ></app-blog-card>
           }
         </div>
 
@@ -164,7 +121,7 @@ import { Post, Tag, PostsResponse } from '../../../types/api';
             <button
               (click)="loadMore()"
               [disabled]="loadingMore()"
-              class="btn-secondary inline-flex px-8 py-3 text-sm uppercase tracking-wide disabled:cursor-not-allowed disabled:opacity-50"
+              class="inline-flex items-center justify-center gap-2 rounded-xl border border-border-default px-8 py-3 text-sm font-semibold uppercase tracking-wide text-text-secondary transition-colors duration-200 hover:border-brand-blue hover:text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue/30 disabled:cursor-not-allowed disabled:opacity-50 dark:border-white/10 dark:text-slate-200 dark:hover:border-brand-accent dark:hover:text-white"
             >
               @if (loadingMore()) {
                 Loading More...
@@ -179,7 +136,7 @@ import { Post, Tag, PostsResponse } from '../../../types/api';
 
     <!-- Popular Tags Sidebar -->
     <aside class="mb-12">
-      <div class="rounded-2xl border border-ui-border bg-ui-surface p-6 text-center shadow-sm">
+      <div class="rounded-2xl border border-border-default bg-surface p-6 text-center shadow-card dark:border-border-dark dark:bg-surface-dark">
         <h3 class="mb-4 text-xl font-semibold text-text-primary">Popular Topics</h3>
 
         @if (popularTags().length > 0) {
@@ -187,7 +144,7 @@ import { Post, Tag, PostsResponse } from '../../../types/api';
             @for (tag of popularTags(); track tag._id) {
               <a
                 [routerLink]="['/tag', tag.slug]"
-                class="btn-pill font-mono uppercase tracking-wide"
+                class="inline-flex items-center gap-2 rounded-full border border-border-default bg-surface-muted px-3 py-1 text-xs font-mono uppercase tracking-[0.3em] text-text-secondary transition-colors duration-200 hover:border-brand-blue hover:text-brand-blue focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue/30 dark:border-white/10 dark:bg-white/10 dark:text-slate-200 dark:hover:border-brand-accent dark:hover:text-brand-accent"
               >
                 {{ tag.name }} ({{ tag.postCount }})
               </a>
@@ -209,7 +166,7 @@ import { Post, Tag, PostsResponse } from '../../../types/api';
             </p>
             <a
               routerLink="/auth/register"
-              class="btn-primary px-8 py-3 text-sm uppercase tracking-wide"
+              class="inline-flex items-center justify-center gap-2 rounded-xl bg-white px-8 py-3 text-sm font-semibold uppercase tracking-wide text-brand-navy transition-all duration-200 hover:bg-white/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40"
             >
               Join MyBlog
             </a>
@@ -218,14 +175,6 @@ import { Post, Tag, PostsResponse } from '../../../types/api';
       </section>
     }
   `,
-  styles: [`
-    .line-clamp-3 {
-      display: -webkit-box;
-      -webkit-line-clamp: 3;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-    }
-  `]
 })
 export class HomeComponent implements OnInit {
   private apiService = inject(ApiService);
@@ -238,6 +187,7 @@ export class HomeComponent implements OnInit {
   popularTags = signal<Tag[]>([]);
   currentPage = signal(1);
   totalPages = signal(1);
+  totalPosts = signal(0);
   
   // Computed values
   latestPosts = computed(() => 
@@ -257,16 +207,18 @@ export class HomeComponent implements OnInit {
     try {
       this.loading.set(true);
       const response = await this.apiService.getPosts({
-          status: 'published',
-          limit: 12,
-          page: 1,
-          sort: '-publishedAt',
-          dateTo: '',
-          dateFrom: ''
+        status: 'published',
+        limit: 12,
+        page: 1,
+        sort: '-publishedAt',
+        dateTo: '',
+        dateFrom: ''
       });
       
-      this.posts.set(response.posts || response.data || []);
+      const posts = response.posts || response.data || [];
+      this.posts.set(posts);
       this.totalPages.set(response.totalPages || 1);
+      this.totalPosts.set(response.totalPosts || posts.length);
       
       // Set featured post (first post)
       if (this.posts().length > 0) {
@@ -310,6 +262,7 @@ export class HomeComponent implements OnInit {
       const newPosts = response.posts || response.data || [];
       this.posts.update(current => [...current, ...newPosts]);
       this.currentPage.set(nextPage);
+      this.totalPosts.set(response.totalPosts || this.posts().length);
       
     } catch (error) {
       console.error('Failed to load more posts:', error);

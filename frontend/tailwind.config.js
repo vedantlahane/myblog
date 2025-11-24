@@ -18,13 +18,23 @@ module.exports = {
       colors: {
         "brand-navy": "#10162F",
         "brand-blue": "#20409A",
-        "ui-background": "#F7F8FA",
-        "ui-surface": "#FFFFFF",
-        "ui-border": "#E6E6E6",
-        "text-primary": "#1C1D1F",
-        "text-secondary": "#636466",
-        "feedback-green": "#04A85B",
-        "feedback-red": "#D43D2A",
+        "brand-blue-hover": "#1B3585",
+        "brand-accent": "#805CF3",
+        "surface": "#FFFFFF",
+        "surface-muted": "#F6F8FB",
+        "surface-elevated": "#FFFFFF",
+        "surface-dark": "#10131A",
+        "surface-darkest": "#07090F",
+        "text-primary": "#101828",
+        "text-secondary": "#5F6C7B",
+        "text-subtle": "#738094",
+        "border-default": "#E4E7EC",
+        "border-dark": "rgba(255, 255, 255, 0.08)",
+        "feedback-success": "#04A85B",
+        "feedback-error": "#D43D2A",
+        "ui-background": "var(--ui-background)",
+        "ui-surface": "var(--ui-surface)",
+        "ui-border": "var(--ui-border)",
       },
       fontFamily: {
         sans: ["Inter", "sans-serif"],
@@ -37,15 +47,19 @@ module.exports = {
         body: ["1rem", { lineHeight: "1.6", fontWeight: "400" }],
       },
       boxShadow: {
-        card: "0 4px 6px -1px rgba(15, 23, 42, 0.1)",
-        "card-hover": "0 10px 25px -3px rgba(15, 23, 42, 0.18)",
+        card: "0 10px 30px rgba(16, 24, 40, 0.12)",
+        "card-hover": "0 18px 40px rgba(16, 24, 40, 0.16)",
+        elevated: "0 24px 48px rgba(16, 24, 40, 0.14)",
       },
       borderRadius: {
-        card: "12px",
+        card: "16px",
         pill: "999px",
       },
-      transitionProperty: {
-        spacing: "margin, padding",
+      transitionTimingFunction: {
+        suave: "cubic-bezier(0.22, 1, 0.36, 1)",
+      },
+      transitionDuration: {
+        gentle: "180ms",
       },
       keyframes: {
         pulseSoft: {
@@ -66,5 +80,6 @@ module.exports = {
   plugins: [
     require('@tailwindcss/typography'),
     require('@tailwindcss/forms'),
+    require('@tailwindcss/line-clamp'),
   ],
 }
