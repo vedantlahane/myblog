@@ -38,7 +38,7 @@ import { User } from '../../../../types/api';
                   <div class="w-10 h-10 bg-amber-100 border-2 border-amber-600 flex items-center justify-center font-bold text-amber-800">
                     MB
                   </div>
-                  <span class="font-serif text-xl font-bold text-amber-100">MyBlog</span>
+                  <span class="font-serif text-xl font-bold text-amber-100">Motherworld</span>
                 </a>
                 
                 <div class="hidden md:block h-8 w-px bg-amber-600"></div>

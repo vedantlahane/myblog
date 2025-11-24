@@ -1,4 +1,4 @@
-# MyBlog
+# Motherworld
 
 A modern full-stack blog platform for creating, managing, and sharing articles.
 
@@ -31,8 +31,8 @@ A modern full-stack blog platform for creating, managing, and sharing articles.
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/vedantlahane/myblog.git
-   cd myblog
+   git clone https://github.com/vedantlahane/Motherworld.git
+   cd Motherworld
    ```
 
 2. **Setup Backend**

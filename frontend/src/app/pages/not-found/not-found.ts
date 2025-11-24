@@ -88,7 +88,7 @@ import { RouterLink, Router, ActivatedRoute } from '@angular/router';
                 routerLink="/search"
                 class="inline-block bg-blue-600 text-blue-100 px-6 py-3 font-mono text-sm uppercase tracking-wider hover:bg-blue-700 transition-colors border-2 border-blue-700"
               >
-                Search MyBlog
+                Search Motherworld
               </a>
             </div>
 
@@ -153,7 +153,7 @@ import { RouterLink, Router, ActivatedRoute } from '@angular/router';
               </p>
               <div class="flex gap-3 justify-center">
                 <a 
-                  href="mailto:support@myblog.com?subject=404 Error Report&body=I found a broken link at: {{ requestedUrl }}"
+                  href="mailto:support@Motherworld.com?subject=404 Error Report&body=I found a broken link at: {{ requestedUrl }}"
                   class="inline-block bg-yellow-600 text-yellow-100 px-4 py-2 font-mono text-sm uppercase tracking-wider hover:bg-yellow-700 transition-colors border-2 border-yellow-700"
                 >
                   Report Issue
@@ -230,7 +230,7 @@ import { RouterLink, Router, ActivatedRoute } from '@angular/router';
             Still lost? Our support team is here to help!
           </p>
           <a 
-            href="mailto:support@myblog.com"
+            href="mailto:support@Motherworld.com"
             class="inline-flex items-center gap-2 text-amber-700 hover:text-amber-900 font-mono text-sm transition-colors"
           >
             <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">

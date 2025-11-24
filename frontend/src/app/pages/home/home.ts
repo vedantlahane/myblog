@@ -168,7 +168,7 @@ import { BlogCardComponent } from '../../ui/common/blog-card.component';
               routerLink="/auth/register"
               class="inline-flex items-center justify-center gap-2 rounded-xl bg-white px-8 py-3 text-sm font-semibold uppercase tracking-wide text-brand-navy transition-all duration-200 hover:bg-white/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40"
             >
-              Join MyBlog
+              Join Motherworld
             </a>
           </div>
         </div>

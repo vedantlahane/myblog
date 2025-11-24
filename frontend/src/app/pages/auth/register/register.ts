@@ -48,7 +48,7 @@ function strongPasswordValidator(control: any) {
         <div class="bg-amber-50 border-4 border-amber-800 shadow-2xl">
           <!-- Header -->
           <div class="bg-amber-800 text-amber-100 p-6 text-center border-b-2 border-amber-700">
-            <h1 class="font-serif text-2xl font-bold mb-2">Join MyBlog</h1>
+            <h1 class="font-serif text-2xl font-bold mb-2">Join Motherworld</h1>
             <p class="text-amber-200 text-sm font-mono">Create your account and start sharing</p>
           </div>
 
@@ -317,7 +317,7 @@ function strongPasswordValidator(control: any) {
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
             </svg>
-            Back to MyBlog
+            Back to Motherworld
           </a>
         </div>
 

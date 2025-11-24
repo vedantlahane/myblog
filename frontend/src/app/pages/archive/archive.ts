@@ -367,8 +367,8 @@ import { Post, Tag, PostQueryParams, PostsResponse } from '../../../types/api';
               Back to Latest
             </a>
             <span class="text-text-secondary">•</span>
-            <a routerLink="/about" class="font-mono text-sm text-brand-blue underline hover:text-brand-blue/80">
-              About MyBlog
+              <a routerLink="/about" class="font-mono text-sm text-brand-blue underline hover:text-brand-blue/80">
+              About Motherworld
             </a>
           </div>
         </div>

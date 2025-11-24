@@ -139,7 +139,7 @@ interface NotificationPreferences {
                 </div>
                 <h3 class="font-serif text-lg font-bold text-amber-900 mb-2">In-App</h3>
                 <p class="text-amber-700 text-sm mb-3">
-                  Notifications within the MyBlog interface
+                  Notifications within the Motherworld interface
                 </p>
                 <div class="text-xs font-mono">
                   Status: {{ preferences().inApp.enabled ? 'Enabled' : 'Disabled' }}
@@ -440,7 +440,7 @@ interface NotificationPreferences {
                   <div>
                     <h3 class="font-serif text-xl font-bold text-amber-900 mb-2">In-App Notifications</h3>
                     <p class="text-amber-700 text-sm">
-                      Show notifications within the MyBlog interface
+                      Show notifications within the Motherworld interface
                     </p>
                   </div>
                   <label class="relative inline-flex items-center cursor-pointer">
@@ -983,8 +983,8 @@ export class NotificationSettingsComponent implements OnInit {
       this.testing.update(tests => [...tests, 'push']);
       
       if (this.pushPermission()) {
-        new Notification('MyBlog Test', {
-          body: 'This is a test push notification from MyBlog!',
+  new Notification('Motherworld Test', {
+          body: 'This is a test push notification from Motherworld!',
           icon: '/assets/icons/icon-192x192.png'
         });
       }

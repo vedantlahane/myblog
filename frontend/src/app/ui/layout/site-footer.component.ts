@@ -14,7 +14,7 @@ import { RouterLink } from '@angular/router';
       <div class="mx-auto grid w-full max-w-6xl gap-10 px-4 md:grid-cols-[2fr,1fr] md:px-6">
         <div class="space-y-4">
           <div class="flex items-center gap-3">
-            <span class="flex h-10 w-10 items-center justify-center rounded-full bg-brand-blue text-sm font-bold tracking-tight text-white shadow-card">MB</span>
+            <span class="flex h-10 w-10 items-center justify-center rounded-full bg-brand-blue text-sm font-bold tracking-tight text-white shadow-card">MW</span>
             <div>
               <p class="text-sm font-semibold text-text-primary dark:text-white">{{ blogTitle }}</p>
               <p class="text-xs text-text-secondary dark:text-slate-300">{{ blogTagline }}</p>
@@ -98,7 +98,7 @@ export class SiteFooterComponent {
   @Input({ required: true }) blogTagline!: string;
   @Input({ required: true }) description!: string;
   @Input({ required: true }) currentYear!: number;
-  @Input() contactEmail = 'hello@myblog.com';
+  @Input() contactEmail = 'hello@Motherworld.com';
 
   get contactHref(): string {
     return `mailto:${this.contactEmail}`;

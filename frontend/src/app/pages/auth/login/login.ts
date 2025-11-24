@@ -18,7 +18,7 @@ import { environment } from '../../../environments/environment';
           <!-- Header -->
           <div class="bg-amber-800 text-amber-100 p-6 text-center border-b-2 border-amber-700">
             <h1 class="font-serif text-2xl font-bold mb-2">Welcome Back</h1>
-            <p class="text-amber-200 text-sm font-mono">Sign in to your MyBlog account</p>
+            <p class="text-amber-200 text-sm font-mono">Sign in to your Motherworld account</p>
           </div>
 
           <!-- Form -->
@@ -151,7 +151,7 @@ import { environment } from '../../../environments/environment';
                 </div>
                 <div class="relative flex justify-center text-xs">
                   <span class="bg-amber-50 px-4 text-amber-600 font-mono uppercase tracking-wider">
-                    New to MyBlog?
+                    New to Motherworld?
                   </span>
                 </div>
               </div>
@@ -181,7 +181,7 @@ import { environment } from '../../../environments/environment';
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
             </svg>
-            Back to MyBlog
+            Back to Motherworld
           </a>
         </div>
 
@@ -273,7 +273,7 @@ export class LoginComponent implements OnInit {
     // Pre-fill with demo data (remove in production)
     if (this.isDevelopment()) {
       this.loginForm.patchValue({
-        email: 'demo@myblog.com',
+        email: 'demo@Motherworld.com',
         password: 'demo123'
       });
     }
@@ -354,7 +354,7 @@ export class LoginComponent implements OnInit {
   fillDemoCredentials() {
     if (this.isDevelopment()) {
       this.loginForm.patchValue({
-        email: 'admin@myblog.com',
+        email: 'admin@Motherworld.com',
         password: 'admin123'
       });
     }

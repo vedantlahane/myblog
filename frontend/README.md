@@ -70,7 +70,7 @@ The application ships with a minimalist, content-first design language focused o
 
 ### Theming
 
-- A theme toggle is available in the header; the current theme is persisted to `localStorage` (`myblog:theme`).
+- A theme toggle is available in the header; the current theme is persisted to `localStorage` (`motherworld:theme`).
 - Global CSS variables provide the light/dark palettes. To override or extend colors, adjust the token definitions in `src/styles.css`.
 - Tailwind is configured for both themes with semantic color aliases (`primary`, `success`, `danger`, etc.) that reference the CSS variables.
 

@@ -34,7 +34,7 @@ import { RouterLink } from '@angular/router';
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
             </svg>
-            Back to MyBlog
+            Back to Motherworld
           </a>
         </div>
 
@@ -47,12 +47,12 @@ import { RouterLink } from '@angular/router';
             </h2>
             <div class="prose prose-amber max-w-none">
               <p class="text-amber-800 leading-relaxed mb-4">
-                Welcome to MyBlog! We respect your privacy and are committed to protecting your personal information. 
+                Welcome to Motherworld! We respect your privacy and are committed to protecting your personal information. 
                 This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you 
                 visit our website and use our services.
               </p>
               <p class="text-amber-800 leading-relaxed">
-                By using MyBlog, you agree to the collection and use of information in accordance with this policy. 
+                By using Motherworld, you agree to the collection and use of information in accordance with this policy. 
                 If you do not agree with our policies and practices, please do not use our services.
               </p>
             </div>
@@ -94,7 +94,7 @@ import { RouterLink } from '@angular/router';
               <div>
                 <h3 class="font-serif text-xl font-bold text-amber-900 mb-3">Automatically Collected Information</h3>
                 <p class="text-amber-800 leading-relaxed mb-3">
-                  When you visit MyBlog, we automatically collect certain information about your device and usage:
+                  When you visit Motherworld, we automatically collect certain information about your device and usage:
                 </p>
                 <ul class="list-disc list-inside text-amber-800 space-y-2 ml-4">
                   <li>IP address and browser type</li>
@@ -308,7 +308,7 @@ import { RouterLink } from '@angular/router';
             <div class="mt-6 p-4 bg-blue-50 border-2 border-blue-300">
               <h4 class="font-bold text-blue-900 mb-2">How to Exercise Your Rights</h4>
               <p class="text-blue-800 text-sm mb-2">
-                To exercise these rights, please contact us at <strong>privacy&#64;myblog.com</strong> or use the settings in your account dashboard.
+                To exercise these rights, please contact us at <strong>privacy&#64;Motherworld.com</strong> or use the settings in your account dashboard.
               </p>
               <p class="text-blue-800 text-sm">
                 We will respond to your request within 30 days and may require verification of your identity.
@@ -324,7 +324,7 @@ import { RouterLink } from '@angular/router';
             
             <div class="p-6 bg-red-50 border-2 border-red-400">
               <p class="text-red-800 leading-relaxed mb-3">
-                MyBlog is not intended for children under the age of 13. We do not knowingly collect personal information from children under 13 years of age.
+                Motherworld is not intended for children under the age of 13. We do not knowingly collect personal information from children under 13 years of age.
               </p>
               <p class="text-red-800 leading-relaxed">
                 If you are a parent or guardian and believe your child has provided us with personal information, please contact us immediately so we can delete such information.
@@ -344,7 +344,7 @@ import { RouterLink } from '@angular/router';
             
             <div class="p-4 bg-amber-100 border-2 border-amber-400">
               <p class="text-amber-800 text-sm">
-                By using MyBlog, you consent to such transfers. We will take appropriate measures to ensure your data receives adequate protection in accordance with this Privacy Policy.
+                By using Motherworld, you consent to such transfers. We will take appropriate measures to ensure your data receives adequate protection in accordance with this Privacy Policy.
               </p>
             </div>
           </section>
@@ -368,7 +368,7 @@ import { RouterLink } from '@angular/router';
             
             <div class="p-4 bg-amber-100 border-2 border-amber-400">
               <p class="text-amber-800 text-sm">
-                Your continued use of MyBlog after any changes to this Privacy Policy constitutes your acceptance of such changes.
+                Your continued use of Motherworld after any changes to this Privacy Policy constitutes your acceptance of such changes.
               </p>
             </div>
           </section>
@@ -387,16 +387,16 @@ import { RouterLink } from '@angular/router';
               <div class="p-4 bg-amber-100 border-2 border-amber-400">
                 <h4 class="font-bold text-amber-900 mb-3">📧 Email Contact</h4>
                 <div class="space-y-2 text-amber-800 text-sm">
-                  <p><strong>Privacy Officer:</strong> privacy&#64;myblog.com</p>
-                  <p><strong>General Support:</strong> support&#64;myblog.com</p>
-                  <p><strong>Legal Inquiries:</strong> legal&#64;myblog.com</p>
+                  <p><strong>Privacy Officer:</strong> privacy&#64;Motherworld.com</p>
+                  <p><strong>General Support:</strong> support&#64;Motherworld.com</p>
+                  <p><strong>Legal Inquiries:</strong> legal&#64;Motherworld.com</p>
                 </div>
               </div>
               
               <div class="p-4 bg-amber-100 border-2 border-amber-400">
                 <h4 class="font-bold text-amber-900 mb-3">📍 Mailing Address</h4>
                 <div class="text-amber-800 text-sm">
-                  <p>MyBlog Privacy Team<br>
+                  <p>Motherworld Privacy Team<br>
                   123 Blog Street<br>
                   Digital City, DC 12345<br>
                   United States</p>
@@ -426,7 +426,7 @@ import { RouterLink } from '@angular/router';
               </a>
               
               <a 
-                href="mailto:legal@myblog.com"
+                href="mailto:legal@Motherworld.com"
                 class="inline-block bg-amber-100 text-amber-900 px-6 py-3 font-mono text-sm uppercase tracking-wider hover:bg-amber-200 transition-colors border-2 border-amber-300"
               >
                 Legal Contact

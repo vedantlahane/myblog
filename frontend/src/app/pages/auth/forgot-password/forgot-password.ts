@@ -16,7 +16,7 @@ import { ApiService } from '../../../services/api.service';
           <!-- Header -->
           <div class="bg-amber-800 text-amber-100 p-6 text-center border-b-2 border-amber-700">
             <h1 class="font-serif text-2xl font-bold mb-2">Reset Password</h1>
-            <p class="text-amber-200 text-sm font-mono">Recover access to your MyBlog account</p>
+            <p class="text-amber-200 text-sm font-mono">Recover access to your Motherworld account</p>
           </div>
 
           <!-- Form -->
@@ -166,7 +166,7 @@ import { ApiService } from '../../../services/api.service';
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
             </svg>
-            Back to MyBlog
+            Back to Motherworld
           </a>
         </div>
 

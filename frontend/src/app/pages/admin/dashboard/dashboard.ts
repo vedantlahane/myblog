@@ -266,7 +266,7 @@ interface RecentActivity {
               
               <div class="space-y-3 text-sm">
                 <div class="flex justify-between">
-                  <span>MyBlog Version:</span>
+                  <span>Motherworld Version:</span>
                   <span class="font-mono">v2.1.0</span>
                 </div>
                 
