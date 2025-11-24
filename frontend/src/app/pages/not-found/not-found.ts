@@ -1,11 +1,11 @@
 import { Component, OnInit, inject } from '@angular/core';
-import {  } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { RouterLink, Router, ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-not-found',
   standalone: true,
-  imports: [, RouterLink],
+  imports: [CommonModule, RouterLink],
   template: `
     <div class="min-h-screen bg-gradient-to-b from-amber-25 to-orange-25 flex items-center justify-center">
       <div class="max-w-2xl mx-auto px-4 text-center">

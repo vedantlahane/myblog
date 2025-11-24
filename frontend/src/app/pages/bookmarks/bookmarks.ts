@@ -1,5 +1,5 @@
 import { Component, OnInit, inject, signal, computed } from '@angular/core';
-import {  } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { RouterLink, Router } from '@angular/router';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
@@ -9,7 +9,7 @@ import { Bookmark, Post, UserCollection, UpdateBookmarkRequest, BookmarkQueryPar
 @Component({
   selector: 'app-bookmarks',
   standalone: true,
-  imports: [, RouterLink, ReactiveFormsModule],
+  imports: [CommonModule, RouterLink, ReactiveFormsModule],
   template: `
   <div class="min-h-screen bg-gradient-to-b from-brand-accent-gold/6 to-brand-cyan/6">
       <!-- Header -->

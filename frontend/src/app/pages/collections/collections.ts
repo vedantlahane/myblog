@@ -1,5 +1,5 @@
 import { Component, OnInit, inject, signal, computed, effect } from '@angular/core';
-import {  } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { RouterLink, Router } from '@angular/router';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
@@ -10,7 +10,7 @@ import { Collection, CollectionsResponse, CreateCollectionRequest, UpdateCollect
 @Component({
   selector: 'app-collections',
   standalone: true,
-  imports: [, RouterLink, ReactiveFormsModule],
+  imports: [CommonModule, RouterLink, ReactiveFormsModule],
   template: `
     <div class="min-h-screen bg-gradient-to-b from-amber-25 to-orange-25">
       <!-- Header -->
@@ -216,7 +216,7 @@ import { Collection, CollectionsResponse, CreateCollectionRequest, UpdateCollect
                       <svg class="w-12 h-12 text-amber-600 mx-auto mb-2" fill="currentColor" viewBox="0 0 20 20">
                         <path d="M7 3a1 1 0 000 2h6a1 1 0 100-2H7zM4 7a1 1 0 011-1h10a1 1 0 110 2H5a1 1 0 01-1-1zM2 11a2 2 0 012-2h12a2 2 0 012 2v4a2 2 0 01-2 2H4a2 2 0 01-2-2v-4z"></path>
                       </svg>
-                      <span class="text-amber-700 font-mono text-sm">{{ collection.posts?.length || 0 }} Articles</span>
+                      <span class="text-amber-700 font-mono text-sm">{{ collection.posts.length || 0 }} Articles</span>
                     </div>
                   </div>
                 }
@@ -270,7 +270,7 @@ import { Collection, CollectionsResponse, CreateCollectionRequest, UpdateCollect
                   <!-- Collection Stats -->
                   <div class="flex items-center justify-between text-xs font-mono text-amber-600 mb-4">
                     <div class="flex items-center gap-3">
-                      <span>{{ collection.posts?.length || 0 }} articles</span>
+                      <span>{{ collection.posts.length || 0 }} articles</span>
                       <span>•</span>
                       <span>Updated {{ formatDate(collection.updatedAt) }}</span>
                     </div>

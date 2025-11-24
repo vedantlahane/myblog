@@ -1,5 +1,5 @@
 import { Component, OnInit, inject, signal, computed } from '@angular/core';
-import {  } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { RouterLink, ActivatedRoute, Router } from '@angular/router';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
@@ -9,7 +9,7 @@ import { Collection, Post, CollectionPost, ReorderCollectionPostsRequest, AddPos
 @Component({
   selector: 'app-collection-detail',
   standalone: true,
-  imports: [, RouterLink, ReactiveFormsModule, DragDropModule],
+  imports: [CommonModule, RouterLink, ReactiveFormsModule, DragDropModule],
   template: `
     <div class="min-h-screen bg-gradient-to-b from-amber-25 to-orange-25">
       @if (loading()) {
@@ -360,7 +360,7 @@ import { Collection, Post, CollectionPost, ReorderCollectionPostsRequest, AddPos
                     </p>
                     
                     <div class="text-xs font-mono text-amber-600">
-                      {{ related.posts?.length || 0 }} articles
+                      {{ related.posts.length || 0 }} articles
                     </div>
                   </div>
                 }

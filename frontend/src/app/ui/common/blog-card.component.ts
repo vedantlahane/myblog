@@ -1,4 +1,4 @@
-import {  } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Post, Tag } from '../../../types/api';
@@ -6,7 +6,7 @@ import { Post, Tag } from '../../../types/api';
 @Component({
   selector: 'app-blog-card',
   standalone: true,
-  imports: [, RouterLink],
+  imports: [CommonModule, RouterLink],
   host: {
     class: 'block h-full',
   },

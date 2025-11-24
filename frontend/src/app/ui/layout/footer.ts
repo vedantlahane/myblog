@@ -1,11 +1,11 @@
-import {  } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-site-footer',
   standalone: true,
-  imports: [, RouterLink],
+  imports: [CommonModule, RouterLink],
   host: {
     class: 'block',
   },

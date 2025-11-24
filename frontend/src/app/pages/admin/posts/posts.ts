@@ -1,5 +1,5 @@
 import { Component, OnInit, inject, signal, computed } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, TitleCasePipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
@@ -9,7 +9,7 @@ import { Post, PostQueryParams, PostsResponse, User, Tag } from '../../../../typ
 @Component({
   selector: 'app-admin-posts',
   standalone: true,
-  imports: [ RouterLink, ReactiveFormsModule],
+  imports: [CommonModule, RouterLink, ReactiveFormsModule, TitleCasePipe],
   template: `
     <div class="space-y-8">
       <!-- Page Header -->

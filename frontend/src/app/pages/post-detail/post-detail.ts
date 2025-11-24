@@ -1,5 +1,5 @@
 import { Component, OnInit, inject, signal, computed } from '@angular/core';
-import {  } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { RouterLink, ActivatedRoute, Router } from '@angular/router';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ApiService } from '../../services/api.service';
@@ -8,7 +8,7 @@ import { Post, Comment, User, Tag, CreateCommentRequest } from '../../../types/a
 @Component({
   selector: 'app-post-detail',
   standalone: true,
-  imports: [, RouterLink, ReactiveFormsModule],
+  imports: [CommonModule, RouterLink, ReactiveFormsModule],
   template: `
     @if (loading()) {
       <div class="flex items-center justify-center py-16">

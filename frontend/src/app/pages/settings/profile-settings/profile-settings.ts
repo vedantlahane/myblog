@@ -1,6 +1,6 @@
 import { Component, OnInit, inject, signal, computed } from '@angular/core';
-import {  } from '@angular/common';
-import { RouterLink, Router } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import { FormControl, FormGroup, ReactiveFormsModule, FormsModule, Validators } from '@angular/forms';
 import { ApiService } from '../../../services/api.service';
 import { User, UpdateProfileRequest, ChangePasswordRequest } from '../../../../types/api';
@@ -40,7 +40,7 @@ function strongPasswordValidator(control: any) {
 @Component({
   selector: 'app-profile-settings',
   standalone: true,
-  imports: [, RouterLink, ReactiveFormsModule, FormsModule],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule],
   template: `
     <div class="min-h-screen bg-gradient-to-b from-amber-25 to-orange-25">
       <!-- Header -->

@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, inject, signal, computed, effect } from '@angular/core';
-import {  } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { RouterLink, Router, ActivatedRoute } from '@angular/router';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
@@ -10,7 +10,7 @@ import { CreatePostRequest, UpdatePostRequest, Post, Tag, Media } from '../../..
 @Component({
   selector: 'app-write',
   standalone: true,
-  imports: [, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule],
   template: `
   <div class="min-h-screen bg-gradient-to-b from-[rgba(11,12,16,0.5)] to-[rgba(26,26,36,0.5)] pb-12">
       <!-- Header -->

@@ -1,4 +1,4 @@
-import { , DOCUMENT, isPlatformBrowser } from '@angular/common';
+import { CommonModule, DOCUMENT, isPlatformBrowser } from '@angular/common';
 import { Component, DestroyRef, OnInit, AfterViewInit, PLATFORM_ID, Renderer2, inject, signal, NgZone, effect } from '@angular/core';
 import { Router, RouterOutlet, NavigationEnd } from '@angular/router';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
@@ -7,14 +7,14 @@ import { filter, fromEvent, throttleTime } from 'rxjs';
 import { ApiService } from './services/api.service';
 import { User } from '../types/api';
 import { SiteHeaderComponent, NavLink } from './ui/layout/header';
-import { SiteFooterComponent } from './ui/layout/footer.ts';
+import { SiteFooterComponent } from './ui/layout/footer';
 import { ReadingProgressComponent } from './ui/common/reading-progress.component';
 type ThemeMode = 'light' | 'dark';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [, RouterOutlet, SiteHeaderComponent, SiteFooterComponent, ReadingProgressComponent],
+  imports: [CommonModule, RouterOutlet, SiteHeaderComponent, SiteFooterComponent, ReadingProgressComponent],
   template: `
     <div class="app-shell min-h-screen" [attr.data-theme]="theme()">
       <app-reading-progress [progress]="readingProgress()"></app-reading-progress>
