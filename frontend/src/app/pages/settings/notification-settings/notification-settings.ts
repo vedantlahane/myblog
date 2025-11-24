@@ -1,5 +1,5 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { RouterLink, Router } from '@angular/router';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ApiService } from '../../../services/api.service';
@@ -40,7 +40,7 @@ interface NotificationPreferences {
 @Component({
   selector: 'app-notification-settings',
   standalone: true,
-  imports: [CommonModule, RouterLink, ReactiveFormsModule],
+  imports: [RouterLink, ReactiveFormsModule],
   template: `
     <div class="min-h-screen bg-gradient-to-b from-amber-25 to-orange-25">
       <!-- Header -->

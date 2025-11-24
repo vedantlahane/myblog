@@ -1,5 +1,5 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { RouterOutlet, RouterLink, RouterLinkActive, Router, ActivatedRoute } from '@angular/router';
 import { ApiService } from '../../../services/api.service';
 import { User } from '../../../../types/api';
@@ -7,7 +7,7 @@ import { User } from '../../../../types/api';
 @Component({
   selector: 'app-admin-layout',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, RouterLink, RouterLinkActive],
+  imports: [RouterOutlet, RouterLink, RouterLinkActive],
   template: `
     <div class="min-h-screen bg-gradient-to-b from-amber-25 to-orange-25">
       @if (loading()) {

@@ -1,5 +1,5 @@
 import { Component, OnInit, inject, signal, computed } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { RouterLink, ActivatedRoute, Router } from '@angular/router';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
@@ -9,7 +9,7 @@ import { Collection, Post, CollectionPost, ReorderCollectionPostsRequest, AddPos
 @Component({
   selector: 'app-collection-detail',
   standalone: true,
-  imports: [CommonModule, RouterLink, ReactiveFormsModule, DragDropModule],
+  imports: [RouterLink, ReactiveFormsModule, DragDropModule],
   template: `
     <div class="min-h-screen bg-gradient-to-b from-amber-25 to-orange-25">
       @if (loading()) {

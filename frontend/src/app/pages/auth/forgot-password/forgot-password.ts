@@ -1,5 +1,5 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { RouterLink, Router } from '@angular/router';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ApiService } from '../../../services/api.service';
@@ -7,7 +7,7 @@ import { ApiService } from '../../../services/api.service';
 @Component({
   selector: 'app-forgot-password',
   standalone: true,
-  imports: [CommonModule, RouterLink, ReactiveFormsModule],
+  imports: [RouterLink, ReactiveFormsModule],
   template: `
     <div class="min-h-screen flex items-center justify-center bg-gradient-to-b from-amber-25 to-orange-25 py-12">
       <div class="max-w-md w-full mx-4">

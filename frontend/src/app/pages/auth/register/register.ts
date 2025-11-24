@@ -1,5 +1,5 @@
 import { Component, OnInit, inject, signal, effect } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { RouterLink, Router } from '@angular/router';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ApiService } from '../../../services/api.service';
@@ -41,7 +41,7 @@ function strongPasswordValidator(control: any) {
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [CommonModule, RouterLink, ReactiveFormsModule],
+  imports: [RouterLink, ReactiveFormsModule],
   template: `
   <div class="min-h-screen flex items-center justify-center bg-gradient-to-b from-brand-accent-gold/6 to-brand-cyan/6 py-12">
       <div class="max-w-md w-full mx-4">

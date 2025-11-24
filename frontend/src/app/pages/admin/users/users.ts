@@ -1,5 +1,5 @@
 import { Component, OnInit, inject, signal, computed, effect } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { toSignal } from '@angular/core/rxjs-interop';
@@ -9,7 +9,7 @@ import { User, UserQueryParams, PaginatedResponse, CreateUserRequest, UpdateUser
 @Component({
   selector: 'app-admin-users',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [ReactiveFormsModule],
   template: `
     <div class="space-y-8">
       <!-- Page Header -->

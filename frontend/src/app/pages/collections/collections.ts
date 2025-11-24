@@ -1,5 +1,5 @@
 import { Component, OnInit, inject, signal, computed, effect } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { RouterLink, Router } from '@angular/router';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
@@ -10,7 +10,7 @@ import { Collection, CollectionsResponse, CreateCollectionRequest, UpdateCollect
 @Component({
   selector: 'app-collections',
   standalone: true,
-  imports: [CommonModule, RouterLink, ReactiveFormsModule],
+  imports: [RouterLink, ReactiveFormsModule],
   template: `
     <div class="min-h-screen bg-gradient-to-b from-amber-25 to-orange-25">
       <!-- Header -->

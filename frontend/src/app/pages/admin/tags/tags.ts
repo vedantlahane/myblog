@@ -1,5 +1,5 @@
 import { Component, OnInit, inject, signal, computed, effect } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { RouterLink } from '@angular/router';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
@@ -10,7 +10,7 @@ import { Tag, CreateTagRequest, UpdateTagRequest, Post } from '../../../../types
 @Component({
   selector: 'app-admin-tags',
   standalone: true,
-  imports: [CommonModule, RouterLink, ReactiveFormsModule],
+  imports: [RouterLink, ReactiveFormsModule],
   template: `
     <div class="space-y-8">
       <!-- Page Header -->

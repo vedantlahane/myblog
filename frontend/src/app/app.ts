@@ -1,4 +1,4 @@
-import { CommonModule, DOCUMENT, isPlatformBrowser } from '@angular/common';
+import { DOCUMENT, isPlatformBrowser } from '@angular/common';
 import { Component, DestroyRef, OnInit, AfterViewInit, PLATFORM_ID, Renderer2, inject, signal, NgZone, effect } from '@angular/core';
 import { Router, RouterOutlet, NavigationEnd } from '@angular/router';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
@@ -14,7 +14,7 @@ type ThemeMode = 'light' | 'dark';
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, SiteHeaderComponent, SiteFooterComponent, ReadingProgressComponent],
+  imports: [RouterOutlet, SiteHeaderComponent, SiteFooterComponent, ReadingProgressComponent],
   template: `
     <div class="app-shell min-h-screen" [attr.data-theme]="theme()">
       <app-reading-progress [progress]="readingProgress()"></app-reading-progress>

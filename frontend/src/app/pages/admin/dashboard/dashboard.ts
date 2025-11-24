@@ -1,5 +1,5 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { RouterLink } from '@angular/router';
 import { ApiService } from '../../../services/api.service';
 
@@ -26,7 +26,7 @@ interface RecentActivity {
 @Component({
   selector: 'app-admin-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [RouterLink],
   template: `
     <div class="space-y-8">
       <!-- Dashboard Header -->
