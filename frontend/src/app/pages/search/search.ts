@@ -1,8 +1,9 @@
-import { Component, OnInit, inject, signal, computed } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit, inject, signal, computed, effect } from '@angular/core';
+import {  } from '@angular/common';
 import { RouterLink, ActivatedRoute, Router } from '@angular/router';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { ApiService } from '../../services/api.service';
 import { Post, User, Tag, SearchResult } from '../../../types/api';
 
@@ -15,7 +16,7 @@ interface SearchResults {
 @Component({
   selector: 'app-search',
   standalone: true,
-  imports: [CommonModule, RouterLink, ReactiveFormsModule],
+  imports: [, RouterLink, ReactiveFormsModule],
   template: `
     <div class="min-h-screen">
       <!-- Search Header -->
@@ -510,16 +511,19 @@ export class SearchComponent implements OnInit {
   async ngOnInit() {
     await this.loadPopularTags();
     
-    // Check for search query in URL params
-    this.route.queryParams.subscribe(params => {
-      if (params['q']) {
-        this.searchControl.setValue(params['q'], { emitEvent: false });
-        this.searchQuery.set(params['q']);
-        this.performSearch(params['q']);
+    // Check for search query in URL params using signals
+    const paramsSignal = toSignal(this.route.queryParams, { initialValue: {} });
+    effect(() => {
+      const params = paramsSignal();
+      const q = (params as any)?.['q'];
+      if (q) {
+        this.searchControl.setValue(q, { emitEvent: false });
+        this.searchQuery.set(q);
+        this.performSearch(q);
       }
     });
 
-    // Setup search input subscription
+    // Setup search input signal subscription
     this.setupSearchSubscription();
   }
 
@@ -533,10 +537,13 @@ export class SearchComponent implements OnInit {
   }
 
   private setupSearchSubscription() {
-    this.searchControl.valueChanges.pipe(
-      debounceTime(300),
-      distinctUntilChanged()
-    ).subscribe(value => {
+    const searchValue = toSignal(
+      this.searchControl.valueChanges.pipe(debounceTime(300), distinctUntilChanged()),
+      { initialValue: this.searchControl.value }
+    );
+
+    effect(() => {
+      const value = searchValue();
       if (value && value.trim()) {
         this.performSearch(value.trim());
       }

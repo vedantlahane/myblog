@@ -9,7 +9,7 @@ import { Post, PostQueryParams, PostsResponse, User, Tag } from '../../../../typ
 @Component({
   selector: 'app-admin-posts',
   standalone: true,
-  imports: [CommonModule, RouterLink, ReactiveFormsModule],
+  imports: [ RouterLink, ReactiveFormsModule],
   template: `
     <div class="space-y-8">
       <!-- Page Header -->

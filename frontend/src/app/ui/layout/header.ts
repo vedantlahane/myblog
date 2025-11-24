@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import {  } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { User } from '../../../types/api';
@@ -14,7 +14,7 @@ export interface NavLink {
 @Component({
   selector: 'app-site-header',
   standalone: true,
-  imports: [CommonModule, RouterLink, RouterLinkActive],
+  imports: [, RouterLink, RouterLinkActive],
   host: {
     class: 'relative z-50 block',
   },

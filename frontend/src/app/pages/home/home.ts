@@ -1,5 +1,5 @@
 import { Component, OnInit, inject, signal, computed } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import {  } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { ApiService } from '../../services/api.service';
 import { Post, Tag, PostsResponse } from '../../../types/api';
@@ -8,7 +8,7 @@ import { BlogCardComponent } from '../../ui/common/blog-card.component';
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, RouterLink, BlogCardComponent],
+  imports: [, RouterLink, BlogCardComponent],
   template: `
     <!-- Hero Section with Featured Post -->
     @if (featuredPost()) {

@@ -1,15 +1,16 @@
-import { Component, OnInit, inject, signal, computed } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit, inject, signal, computed, effect } from '@angular/core';
+import {  } from '@angular/common';
 import { RouterLink, ActivatedRoute, Router } from '@angular/router';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { ApiService } from '../../services/api.service';
 import { Post, Tag, PostQueryParams } from '../../../types/api';
 
 @Component({
   selector: 'app-tag-posts',
   standalone: true,
-  imports: [CommonModule, RouterLink, ReactiveFormsModule],
+  imports: [, RouterLink, ReactiveFormsModule],
   template: `
     <div class="min-h-screen bg-gradient-to-b from-amber-25 to-orange-25">
       @if (loading()) {
@@ -514,17 +515,18 @@ export class TagPostsComponent implements OnInit {
 
   private setupFormSubscriptions() {
     // Search with debounce
-    this.searchControl.valueChanges.pipe(
-      debounceTime(300),
-      distinctUntilChanged()
-    ).subscribe(value => {
+    const searchValueSignal: any = toSignal(this.searchControl.valueChanges.pipe(debounceTime(300), distinctUntilChanged()) as any, { initialValue: this.searchControl.value as any });
+    effect(() => {
+      const value = searchValueSignal();
       this.searchQuery.set(value || '');
       this.currentPage.set(1);
       this.loadPosts();
     });
 
     // Sort changes
-    this.sortControl.valueChanges.subscribe(() => {
+    const sortSignal: any = toSignal(this.sortControl.valueChanges as any, { initialValue: this.sortControl.value as any });
+    effect(() => {
+      sortSignal();
       this.currentPage.set(1);
       this.loadPosts();
     });

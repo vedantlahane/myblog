@@ -1,15 +1,16 @@
-import { Component, OnInit, inject, signal, computed } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit, inject, signal, computed, effect } from '@angular/core';
+import {  } from '@angular/common';
 import { RouterLink, Router } from '@angular/router';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { ApiService } from '../../services/api.service';
 import { Draft, DraftsResponse, Post } from '../../../types/api';
 
 @Component({
   selector: 'app-drafts',
   standalone: true,
-  imports: [CommonModule, RouterLink, ReactiveFormsModule],
+  imports: [, RouterLink, ReactiveFormsModule],
   template: `
     <div class="min-h-screen bg-gradient-to-b from-amber-25 to-orange-25">
       <!-- Header -->
@@ -587,20 +588,23 @@ export class DraftsComponent implements OnInit {
 
   private setupFormSubscriptions() {
     // Search with debounce
-    this.searchControl.valueChanges.pipe(
-      debounceTime(300),
-      distinctUntilChanged()
-    ).subscribe(value => {
+  const searchValueSignal: any = toSignal(this.searchControl.valueChanges.pipe(debounceTime(300), distinctUntilChanged()) as any, { initialValue: this.searchControl.value as any });
+    effect(() => {
+      const value = searchValueSignal();
       this.searchQuery.set(value || '');
     });
 
     // Type filter
-    this.typeControl.valueChanges.subscribe(value => {
+  const typeSignal: any = toSignal(this.typeControl.valueChanges as any, { initialValue: this.typeControl.value as any });
+    effect(() => {
+      const value = typeSignal();
       this.typeFilter.set(value || '');
     });
 
     // Sort changes
-    this.sortControl.valueChanges.subscribe(() => {
+  const sortSignal: any = toSignal(this.sortControl.valueChanges as any, { initialValue: this.sortControl.value as any });
+    effect(() => {
+      sortSignal();
       this.sortDrafts();
     });
   }

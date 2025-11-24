@@ -1,8 +1,9 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit, inject, signal, effect } from '@angular/core';
+import {  } from '@angular/common';
 import { RouterLink, Router } from '@angular/router';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ApiService } from '../../../services/api.service';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { RegisterRequest } from '../../../../types/api';
 
 // Custom Validators
@@ -40,7 +41,7 @@ function strongPasswordValidator(control: any) {
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [CommonModule, RouterLink, ReactiveFormsModule],
+  imports: [, RouterLink, ReactiveFormsModule],
   template: `
   <div class="min-h-screen flex items-center justify-center bg-gradient-to-b from-brand-accent-gold/6 to-brand-cyan/6 py-12">
       <div class="max-w-md w-full mx-4">
@@ -428,8 +429,10 @@ export class RegisterComponent implements OnInit {
     }
 
     // Watch password changes for strength indicator
-    this.registerForm.get('password')?.valueChanges.subscribe(value => {
-      this.updatePasswordStrength(value || '');
+    const passwordChanges = toSignal(this.registerForm.get('password')?.valueChanges as any, { initialValue: this.registerForm.get('password')?.value || '' });
+    effect(() => {
+      const p = passwordChanges() as any;
+      this.updatePasswordStrength(p || '');
     });
   }
 

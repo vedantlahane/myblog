@@ -1,15 +1,15 @@
-import { Component, OnInit, inject, signal, computed } from '@angular/core';
+import { Component, OnInit, inject, signal, computed, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { ApiService } from '../../../services/api.service';
 import { Media, MediaQueryParams, MediaResponse, UpdateMediaRequest } from '../../../../types/api';
 
 @Component({
   selector: 'app-admin-media',
   standalone: true,
-  imports: [CommonModule, RouterLink, ReactiveFormsModule],
+  imports: [ ReactiveFormsModule],
   template: `
     <div class="space-y-8">
       <!-- Page Header -->
@@ -932,21 +932,21 @@ export class AdminMediaComponent implements OnInit {
   }
 
   private setupFormSubscriptions() {
-    // Search with debounce
-    this.searchControl.valueChanges.pipe(
-      debounceTime(300),
-      distinctUntilChanged()
-    ).subscribe(value => {
+    const searchSignal: any = toSignal(this.searchControl.valueChanges.pipe(debounceTime(300), distinctUntilChanged()) as any, { initialValue: this.searchControl.value as any });
+    effect(() => {
+      const value = searchSignal();
       this.searchQuery.set(value || '');
     });
 
-    // Type filter
-    this.typeControl.valueChanges.subscribe(value => {
+    const typeSignal: any = toSignal(this.typeControl.valueChanges as any, { initialValue: this.typeControl.value as any });
+    effect(() => {
+      const value = typeSignal();
       this.typeFilter.set(value || '');
     });
 
-    // Uploader filter
-    this.uploaderControl.valueChanges.subscribe(value => {
+    const uploaderSignal: any = toSignal(this.uploaderControl.valueChanges as any, { initialValue: this.uploaderControl.value as any });
+    effect(() => {
+      const value = uploaderSignal();
       this.uploaderFilter.set(value || '');
     });
   }

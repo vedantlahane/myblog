@@ -1,15 +1,17 @@
 import { Component, OnInit, inject, signal, computed } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import {  } from '@angular/common';
 import { RouterLink, ActivatedRoute, Router } from '@angular/router';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { effect } from '@angular/core';
 import { ApiService } from '../../services/api.service';
 import { Post, Tag, PostQueryParams, PostsResponse } from '../../../types/api';
 
 @Component({
   selector: 'app-archive',
   standalone: true,
-  imports: [CommonModule, RouterLink, ReactiveFormsModule],
+  imports: [, RouterLink, ReactiveFormsModule],
   template: `
     <div class="min-h-screen">
       <!-- Archive Header -->
@@ -471,28 +473,36 @@ Math: any;
 
   private setupFormSubscriptions() {
     // Search with debounce
-    this.searchControl.valueChanges.pipe(
-      debounceTime(300),
-      distinctUntilChanged()
-    ).subscribe(value => {
+    const searchValueSignal = toSignal(
+      this.searchControl.valueChanges.pipe(debounceTime(300), distinctUntilChanged()),
+      { initialValue: this.searchControl.value }
+    );
+    effect(() => {
+      const value = searchValueSignal();
       this.searchQuery.set(value || '');
       this.searchPosts();
     });
 
     // Sort changes
-    this.sortControl.valueChanges.subscribe(() => {
+    const sortValueSignal = toSignal(this.sortControl.valueChanges as any, { initialValue: this.sortControl.value });
+    effect(() => {
+      sortValueSignal();
       this.searchPosts();
     });
 
     // Tag filter changes
-    this.tagControl.valueChanges.subscribe(tagSlug => {
+    const tagValueSignal = toSignal(this.tagControl.valueChanges as any, { initialValue: this.tagControl.value });
+    effect(() => {
+      const tagSlug = tagValueSignal();
       const tag = this.availableTags().find(t => t.slug === tagSlug) || null;
       this.selectedTag.set(tag);
       this.searchPosts();
     });
 
     // Year filter changes
-    this.yearControl.valueChanges.subscribe(year => {
+    const yearValueSignal = toSignal(this.yearControl.valueChanges as any, { initialValue: this.yearControl.value });
+    effect(() => {
+      const year = yearValueSignal() as any;
       this.selectedYear.set(year || '');
       this.searchPosts();
     });
@@ -500,7 +510,9 @@ Math: any;
 
   private handleRouteParams() {
     // Handle query parameters from URL
-    this.route.queryParams.subscribe(params => {
+    const paramsSignal = toSignal(this.route.queryParams, { initialValue: {} });
+    effect(() => {
+      const params = paramsSignal() as any;
       if (params['search']) {
         this.searchControl.setValue(params['search'], { emitEvent: false });
         this.searchQuery.set(params['search']);

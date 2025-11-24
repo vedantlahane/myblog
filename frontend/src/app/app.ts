@@ -1,20 +1,20 @@
-import { CommonModule, DOCUMENT, isPlatformBrowser } from '@angular/common';
-import { Component, DestroyRef, OnInit, AfterViewInit, PLATFORM_ID, Renderer2, inject, signal, NgZone } from '@angular/core';
+import { , DOCUMENT, isPlatformBrowser } from '@angular/common';
+import { Component, DestroyRef, OnInit, AfterViewInit, PLATFORM_ID, Renderer2, inject, signal, NgZone, effect } from '@angular/core';
 import { Router, RouterOutlet, NavigationEnd } from '@angular/router';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { filter, fromEvent, throttleTime } from 'rxjs';
 
 import { ApiService } from './services/api.service';
 import { User } from '../types/api';
-import { SiteHeaderComponent, NavLink } from './ui/layout/site-header.component';
-import { SiteFooterComponent } from './ui/layout/site-footer.component';
+import { SiteHeaderComponent, NavLink } from './ui/layout/header';
+import { SiteFooterComponent } from './ui/layout/footer.ts';
 import { ReadingProgressComponent } from './ui/common/reading-progress.component';
 type ThemeMode = 'light' | 'dark';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, SiteHeaderComponent, SiteFooterComponent, ReadingProgressComponent],
+  imports: [, RouterOutlet, SiteHeaderComponent, SiteFooterComponent, ReadingProgressComponent],
   template: `
     <div class="app-shell min-h-screen" [attr.data-theme]="theme()">
       <app-reading-progress [progress]="readingProgress()"></app-reading-progress>
@@ -267,30 +267,28 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   private setupAuthStateListener() {
-    this.apiService.token$
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe((token) => {
-        if (!token) {
-          this.currentUser.set(null);
-          this.showUserMenu.set(false);
-        }
-      });
+    const tokenSignal = toSignal(this.apiService.token$ as any, { initialValue: null as string | null });
+    effect(() => {
+      const token = tokenSignal();
+      if (!token) {
+        this.currentUser.set(null);
+        this.showUserMenu.set(false);
+      }
+    });
   }
 
   private setupRouterListeners() {
-    this.router.events
-      .pipe(
-        filter((event): event is NavigationEnd => event instanceof NavigationEnd),
-        takeUntilDestroyed(this.destroyRef)
-      )
-      .subscribe(() => {
+    const navSignal = toSignal(this.router.events.pipe(filter((event): event is NavigationEnd => event instanceof NavigationEnd)) as any, { initialValue: null as any });
+    effect(() => {
+      if (navSignal()) {
         this.mobileNavOpen.set(false);
         this.showUserMenu.set(false);
         this.scheduleUiEnhancements();
         if (isPlatformBrowser(this.platformId)) {
           this.ngZone.runOutsideAngular(() => window.requestAnimationFrame(() => this.updateReadingProgress()));
         }
-      });
+      }
+    });
   }
 
   private scheduleUiEnhancements() {

@@ -1,8 +1,9 @@
-import { Component, OnInit, inject, signal, computed } from '@angular/core';
+import { Component, OnInit, inject, signal, computed, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { ApiService } from '../../../services/api.service';
 import { Tag, CreateTagRequest, UpdateTagRequest, Post } from '../../../../types/api';
 
@@ -672,16 +673,20 @@ export class AdminTagsComponent implements OnInit {
   }
 
   private setupFormSubscriptions() {
-    // Search with debounce
-    this.searchControl.valueChanges.pipe(
-      debounceTime(300),
-      distinctUntilChanged()
-    ).subscribe(value => {
+    // Search with debounce (signal)
+    const searchSignal: any = toSignal(
+      this.searchControl.valueChanges.pipe(debounceTime(300), distinctUntilChanged()) as any,
+      { initialValue: this.searchControl.value as any }
+    );
+    effect(() => {
+      const value = searchSignal();
       this.searchQuery.set(value || '');
     });
 
-    // Usage filter
-    this.usageControl.valueChanges.subscribe(value => {
+    // Usage filter (signal)
+    const usageSignal: any = toSignal(this.usageControl.valueChanges as any, { initialValue: this.usageControl.value as any });
+    effect(() => {
+      const value = usageSignal();
       this.usageFilter.set(value || '');
     });
   }

@@ -1,16 +1,16 @@
-import { Component, OnInit, OnDestroy, inject, signal, computed } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, signal, computed, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink, Router, ActivatedRoute } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
-import { Subscription } from 'rxjs';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { ApiService } from '../../services/api.service';
 import { CreatePostRequest, UpdatePostRequest, Post, Tag, Media } from '../../../types/api';
 
 @Component({
   selector: 'app-write',
   standalone: true,
-  imports: [CommonModule, RouterLink, ReactiveFormsModule],
+  imports: [ ReactiveFormsModule],
   template: `
     <div class="min-h-screen bg-gradient-to-b from-amber-25 to-orange-25 pb-12">
       <!-- Header -->
@@ -524,8 +524,6 @@ export class WriteComponent implements OnInit, OnDestroy {
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   
-  // Subscriptions
-  private subscriptions: Subscription[] = [];
   private autoSaveInterval?: number;
   
   // Reactive Signals
@@ -587,7 +585,6 @@ export class WriteComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.subscriptions.forEach(sub => sub.unsubscribe());
     if (this.autoSaveInterval) {
       clearInterval(this.autoSaveInterval);
     }
@@ -639,15 +636,16 @@ export class WriteComponent implements OnInit, OnDestroy {
   }
 
   private setupFormSubscriptions() {
-    // Watch form changes for auto-save status
-    const formSub = this.postForm.valueChanges.pipe(
-      debounceTime(1000),
-      distinctUntilChanged()
-    ).subscribe(() => {
+    // Watch form changes for auto-save status using signals
+    const formValueSignal = toSignal(
+      this.postForm.valueChanges.pipe(debounceTime(1000), distinctUntilChanged()) as any,
+      { initialValue: this.postForm.value }
+    );
+
+    effect(() => {
+      formValueSignal();
       this.autoSaveStatus.set(true);
     });
-    
-    this.subscriptions.push(formSub);
   }
 
   private async autoSaveDraft() {

@@ -1,12 +1,12 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import {  } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { ApiService } from '../../services/api.service';
 
 @Component({
   selector: 'app-about',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [ RouterLink],
   template: `
     <div class="min-h-screen bg-ui-background py-12">
       <header class="mx-auto max-w-5xl rounded-3xl border border-ui-border bg-ui-surface px-6 py-16 text-center shadow-sm">

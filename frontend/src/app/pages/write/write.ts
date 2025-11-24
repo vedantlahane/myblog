@@ -1,16 +1,16 @@
-import { Component, OnInit, OnDestroy, inject, signal, computed } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit, OnDestroy, inject, signal, computed, effect } from '@angular/core';
+import {  } from '@angular/common';
 import { RouterLink, Router, ActivatedRoute } from '@angular/router';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
-import { Subscription } from 'rxjs';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { ApiService } from '../../services/api.service';
 import { CreatePostRequest, UpdatePostRequest, Post, Tag, Media } from '../../../types/api';
 
 @Component({
   selector: 'app-write',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [, ReactiveFormsModule],
   template: `
   <div class="min-h-screen bg-gradient-to-b from-[rgba(11,12,16,0.5)] to-[rgba(26,26,36,0.5)] pb-12">
       <!-- Header -->
@@ -525,7 +525,7 @@ export class WriteComponent implements OnInit, OnDestroy {
   private route = inject(ActivatedRoute);
   
   // Subscriptions
-  private subscriptions: Subscription[] = [];
+  // Subscription list removed in favor of Signals
   private autoSaveInterval?: number;
   
   // Reactive Signals
@@ -587,7 +587,6 @@ export class WriteComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.subscriptions.forEach(sub => sub.unsubscribe());
     if (this.autoSaveInterval) {
       clearInterval(this.autoSaveInterval);
     }
@@ -640,14 +639,11 @@ export class WriteComponent implements OnInit, OnDestroy {
 
   private setupFormSubscriptions() {
     // Watch form changes for auto-save status
-    const formSub = this.postForm.valueChanges.pipe(
-      debounceTime(1000),
-      distinctUntilChanged()
-    ).subscribe(() => {
+    const formValueSignal = toSignal(this.postForm.valueChanges.pipe(debounceTime(1000), distinctUntilChanged()) as any, { initialValue: this.postForm.value });
+    effect(() => {
+      formValueSignal();
       this.autoSaveStatus.set(true);
     });
-    
-    this.subscriptions.push(formSub);
   }
 
   private async autoSaveDraft() {

@@ -1,15 +1,15 @@
-import { Component, OnInit, inject, signal, computed } from '@angular/core';
+import { Component, OnInit, inject, signal, computed, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { ApiService } from '../../../services/api.service';
 import { User, UserQueryParams, PaginatedResponse, CreateUserRequest, UpdateUserRequest } from '../../../../types/api';
 
 @Component({
   selector: 'app-admin-users',
   standalone: true,
-  imports: [CommonModule, RouterLink, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule],
   template: `
     <div class="space-y-8">
       <!-- Page Header -->
@@ -710,24 +710,27 @@ export class AdminUsersComponent implements OnInit {
 
   private setupFormSubscriptions() {
     // Search with debounce
-    this.searchControl.valueChanges.pipe(
-      debounceTime(300),
-      distinctUntilChanged()
-    ).subscribe(value => {
+    const searchSignal: any = toSignal(this.searchControl.valueChanges.pipe(debounceTime(300), distinctUntilChanged()) as any, { initialValue: this.searchControl.value as any });
+    effect(() => {
+      const value = searchSignal();
       this.searchQuery.set(value || '');
       this.currentPage.set(1);
       this.loadUsers();
     });
 
     // Role filter
-    this.roleControl.valueChanges.subscribe(value => {
+    const roleSignal: any = toSignal(this.roleControl.valueChanges as any, { initialValue: this.roleControl.value as any });
+    effect(() => {
+      const value = roleSignal();
       this.roleFilter.set(value || '');
       this.currentPage.set(1);
       this.loadUsers();
     });
 
     // Sort changes
-    this.sortControl.valueChanges.subscribe(() => {
+    const sortSignal: any = toSignal(this.sortControl.valueChanges as any, { initialValue: this.sortControl.value as any });
+    effect(() => {
+      sortSignal();
       this.currentPage.set(1);
       this.loadUsers();
     });

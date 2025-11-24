@@ -10,7 +10,7 @@
   },
   "include": [
     "src/**/*.ts"
-  ],
+, "src/app/ui/layout/footer.ts"  ],
   "exclude": [
     "src/**/*.spec.ts"
   ]
