@@ -16,10 +16,17 @@ module.exports = {
     },
     extend: {
       colors: {
-        "brand-navy": "#10162F",
-        "brand-blue": "#20409A",
-        "brand-blue-hover": "#1B3585",
-        "brand-accent": "#805CF3",
+        // backward-compatible token used across templates
+        "brand-blue": "#7952F3",
+        "brand-blue-hover": "#5D2EE6",
+        "brand-navy": "#0B0C10",        // deep space black
+        "brand-iron": "#1B1E24",        // iron gray
+        "brand-surface": "#262A32",    // soft surface gray
+  "brand-accent-violet": "#7952F3", // cosmic violet (primary)
+        "brand-accent-violet-hover": "#5D2EE6",
+        "brand-accent-gold": "#D4A761", // imperial gold (secondary)
+        "brand-cyan": "#66FCF1",
+        "brand-red": "#C3073F",
         "surface": "#FFFFFF",
         "surface-muted": "#F6F8FB",
         "surface-elevated": "#FFFFFF",
@@ -38,21 +45,22 @@ module.exports = {
       },
       fontFamily: {
         sans: ["Inter", "sans-serif"],
+        serif: ["Playfair Display", "Georgia", "serif"],
         mono: ["Source Code Pro", "Menlo", "monospace"],
       },
       fontSize: {
-        h1: ["2.5rem", { lineHeight: "1.2", fontWeight: "800" }],
+        h1: ["3rem", { lineHeight: "1.15", fontWeight: "800" }],
         h2: ["2rem", { lineHeight: "1.2", fontWeight: "700" }],
         h3: ["1.5rem", { lineHeight: "1.3", fontWeight: "600" }],
         body: ["1rem", { lineHeight: "1.6", fontWeight: "400" }],
       },
       boxShadow: {
-        card: "0 10px 30px rgba(16, 24, 40, 0.12)",
-        "card-hover": "0 18px 40px rgba(16, 24, 40, 0.16)",
-        elevated: "0 24px 48px rgba(16, 24, 40, 0.14)",
+        card: "0 8px 20px rgba(5, 6, 10, 0.6)",
+        "card-hover": "0 18px 40px rgba(86, 52, 195, 0.18)",
+        elevated: "0 24px 48px rgba(2, 6, 23, 0.75)",
       },
       borderRadius: {
-        card: "16px",
+        card: "12px",
         pill: "999px",
       },
       transitionTimingFunction: {

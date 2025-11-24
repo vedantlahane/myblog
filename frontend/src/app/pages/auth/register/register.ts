@@ -42,14 +42,14 @@ function strongPasswordValidator(control: any) {
   standalone: true,
   imports: [CommonModule, RouterLink, ReactiveFormsModule],
   template: `
-    <div class="min-h-screen flex items-center justify-center bg-gradient-to-b from-amber-25 to-orange-25 py-12">
+  <div class="min-h-screen flex items-center justify-center bg-gradient-to-b from-brand-accent-gold/6 to-brand-cyan/6 py-12">
       <div class="max-w-md w-full mx-4">
         <!-- Register Card with Retro Styling -->
-        <div class="bg-amber-50 border-4 border-amber-800 shadow-2xl">
+  <div class="bg-surface border-4 border-brand-accent-gold shadow-2xl">
           <!-- Header -->
-          <div class="bg-amber-800 text-amber-100 p-6 text-center border-b-2 border-amber-700">
-            <h1 class="font-serif text-2xl font-bold mb-2">Join Motherworld</h1>
-            <p class="text-amber-200 text-sm font-mono">Create your account and start sharing</p>
+          <div class="bg-brand-accent-gold text-brand-navy p-6 text-center border-b-2 border-brand-accent-gold">
+            <h1 class="font-serif text-2xl font-bold mb-2">Join Xandar</h1>
+            <p class="text-brand-accent-gold text-sm font-mono">Create your account and start sharing</p>
           </div>
 
           <!-- Form -->
@@ -79,7 +79,7 @@ function strongPasswordValidator(control: any) {
             <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
               <!-- Name Field -->
               <div class="mb-6">
-                <label class="block text-amber-900 font-mono text-sm font-bold mb-2" for="name">
+                <label class="block text-brand-navy font-mono text-sm font-bold mb-2" for="name">
                   Full Name
                 </label>
                 <input
@@ -87,7 +87,7 @@ function strongPasswordValidator(control: any) {
                   type="text"
                   formControlName="name"
                   placeholder="Your full name"
-                  class="w-full px-4 py-3 border-2 border-amber-300 focus:border-amber-600 focus:outline-none bg-white font-mono text-sm transition-colors"
+                  class="w-full px-4 py-3 border-2 border-brand-accent-gold focus:border-brand-accent-gold focus:outline-none bg-white font-mono text-sm transition-colors"
                   [class.border-red-400]="isFieldInvalid('name')"
                 />
                 
@@ -105,7 +105,7 @@ function strongPasswordValidator(control: any) {
 
               <!-- Email Field -->
               <div class="mb-6">
-                <label class="block text-amber-900 font-mono text-sm font-bold mb-2" for="email">
+                <label class="block text-brand-navy font-mono text-sm font-bold mb-2" for="email">
                   Email Address
                 </label>
                 <input
@@ -131,7 +131,7 @@ function strongPasswordValidator(control: any) {
 
               <!-- Password Field -->
               <div class="mb-6">
-                <label class="block text-amber-900 font-mono text-sm font-bold mb-2" for="password">
+                <label class="block text-brand-navy font-mono text-sm font-bold mb-2" for="password">
                   Password
                 </label>
                 <div class="relative">
@@ -140,7 +140,7 @@ function strongPasswordValidator(control: any) {
                     [type]="showPassword() ? 'text' : 'password'"
                     formControlName="password"
                     placeholder="Create a strong password"
-                    class="w-full px-4 py-3 border-2 border-amber-300 focus:border-amber-600 focus:outline-none bg-white font-mono text-sm transition-colors pr-12"
+                    class="w-full px-4 py-3 border-2 border-brand-accent-gold focus:border-brand-accent-gold focus:outline-none bg-white font-mono text-sm transition-colors pr-12"
                     [class.border-red-400]="isFieldInvalid('password')"
                   />
                   
@@ -148,7 +148,7 @@ function strongPasswordValidator(control: any) {
                   <button
                     type="button"
                     (click)="togglePasswordVisibility()"
-                    class="absolute inset-y-0 right-0 flex items-center px-3 text-amber-600 hover:text-amber-800 transition-colors"
+                    class="absolute inset-y-0 right-0 flex items-center px-3 text-brand-accent-gold hover:text-brand-navy transition-colors"
                   >
                     @if (showPassword()) {
                       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -204,7 +204,7 @@ function strongPasswordValidator(control: any) {
                     [type]="showConfirmPassword() ? 'text' : 'password'"
                     formControlName="confirmPassword"
                     placeholder="Confirm your password"
-                    class="w-full px-4 py-3 border-2 border-amber-300 focus:border-amber-600 focus:outline-none bg-white font-mono text-sm transition-colors pr-12"
+                    class="w-full px-4 py-3 border-2 border-brand-accent-gold focus:border-brand-accent-gold focus:outline-none bg-white font-mono text-sm transition-colors pr-12"
                     [class.border-red-400]="isFieldInvalid('confirmPassword')"
                   />
                   
@@ -212,7 +212,7 @@ function strongPasswordValidator(control: any) {
                   <button
                     type="button"
                     (click)="toggleConfirmPasswordVisibility()"
-                    class="absolute inset-y-0 right-0 flex items-center px-3 text-amber-600 hover:text-amber-800 transition-colors"
+                    class="absolute inset-y-0 right-0 flex items-center px-3 text-brand-accent-gold hover:text-brand-navy transition-colors"
                   >
                     @if (showConfirmPassword()) {
                       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -245,11 +245,11 @@ function strongPasswordValidator(control: any) {
                   <input 
                     type="checkbox" 
                     formControlName="acceptTerms"
-                    class="mt-1 text-amber-600 border-2 border-amber-300 focus:ring-amber-500"
+                    class="mt-1 text-brand-accent-gold border-2 border-brand-accent-gold focus:ring-brand-accent-gold"
                   />
-                  <span class="text-amber-700 text-sm font-mono leading-relaxed">
+                    <span class="text-brand-accent-gold text-sm font-mono leading-relaxed">
                     I agree to the 
-                    <a routerLink="/terms" class="underline hover:text-amber-900 transition-colors">Terms of Service</a> 
+                    <a routerLink="/terms" class="underline hover:text-brand-navy transition-colors">Terms of Service</a> 
                     and 
                     <a routerLink="/privacy" class="underline hover:text-amber-900 transition-colors">Privacy Policy</a>
                   </span>
@@ -266,11 +266,11 @@ function strongPasswordValidator(control: any) {
               <button
                 type="submit"
                 [disabled]="registerForm.invalid || loading()"
-                class="w-full bg-amber-800 text-amber-100 py-3 px-6 font-mono text-sm uppercase tracking-wider hover:bg-amber-700 transition-colors border-2 border-amber-700 hover:border-amber-600 disabled:opacity-50 disabled:cursor-not-allowed"
+                class="w-full bg-brand-accent-gold text-brand-navy py-3 px-6 font-mono text-sm uppercase tracking-wider hover:bg-brand-accent-gold/90 transition-colors border-2 border-brand-accent-gold hover:border-brand-accent-gold disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 @if (loading()) {
                   <div class="flex items-center justify-center gap-2">
-                    <div class="w-4 h-4 border-2 border-amber-100 border-t-transparent rounded-full animate-spin"></div>
+                    <div class="w-4 h-4 border-2 border-brand-accent-gold border-t-transparent rounded-full animate-spin"></div>
                     Creating Account...
                   </div>
                 } @else {
@@ -282,11 +282,11 @@ function strongPasswordValidator(control: any) {
             <!-- Divider -->
             <div class="mt-8 mb-8">
               <div class="relative">
-                <div class="absolute inset-0 flex items-center">
-                  <div class="w-full border-t-2 border-dotted border-amber-300"></div>
+                  <div class="absolute inset-0 flex items-center">
+                  <div class="w-full border-t-2 border-dotted border-brand-accent-gold"></div>
                 </div>
                 <div class="relative flex justify-center text-xs">
-                  <span class="bg-amber-50 px-4 text-amber-600 font-mono uppercase tracking-wider">
+                  <span class="bg-surface px-4 text-brand-accent-gold font-mono uppercase tracking-wider">
                     Already have an account?
                   </span>
                 </div>
@@ -295,12 +295,12 @@ function strongPasswordValidator(control: any) {
 
             <!-- Login Link -->
             <div class="text-center">
-              <p class="text-amber-700 text-sm font-mono mb-4">
+              <p class="text-brand-accent-gold text-sm font-mono mb-4">
                 Welcome back! Sign in to continue.
               </p>
               <a 
                 routerLink="/auth/login"
-                class="inline-block bg-amber-100 text-amber-900 py-3 px-8 font-mono text-sm uppercase tracking-wider hover:bg-amber-200 transition-colors border-2 border-amber-300 hover:border-amber-400"
+                class="inline-block bg-surface text-brand-navy py-3 px-8 font-mono text-sm uppercase tracking-wider hover:bg-brand-accent-gold/10 transition-colors border-2 border-brand-accent-gold hover:border-brand-accent-gold"
               >
                 Sign In
               </a>
@@ -312,22 +312,22 @@ function strongPasswordValidator(control: any) {
         <div class="text-center mt-8">
           <a 
             routerLink="/"
-            class="inline-flex items-center gap-2 text-amber-700 hover:text-amber-900 font-mono text-sm transition-colors"
+            class="inline-flex items-center gap-2 text-brand-accent-gold hover:text-brand-navy font-mono text-sm transition-colors"
           >
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
             </svg>
-            Back to Motherworld
+            Back to Xandar
           </a>
         </div>
 
         <!-- Welcome Quote -->
         <div class="mt-8 text-center">
-          <div class="bg-amber-100 border-2 border-dotted border-amber-400 p-4">
-            <blockquote class="text-amber-800 italic font-serif text-sm">
+          <div class="bg-surface border-2 border-dotted border-brand-accent-gold p-4">
+            <blockquote class="text-brand-accent-gold italic font-serif text-sm">
               "The best time to plant a tree was 20 years ago. The second best time is now."
             </blockquote>
-            <cite class="text-amber-600 font-mono text-xs mt-2 block">— Chinese Proverb</cite>
+            <cite class="text-brand-accent-gold font-mono text-xs mt-2 block">— Chinese Proverb</cite>
           </div>
         </div>
       </div>
@@ -338,7 +338,7 @@ function strongPasswordValidator(control: any) {
     input[type="checkbox"] {
       appearance: none;
       background-color: white;
-      border: 2px solid #d97706;
+      border: 2px solid #D4A761;
       width: 1rem;
       height: 1rem;
       position: relative;
@@ -346,7 +346,7 @@ function strongPasswordValidator(control: any) {
     }
 
     input[type="checkbox"]:checked {
-      background-color: #d97706;
+      background-color: #D4A761;
     }
 
     input[type="checkbox"]:checked::before {
@@ -361,20 +361,20 @@ function strongPasswordValidator(control: any) {
     }
 
     input[type="checkbox"]:focus {
-      outline: 2px solid #f59e0b;
+      outline: 2px solid #D4A761;
       outline-offset: 2px;
     }
 
     /* Vintage form styling */
     input:focus {
-      box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.1);
+      box-shadow: 0 0 0 3px rgba(212, 167, 97, 0.1);
     }
 
     /* Paper texture effect */
-    .bg-amber-50 {
+    .bg-surface {
       background-image: 
         radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.03) 0%, transparent 50%),
-        radial-gradient(circle at 80% 20%, rgba(255, 200, 124, 0.03) 0%, transparent 50%);
+        radial-gradient(circle at 80% 20%, rgba(212, 167, 97, 0.03) 0%, transparent 50%);
     }
 
     /* Password strength animation */

@@ -10,21 +10,21 @@ import { CreatePostRequest, UpdatePostRequest, Post, Tag, Media } from '../../..
 @Component({
   selector: 'app-write',
   standalone: true,
-  imports: [CommonModule, RouterLink, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule],
   template: `
-    <div class="min-h-screen bg-gradient-to-b from-amber-25 to-orange-25 pb-12">
+  <div class="min-h-screen bg-gradient-to-b from-[rgba(11,12,16,0.5)] to-[rgba(26,26,36,0.5)] pb-12">
       <!-- Header -->
-      <header class="bg-amber-100 border-4 border-amber-800 p-6 mb-8">
+  <header class="bg-brand-navy/70 border-4 border-brand-accent-gold/20 p-6 mb-8">
         <div class="max-w-6xl mx-auto">
           <div class="flex items-center justify-between">
             <div>
-              <div class="inline-block bg-amber-800 text-amber-100 px-4 py-1 text-xs font-mono uppercase tracking-widest mb-2">
+              <div class="inline-block bg-brand-accent-gold text-black px-4 py-1 text-xs font-mono uppercase tracking-widest mb-2" style="box-shadow: var(--glow-gold)">
                 {{ isEditing() ? 'Edit Article' : 'New Article' }}
               </div>
-              <h1 class="font-serif text-2xl md:text-3xl font-bold text-amber-900">
+              <h1 class="font-serif text-2xl md:text-3xl font-bold text-white">
                 {{ isEditing() ? 'Edit Your Story' : 'Share Your Story' }}
               </h1>
-              <p class="text-amber-700 text-sm font-mono mt-1">
+              <p class="text-brand-accent-gold text-sm font-mono mt-1">
                 {{ isEditing() ? 'Refine your thoughts and republish' : 'Craft something meaningful for the world' }}
               </p>
             </div>
@@ -32,9 +32,9 @@ import { CreatePostRequest, UpdatePostRequest, Post, Tag, Media } from '../../..
             <!-- Auto-save Status -->
             <div class="text-right">
               @if (autoSaveStatus()) {
-                <div class="flex items-center gap-2 text-sm font-mono text-amber-600 mb-2">
+                <div class="flex items-center gap-2 text-sm font-mono text-brand-accent-gold mb-2">
                   @if (autoSaving()) {
-                    <div class="w-3 h-3 border border-amber-600 border-t-transparent rounded-full animate-spin"></div>
+                    <div class="w-3 h-3 border border-brand-accent-gold border-t-transparent rounded-full animate-spin"></div>
                     <span>Auto-saving...</span>
                   } @else if (lastSaved()) {
                     <svg class="w-4 h-4 text-green-600" fill="currentColor" viewBox="0 0 20 20">
@@ -45,7 +45,7 @@ import { CreatePostRequest, UpdatePostRequest, Post, Tag, Media } from '../../..
                 </div>
               }
               
-              <div class="text-xs text-amber-600 font-mono">
+              <div class="text-xs text-brand-accent-gold font-mono">
                 {{ wordCount() }} words • {{ readingTime() }} min read
               </div>
             </div>
@@ -60,14 +60,14 @@ import { CreatePostRequest, UpdatePostRequest, Post, Tag, Media } from '../../..
             <div class="lg:col-span-2">
               <!-- Title -->
               <div class="mb-8">
-                <label class="block text-amber-900 font-mono text-sm font-bold mb-3">
+                <label class="block text-white font-mono text-sm font-bold mb-3">
                   Article Title
                 </label>
                 <input
                   type="text"
                   formControlName="title"
                   placeholder="Write a compelling title..."
-                  class="w-full px-6 py-4 text-2xl font-serif border-4 border-amber-300 focus:border-amber-600 focus:outline-none bg-white text-amber-900 placeholder-amber-400"
+                  class="w-full px-6 py-4 text-2xl font-serif border-4 border-brand-accent-gold focus:border-brand-accent-gold focus:outline-none bg-surface text-brand-navy placeholder-brand-accent-gold"
                   [class.border-red-400]="isFieldInvalid('title')"
                 />
                 
@@ -84,25 +84,25 @@ import { CreatePostRequest, UpdatePostRequest, Post, Tag, Media } from '../../..
 
               <!-- Excerpt -->
               <div class="mb-8">
-                <label class="block text-amber-900 font-mono text-sm font-bold mb-3">
-                  Excerpt <span class="text-amber-600 font-normal">(Optional but recommended)</span>
+                <label class="block text-white font-mono text-sm font-bold mb-3">
+                  Excerpt <span class="text-brand-accent-gold font-normal">(Optional but recommended)</span>
                 </label>
                 <textarea
                   formControlName="excerpt"
                   rows="3"
                   placeholder="A brief description that will appear in previews..."
-                  class="w-full px-4 py-3 border-2 border-amber-300 focus:border-amber-600 focus:outline-none bg-white font-mono text-sm text-amber-900 placeholder-amber-400 resize-none"
+                  class="w-full px-4 py-3 border-2 border-brand-accent-gold focus:border-brand-accent-gold focus:outline-none bg-surface font-mono text-sm text-brand-navy placeholder-brand-accent-gold resize-none"
                 ></textarea>
                 
-                <div class="mt-2 text-xs font-mono text-amber-600">
+                <div class="mt-2 text-xs font-mono text-brand-accent-gold">
                   {{ (postForm.get('excerpt')?.value || '').length }}/200 characters
                 </div>
               </div>
 
               <!-- Cover Image -->
               <div class="mb-8">
-                <label class="block text-amber-900 font-mono text-sm font-bold mb-3">
-                  Cover Image <span class="text-amber-600 font-normal">(Optional)</span>
+                <label class="block text-white font-mono text-sm font-bold mb-3">
+                  Cover Image <span class="text-brand-accent-gold font-normal">(Optional)</span>
                 </label>
                 
                 @if (coverImageUrl()) {
@@ -110,7 +110,7 @@ import { CreatePostRequest, UpdatePostRequest, Post, Tag, Media } from '../../..
                     <img 
                       [src]="coverImageUrl()" 
                       alt="Cover image" 
-                      class="w-full h-64 object-cover border-4 border-amber-300"
+                      class="w-full h-64 object-cover border-4 border-brand-accent-gold"
                     />
                     <button
                       type="button"
@@ -123,7 +123,7 @@ import { CreatePostRequest, UpdatePostRequest, Post, Tag, Media } from '../../..
                     </button>
                   </div>
                 } @else {
-                  <div class="border-4 border-dotted border-amber-300 p-8 text-center">
+                  <div class="border-4 border-dotted border-brand-accent-gold p-8 text-center">
                     <input
                       #fileInput
                       type="file"
@@ -133,7 +133,7 @@ import { CreatePostRequest, UpdatePostRequest, Post, Tag, Media } from '../../..
                     />
                     
                     @if (uploadingImage()) {
-                      <div class="flex items-center justify-center gap-3 text-amber-700">
+                      <div class="flex items-center justify-center gap-3 text-brand-accent-gold">
                         <div class="w-6 h-6 border-2 border-amber-700 border-t-transparent rounded-full animate-spin"></div>
                         <span class="font-mono text-sm">Uploading image...</span>
                       </div>
@@ -248,7 +248,7 @@ You can use **bold**, *italic*, and other Markdown formatting.
 - Another item
 
 [Link text](https://example.com)"
-                  class="w-full px-6 py-4 border-4 border-amber-300 border-t-0 focus:border-amber-600 focus:outline-none bg-white font-mono text-sm text-amber-900 placeholder-amber-400 resize-none"
+                  class="w-full px-6 py-4 border-4 border-brand-accent-gold border-t-0 focus:border-brand-accent-gold focus:outline-none bg-surface font-mono text-sm text-brand-navy placeholder-brand-accent-gold resize-none"
                   [class.border-red-400]="isFieldInvalid('content')"
                   (keydown)="onKeyDown($event)"
                 ></textarea>
@@ -260,13 +260,13 @@ You can use **bold**, *italic*, and other Markdown formatting.
 
               <!-- Preview -->
               @if (showPreview()) {
-                <div class="mb-8 bg-white border-4 border-amber-300 p-6">
+                <div class="mb-8 bg-surface border-4 border-brand-accent-gold/20 p-6">
                   <div class="flex items-center justify-between mb-4">
-                    <h3 class="font-serif text-xl font-bold text-amber-900">Preview</h3>
+                    <h3 class="font-serif text-xl font-bold text-white">Preview</h3>
                     <button
                       type="button"
                       (click)="togglePreview()"
-                      class="text-amber-600 hover:text-amber-800 font-mono text-sm"
+                      class="text-brand-accent-gold hover:text-brand-accent-gold/90 font-mono text-sm"
                     >
                       Hide Preview
                     </button>
@@ -283,17 +283,17 @@ You can use **bold**, *italic*, and other Markdown formatting.
             <!-- Sidebar -->
             <div class="lg:col-span-1">
               <!-- Publish Settings -->
-              <div class="bg-amber-50 border-4 border-amber-300 p-6 mb-8">
-                <h3 class="font-serif text-xl font-bold text-amber-900 mb-4">Publish Settings</h3>
+              <div class="bg-surface border-4 border-brand-accent-gold/20 p-6 mb-8">
+                <h3 class="font-serif text-xl font-bold text-white mb-4">Publish Settings</h3>
                 
                 <!-- Status -->
                 <div class="mb-6">
-                  <label class="block text-amber-900 font-mono text-sm font-bold mb-2">
+                  <label class="block text-white font-mono text-sm font-bold mb-2">
                     Status
                   </label>
                   <select 
                     formControlName="status"
-                    class="w-full px-4 py-3 border-2 border-amber-300 focus:border-amber-600 focus:outline-none bg-white font-mono text-sm"
+                    class="w-full px-4 py-3 border-2 border-brand-accent-gold focus:border-brand-accent-gold focus:outline-none bg-surface font-mono text-sm"
                   >
                     <option value="draft">Save as Draft</option>
                     <option value="published">Publish Now</option>
@@ -306,7 +306,7 @@ You can use **bold**, *italic*, and other Markdown formatting.
                     <button
                       type="button"
                       (click)="togglePreview()"
-                      class="w-full bg-amber-200 text-amber-900 py-3 px-4 font-mono text-sm uppercase tracking-wider hover:bg-amber-300 transition-colors border-2 border-amber-400"
+                      class="w-full bg-brand-accent-gold text-brand-navy py-3 px-4 font-mono text-sm uppercase tracking-wider hover:bg-brand-accent-gold/90 transition-colors border-2 border-brand-accent-gold"
                     >
                       Preview Article
                     </button>
@@ -316,7 +316,7 @@ You can use **bold**, *italic*, and other Markdown formatting.
                     type="button"
                     (click)="saveDraft()"
                     [disabled]="!postForm.get('title')?.value || saving()"
-                    class="w-full bg-amber-100 text-amber-900 py-3 px-4 font-mono text-sm uppercase tracking-wider hover:bg-amber-200 transition-colors border-2 border-amber-300 disabled:opacity-50"
+                    class="w-full bg-brand-accent-gold/10 text-brand-navy py-3 px-4 font-mono text-sm uppercase tracking-wider hover:bg-brand-accent-gold/20 transition-colors border-2 border-brand-accent-gold disabled:opacity-50"
                   >
                     @if (saving()) {
                       Saving...
@@ -328,7 +328,7 @@ You can use **bold**, *italic*, and other Markdown formatting.
                   <button
                     type="submit"
                     [disabled]="postForm.invalid || saving()"
-                    class="w-full bg-amber-800 text-amber-100 py-3 px-4 font-mono text-sm uppercase tracking-wider hover:bg-amber-700 transition-colors border-2 border-amber-700 disabled:opacity-50"
+                    class="w-full bg-brand-accent-gold text-brand-navy py-3 px-4 font-mono text-sm uppercase tracking-wider hover:bg-brand-accent-gold/90 transition-colors border-2 border-brand-accent-gold disabled:opacity-50"
                   >
                     @if (saving()) {
                       <div class="flex items-center justify-center gap-2">
@@ -342,7 +342,7 @@ You can use **bold**, *italic*, and other Markdown formatting.
                 </div>
                 
                 @if (isEditing()) {
-                  <div class="mt-4 pt-4 border-t border-amber-300">
+                  <div class="mt-4 pt-4 border-t border-brand-accent-gold/20">
                     <button
                       type="button"
                       (click)="deletePost()"
@@ -355,8 +355,8 @@ You can use **bold**, *italic*, and other Markdown formatting.
               </div>
 
               <!-- Tags -->
-              <div class="bg-amber-50 border-4 border-amber-300 p-6 mb-8">
-                <h3 class="font-serif text-xl font-bold text-amber-900 mb-4">Tags</h3>
+              <div class="bg-surface border-4 border-brand-accent-gold/20 p-6 mb-8">
+                <h3 class="font-serif text-xl font-bold text-white mb-4">Tags</h3>
                 
                 <!-- Tag Input -->
                 <div class="mb-4">
@@ -366,9 +366,9 @@ You can use **bold**, *italic*, and other Markdown formatting.
                     (keydown.enter)="addTag($event)"
                     (keydown.comma)="addTag($event)"
                     placeholder="Add tags (press Enter or comma)"
-                    class="w-full px-4 py-3 border-2 border-amber-300 focus:border-amber-600 focus:outline-none bg-white font-mono text-sm"
+                    class="w-full px-4 py-3 border-2 border-brand-accent-gold focus:border-brand-accent-gold focus:outline-none bg-surface font-mono text-sm"
                   />
-                  <p class="text-xs font-mono text-amber-600 mt-1">
+                  <p class="text-xs font-mono text-brand-accent-gold mt-1">
                     Press Enter or comma to add tags
                   </p>
                 </div>
@@ -377,7 +377,7 @@ You can use **bold**, *italic*, and other Markdown formatting.
                 @if (selectedTags().length > 0) {
                   <div class="flex flex-wrap gap-2 mb-4">
                     @for (tag of selectedTags(); track tag) {
-                      <span class="inline-flex items-center gap-1 bg-amber-200 text-amber-800 px-3 py-1 text-sm font-mono">
+                      <span class="inline-flex items-center gap-1 bg-brand-accent-gold/10 text-brand-navy px-3 py-1 text-sm font-mono">
                         {{ tag }}
                         <button
                           type="button"
@@ -401,7 +401,7 @@ You can use **bold**, *italic*, and other Markdown formatting.
                           type="button"
                           (click)="addPopularTag(tag.name)"
                           [disabled]="selectedTags().includes(tag.name)"
-                          class="text-xs font-mono bg-amber-100 text-amber-700 px-2 py-1 hover:bg-amber-200 transition-colors border border-amber-400 disabled:opacity-50"
+                          class="text-xs font-mono bg-brand-accent-gold/10 text-brand-accent-gold px-2 py-1 hover:bg-brand-accent-gold/20 transition-colors border border-brand-accent-gold disabled:opacity-50"
                         >
                           {{ tag.name }}
                         </button>
@@ -412,12 +412,12 @@ You can use **bold**, *italic*, and other Markdown formatting.
               </div>
 
               <!-- Tips -->
-              <div class="bg-amber-900 text-amber-100 border-4 border-amber-700 p-6">
+              <div class="bg-brand-navy text-white border-4 border-brand-accent-gold p-6">
                 <h3 class="font-serif text-lg font-bold mb-4">Writing Tips</h3>
                 
                 <div class="space-y-3 text-sm">
                   <div class="flex items-start gap-2">
-                    <span class="text-amber-400 mt-1">•</span>
+                    <span class="text-brand-accent-gold mt-1">•</span>
                     <span>Write a compelling title that makes people want to read more</span>
                   </div>
                   
@@ -451,9 +451,9 @@ You can use **bold**, *italic*, and other Markdown formatting.
   styles: [`
     /* Custom prose styles for preview */
     .prose h1, .prose h2, .prose h3, .prose h4, .prose h5, .prose h6 {
-      font-family: 'Georgia', serif;
+      font-family: 'Playfair Display', serif;
       font-weight: 700;
-      color: #92400e;
+      color: var(--brand-accent);
       margin-top: 2em;
       margin-bottom: 1em;
     }
@@ -461,29 +461,29 @@ You can use **bold**, *italic*, and other Markdown formatting.
     .prose p {
       margin-bottom: 1.5em;
       line-height: 1.8;
-      color: #92400e;
+      color: var(--text-primary);
     }
 
     .prose blockquote {
-      border-left: 4px solid #d97706;
-      background: #fef3cd;
+      border-left: 4px solid var(--brand-accent);
+      background: linear-gradient(90deg, rgba(212,167,97,0.06), rgba(121,82,243,0.02));
       padding: 1rem 1.5rem;
       margin: 2rem 0;
       font-style: italic;
-      color: #b45309;
+      color: var(--text-secondary);
     }
 
     .prose code {
-      background: #fef3cd;
+      background: rgba(121,82,243,0.04);
       padding: 0.25rem 0.5rem;
       border-radius: 0.25rem;
       font-family: 'Monaco', monospace;
       font-size: 0.875em;
-      color: #92400e;
+      color: var(--brand-accent);
     }
 
     .prose pre {
-      background: #92400e;
+      background: #0b0f1c;
       color: #fef3cd;
       padding: 1.5rem;
       overflow-x: auto;
@@ -492,7 +492,7 @@ You can use **bold**, *italic*, and other Markdown formatting.
     }
 
     .prose a {
-      color: #b45309;
+      color: var(--brand-accent);
       text-decoration: underline;
     }
 

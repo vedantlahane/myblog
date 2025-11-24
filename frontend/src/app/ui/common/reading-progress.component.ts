@@ -11,7 +11,7 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
   template: `
     <div class="pointer-events-none fixed inset-x-0 top-0 z-50 h-1 bg-transparent" aria-hidden="true">
       <div
-        class="h-full w-full origin-left bg-gradient-to-r from-feedback-success to-brand-accent transition-transform duration-200 ease-out"
+    class="h-full w-full origin-left bg-gradient-to-r from-brand-cyan to-brand-accent-violet transition-transform duration-200 ease-out"
         [style.transform]="'scaleX(' + progress + ')'"
         role="presentation"
       ></div>

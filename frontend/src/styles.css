@@ -4,12 +4,14 @@
 @layer base {
   :root {
     color-scheme: light;
-    --brand-blue: #20409a;
-    --brand-blue-hover: #1b3585;
-    --brand-accent: #805cf3;
-    --brand-navy: #10162f;
-    --surface: #ffffff;
-    --surface-muted: #f6f8fb;
+  --brand-blue: #7952F3; /* cosmic violet (primary accent, used by existing brand-blue classes) */
+  --brand-blue-hover: #5D2EE6; /* violet hover */
+  --brand-accent: #D4A761; /* imperial gold */
+  --brand-navy: #0B0C10; /* deep space black */
+  --brand-cyan: #66FCF1; /* neon cyan */
+  --brand-red: #C3073F; /* rebel red */
+  --surface: #ffffff;
+  --surface-muted: #f6f8fb;
     --surface-elevated: #ffffff;
     --surface-dark: #10131a;
     --surface-darkest: #07090f;
@@ -23,25 +25,35 @@
     --feedback-success: #04a85b;
     --feedback-error: #d43d2a;
     --transition-base: cubic-bezier(0.22, 1, 0.36, 1);
-    --shadow-card: 0 10px 30px rgba(16, 24, 40, 0.12);
-    --shadow-card-hover: 0 18px 40px rgba(16, 24, 40, 0.16);
+    --shadow-card: 0 8px 20px rgba(2, 4, 8, 0.4);
+    --shadow-card-hover: 0 18px 40px rgba(86, 52, 195, 0.14);
+    --glow-violet: 0 0 16px rgba(121,82,243,0.18);
+    --glow-gold: 0 0 20px rgba(212,167,97,0.12);
   }
 
   [data-theme='dark'] {
     color-scheme: dark;
-    --surface: #10131a;
-    --surface-muted: #07090f;
+  --surface: #0B0C10; /* deep space */
+  --surface-muted: #07090f;
     --surface-elevated: #151928;
     --surface-dark: #07090f;
-    --text-primary: #f4f6fb;
-    --text-secondary: #a8b3c3;
+  --text-primary: #FFFFFF;
+  --text-secondary: #A4A8AF;
     --text-subtle: #7a8599;
     --border-default: rgba(255, 255, 255, 0.12);
     --ui-background: #0c0f19;
     --ui-surface: #111624;
     --ui-border: rgba(255, 255, 255, 0.12);
-    --shadow-card: 0 20px 40px rgba(2, 6, 23, 0.65);
-    --shadow-card-hover: 0 24px 48px rgba(2, 6, 23, 0.75);
+    --shadow-card: 0 14px 36px rgba(2, 6, 12, 0.75);
+    --shadow-card-hover: 0 24px 48px rgba(86, 52, 195, 0.22);
+    --glow-violet: 0 0 22px rgba(121,82,243,0.25);
+    --glow-gold: 0 0 26px rgba(212,167,97,0.20);
+  }
+
+  /* Subtle cosmic background gradients for dark mode */
+  [data-theme='dark'] body {
+    background-image: radial-gradient(ellipse at 10% 10%, rgba(121,82,243,0.06), transparent 12%), radial-gradient(ellipse at 90% 80%, rgba(102,252,241,0.03), transparent 28%);
+    background-repeat: no-repeat;
   }
 
   *,
@@ -74,10 +86,11 @@
   h4,
   h5,
   h6 {
-    font-family: "Inter", sans-serif;
-    font-weight: 600;
+    font-family: "Playfair Display", "Inter", serif;
+    font-weight: 700;
     color: inherit;
-    letter-spacing: -0.01em;
+    letter-spacing: 0.01em;
+    text-transform: none;
   }
 
   p {
@@ -213,6 +226,7 @@
   .btn-primary:focus-visible {
     background: var(--brand-blue-hover);
     transform: translateY(-1px);
+    box-shadow: var(--glow-violet);
   }
 
   .btn-primary:focus-visible {
@@ -274,7 +288,7 @@
     display: flex;
     flex-direction: column;
     height: 100%;
-    border-radius: 1.5rem;
+    border-radius: 12px;
     border: 1px solid var(--ui-border);
     background: var(--ui-surface);
     box-shadow: var(--shadow-card);
@@ -288,6 +302,32 @@
   .blog-card:focus-within {
     transform: translateY(-2px);
     box-shadow: var(--shadow-card-hover);
+    border-color: rgba(121,82,243,0.6);
+    outline: 2px solid rgba(121,82,243,0.06);
+  }
+
+  /* Neon pill for tags */
+  .tag-pill-sci {
+    border: 1px solid rgba(121,82,243,0.16);
+    background: transparent;
+    color: var(--text-secondary);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-family: 'Source Code Pro', monospace;
+    font-size: 0.7rem;
+  }
+
+  .tag-pill-sci:hover {
+    border-color: rgba(66,244,236,0.8);
+    box-shadow: var(--glow-violet);
+    color: var(--brand-cyan);
+  }
+
+  /* Hero overlay for nebula/soft gradient */
+  .hero-overlay {
+    background: linear-gradient(180deg, rgba(11,12,16,0.24) 0%, rgba(11,12,16,0.5) 80%);
+    mix-blend-mode: screen;
+    pointer-events: none;
   }
 
   .blog-card img {

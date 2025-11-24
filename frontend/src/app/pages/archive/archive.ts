@@ -368,7 +368,7 @@ import { Post, Tag, PostQueryParams, PostsResponse } from '../../../types/api';
             </a>
             <span class="text-text-secondary">•</span>
               <a routerLink="/about" class="font-mono text-sm text-brand-blue underline hover:text-brand-blue/80">
-              About Motherworld
+              About Xandar
             </a>
           </div>
         </div>

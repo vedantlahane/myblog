@@ -29,7 +29,7 @@ interface SearchResults {
             @if (searchQuery()) {
               Results for "{{ searchQuery() }}"
             } @else {
-              Search Motherworld
+              Search Xandar
             }
           </h1>
           
@@ -84,7 +84,7 @@ interface SearchResults {
           <div class="py-16 text-center">
             <div class="inline-block rounded-2xl border border-border-default bg-surface p-12 shadow-card dark:border-border-dark dark:bg-surface-dark">
               <div class="mb-6 text-6xl">🔍</div>
-              <h2 class="mb-4 text-2xl font-semibold text-text-primary">Discover Motherworld</h2>
+              <h2 class="mb-4 text-2xl font-semibold text-text-primary">Discover Xandar</h2>
               <p class="mx-auto mb-8 max-w-lg text-text-secondary">
                 Search through our collection of articles, discover new authors, and explore topics that interest you.
               </p>

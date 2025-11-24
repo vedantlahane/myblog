@@ -19,7 +19,7 @@ export interface NavLink {
     class: 'relative z-50 block',
   },
   template: `
-    <header class="sticky top-0 border-b border-border-default/80 bg-surface/90 backdrop-blur-md transition-colors duration-200 ease-out dark:border-border-dark dark:bg-surface-dark/90">
+  <header class="sticky top-0 border-b border-border-default/80 bg-surface/90 backdrop-blur-md transition-colors duration-200 ease-out dark:border-border-dark dark:bg-surface-dark/90" style="box-shadow: 0 6px 20px rgba(121,82,243,0.06);">
       <div class="mx-auto flex h-16 w-full max-w-6xl items-center justify-between gap-3 px-4 md:h-20 md:px-6">
         <div class="flex items-center gap-3 md:gap-8">
           <button
@@ -40,8 +40,8 @@ export interface NavLink {
             }
           </button>
 
-          <a routerLink="/" class="inline-flex items-center gap-3 rounded-xl px-1 py-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue/30">
-            <span class="flex h-10 w-10 items-center justify-center rounded-full bg-brand-blue text-sm font-bold tracking-tight text-white shadow-card" aria-hidden="true">MB</span>
+            <a routerLink="/" class="inline-flex items-center gap-3 rounded-xl px-1 py-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue/30">
+            <img src="/mw-logo.svg" alt="Xandar" class="h-10 w-10 rounded-full object-cover shadow-card border border-transparent" aria-hidden="true" style="box-shadow: var(--glow-violet), var(--shadow-card);" />
             <span class="hidden flex-col leading-tight sm:flex">
               <span class="text-base font-semibold tracking-tight text-text-primary transition-colors duration-200 dark:text-white md:text-lg">{{ blogTitle }}</span>
               <span class="text-xs font-medium text-text-secondary dark:text-slate-300">{{ blogSubtitle }}</span>
@@ -87,7 +87,7 @@ export interface NavLink {
           @if (!isAuthenticated) {
             <a
               routerLink="/auth"
-              class="hidden items-center justify-center gap-2 rounded-xl bg-brand-blue px-5 py-2 text-sm font-semibold uppercase tracking-wide text-white transition-all duration-200 hover:bg-brand-blue-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue/30 sm:inline-flex"
+              class="hidden items-center justify-center gap-2 rounded-xl bg-brand-accent-gold px-5 py-2 text-sm font-semibold uppercase tracking-wide text-brand-navy transition-all duration-200 hover:bg-brand-accent-gold/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent-gold/30 sm:inline-flex"
             >
               Join
             </a>
@@ -132,7 +132,7 @@ export interface NavLink {
           @if (!isAuthenticated) {
             <a
               routerLink="/auth"
-              class="inline-flex items-center justify-center gap-2 rounded-xl bg-brand-blue px-4 py-2 text-sm font-semibold uppercase tracking-wide text-white transition-all duration-200 hover:bg-brand-blue-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue/30 sm:hidden"
+              class="inline-flex items-center justify-center gap-2 rounded-xl bg-brand-accent-gold px-4 py-2 text-sm font-semibold uppercase tracking-wide text-brand-navy transition-all duration-200 hover:bg-brand-accent-gold/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent-gold/30 sm:hidden"
             >
               Join
             </a>

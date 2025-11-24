@@ -34,7 +34,7 @@ import { RouterLink } from '@angular/router';
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
             </svg>
-            Back to Motherworld
+            Back to Xandar
           </a>
         </div>
 
@@ -47,8 +47,8 @@ import { RouterLink } from '@angular/router';
             </h2>
             <div class="prose prose-amber max-w-none">
               <p class="text-amber-800 leading-relaxed mb-4">
-                Welcome to Motherworld! These Terms of Service ("Terms") govern your use of our website and services. 
-                By accessing or using Motherworld, you agree to be bound by these Terms and our Privacy Policy.
+                Welcome to Xandar! These Terms of Service ("Terms") govern your use of our website and services. 
+                By accessing or using Xandar, you agree to be bound by these Terms and our Privacy Policy.
               </p>
               <div class="p-4 bg-red-50 border-2 border-red-300">
                 <p class="text-red-800 text-sm">
@@ -65,7 +65,7 @@ import { RouterLink } from '@angular/router';
             </h2>
             
             <p class="text-amber-800 leading-relaxed mb-4">
-              Motherworld is a content publishing platform that allows users to:
+              Xandar is a content publishing platform that allows users to:
             </p>
             
             <div class="grid md:grid-cols-2 gap-4">
@@ -142,13 +142,13 @@ import { RouterLink } from '@angular/router';
               <div>
                 <h3 class="font-serif text-xl font-bold text-amber-900 mb-3">Content Ownership</h3>
                 <p class="text-amber-800 leading-relaxed mb-3">
-                  You retain ownership of the content you create and publish on Motherworld. However, by posting content, you grant us certain rights to use and display your content.
+                  You retain ownership of the content you create and publish on Xandar. However, by posting content, you grant us certain rights to use and display your content.
                 </p>
                 
                 <div class="p-4 bg-amber-100 border-2 border-amber-400">
                   <h4 class="font-bold text-amber-900 mb-2">License Grant</h4>
                   <p class="text-amber-800 text-sm">
-                    You grant Motherworld a non-exclusive, worldwide, royalty-free license to use, display, distribute, and modify your content for the purpose of operating and improving our services.
+                    You grant Xandar a non-exclusive, worldwide, royalty-free license to use, display, distribute, and modify your content for the purpose of operating and improving our services.
                   </p>
                 </div>
               </div>
@@ -208,7 +208,7 @@ import { RouterLink } from '@angular/router';
             </h2>
             
             <p class="text-amber-800 leading-relaxed mb-4">
-              You agree to use Motherworld in accordance with all applicable laws and regulations. The following activities are strictly prohibited:
+              You agree to use Xandar in accordance with all applicable laws and regulations. The following activities are strictly prohibited:
             </p>
             
             <div class="space-y-4">
@@ -257,7 +257,7 @@ import { RouterLink } from '@angular/router';
               <div>
                 <h3 class="font-serif text-xl font-bold text-amber-900 mb-3">Our Intellectual Property</h3>
                 <p class="text-amber-800 leading-relaxed mb-3">
-                  Motherworld and its original content, features, and functionality are owned by us and are protected by international copyright, trademark, and other intellectual property laws.
+                  Xandar and its original content, features, and functionality are owned by us and are protected by international copyright, trademark, and other intellectual property laws.
                 </p>
               </div>
               
@@ -270,7 +270,7 @@ import { RouterLink } from '@angular/router';
                 <div class="p-4 bg-blue-50 border-2 border-blue-300">
                   <h4 class="font-bold text-blue-900 mb-2">DMCA Takedown Requests</h4>
                   <p class="text-blue-800 text-sm mb-2">
-                    Send copyright infringement notices to: <strong>dmca&#64;Motherworld.com</strong>
+                    Send copyright infringement notices to: <strong>dmca&#64;Xandar.com</strong>
                   </p>
                   <ul class="text-blue-800 text-sm space-y-1">
                     <li>• Identification of the copyrighted work</li>
@@ -286,7 +286,7 @@ import { RouterLink } from '@angular/router';
               <div>
                 <h3 class="font-serif text-xl font-bold text-amber-900 mb-3">Trademark Policy</h3>
                 <p class="text-amber-800 leading-relaxed">
-                  Our trademarks, service marks, and logos used in connection with Motherworld are our property. You may not use them without our prior written consent.
+                  Our trademarks, service marks, and logos used in connection with Xandar are our property. You may not use them without our prior written consent.
                 </p>
               </div>
             </div>
@@ -333,7 +333,7 @@ import { RouterLink } from '@angular/router';
               <div class="p-4 bg-yellow-50 border-2 border-yellow-300">
                 <h4 class="font-bold text-yellow-900 mb-2">⚠️ Service Disclaimer</h4>
                 <p class="text-yellow-800 text-sm">
-                  Motherworld is provided "as is" and "as available" without warranties of any kind. We do not guarantee that our service will be uninterrupted, secure, or error-free.
+                  Xandar is provided "as is" and "as available" without warranties of any kind. We do not guarantee that our service will be uninterrupted, secure, or error-free.
                 </p>
               </div>
               
@@ -465,16 +465,16 @@ import { RouterLink } from '@angular/router';
               <div class="p-4 bg-amber-100 border-2 border-amber-400">
                 <h4 class="font-bold text-amber-900 mb-3">📧 Email Support</h4>
                 <div class="space-y-2 text-amber-800 text-sm">
-            <p><strong>Legal Team:</strong> legal&#64;Motherworld.com</p>
-              <p><strong>General Support:</strong> support&#64;Motherworld.com</p>
-              <p><strong>Abuse Reports:</strong> abuse&#64;Motherworld.com</p>
+            <p><strong>Legal Team:</strong> legal&#64;Xandar.com</p>
+              <p><strong>General Support:</strong> support&#64;Xandar.com</p>
+              <p><strong>Abuse Reports:</strong> abuse&#64;Xandar.com</p>
                 </div>
               </div>
               
               <div class="p-4 bg-amber-100 border-2 border-amber-400">
                 <h4 class="font-bold text-amber-900 mb-3">📍 Legal Address</h4>
                 <div class="text-amber-800 text-sm">
-                  <p>Motherworld Legal Department<br>
+                  <p>Xandar Legal Department<br>
                   123 Blog Street<br>
                   Digital City, DC 12345<br>
                   United States</p>
@@ -487,7 +487,7 @@ import { RouterLink } from '@angular/router';
           <section>
             <div class="p-6 bg-green-50 border-4 border-green-400 text-center">
               <h3 class="font-serif text-xl font-bold text-green-900 mb-3">
-                Thank You for Using Motherworld!
+                Thank You for Using Xandar!
               </h3>
               <p class="text-green-800 text-sm">
                 By using our platform, you acknowledge that you have read, understood, and agree to be bound by these Terms of Service.
@@ -510,7 +510,7 @@ import { RouterLink } from '@angular/router';
               </a>
               
               <a 
-                href="mailto:legal@Motherworld.com"
+                href="mailto:legal@Xandar.com"
                 class="inline-block bg-amber-100 text-amber-900 px-6 py-3 font-mono text-sm uppercase tracking-wider hover:bg-amber-200 transition-colors border-2 border-amber-300"
               >
                 Legal Contact

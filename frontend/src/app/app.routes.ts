@@ -19,7 +19,7 @@ export const routes: Routes = [
   {
     path: '',
     loadComponent: () => import('./pages/home/home').then(c => c.HomeComponent),
-  title: 'Motherworld - Latest Articles'
+  title: 'Xandar - Latest Articles'
   },
 
   // Authentication Routes
@@ -35,17 +35,17 @@ export const routes: Routes = [
       {
         path: 'login',
         loadComponent: () => import('./pages/auth/login/login').then(c => c.LoginComponent),
-  title: 'Login - Motherworld'
+  title: 'Login - Xandar'
       },
       {
         path: 'register',
         loadComponent: () => import('./pages/auth/register/register').then(c => c.RegisterComponent),
-  title: 'Join Motherworld'
+  title: 'Join Xandar'
       },
       {
         path: 'forgot-password',
         loadComponent: () => import('./pages/auth/forgot-password/forgot-password').then(c => c.ForgotPasswordComponent),
-  title: 'Reset Password - Motherworld'
+  title: 'Reset Password - Xandar'
       }
     ]
   },
@@ -57,7 +57,7 @@ export const routes: Routes = [
       {
         path: ':slug',
         loadComponent: () => import('./pages/post-detail/post-detail').then(c => c.PostDetailComponent),
-  title: 'Article - Motherworld'
+  title: 'Article - Xandar'
       }
     ]
   },
@@ -66,7 +66,7 @@ export const routes: Routes = [
   {
     path: 'archive',
     loadComponent: () => import('./pages/archive/archive').then(c => c.ArchiveComponent),
-  title: 'Archive - Motherworld'
+  title: 'Archive - Xandar'
   },
 
   // Tag Routes
@@ -76,7 +76,7 @@ export const routes: Routes = [
       {
         path: ':slug',
         loadComponent: () => import('./pages/tag-posts/tag-posts').then(c => c.TagPostsComponent),
-  title: 'Tagged Articles - Motherworld'
+  title: 'Tagged Articles - Xandar'
       }
     ]
   },
@@ -85,14 +85,14 @@ export const routes: Routes = [
   {
     path: 'search',
     loadComponent: () => import('./pages/search/search').then(c => c.SearchComponent),
-  title: 'Search Results - Motherworld'
+  title: 'Search Results - Xandar'
   },
 
   // About Page
   {
     path: 'about',
     loadComponent: () => import('./pages/about/about').then(c => c.AboutComponent),
-  title: 'About - Motherworld'
+  title: 'About - Xandar'
   },
 
   // Protected User Routes
@@ -100,7 +100,7 @@ export const routes: Routes = [
     path: 'profile',
     canActivate: [authGuard],
     loadComponent: () => import('./pages/user-profile/profile').then(c => c.UserProfileComponent),
-  title: 'Profile - Motherworld'
+  title: 'Profile - Xandar'
   },
 
   {
@@ -110,12 +110,12 @@ export const routes: Routes = [
       {
         path: '',
         loadComponent: () => import('./pages/write/write').then(c => c.WriteComponent),
-  title: 'Write Article - Motherworld'
+  title: 'Write Article - Xandar'
       },
       {
         path: 'edit/:id',
         loadComponent: () => import('./pages/write/write').then(c => c.WriteComponent),
-  title: 'Edit Article - Motherworld'
+  title: 'Edit Article - Xandar'
       }
     ]
   },
@@ -124,14 +124,14 @@ export const routes: Routes = [
     path: 'drafts',
     canActivate: [authGuard],
     loadComponent: () => import('./pages/drafts/drafts').then(c => c.DraftsComponent),
-  title: 'My Drafts - Motherworld'
+  title: 'My Drafts - Xandar'
   },
 
   {
     path: 'bookmarks',
     canActivate: [authGuard],
     loadComponent: () => import('./pages/bookmarks/bookmarks').then(c => c.BookmarksComponent),
-  title: 'Bookmarks - Motherworld'
+  title: 'Bookmarks - Xandar'
   },
 
   // User Profile Routes
@@ -141,7 +141,7 @@ export const routes: Routes = [
       {
         path: ':id',
         loadComponent: () => import('./pages/user-profile/profile').then(c => c.UserProfileComponent),
-  title: 'User Profile - Motherworld'
+  title: 'User Profile - Xandar'
       }
     ]
   },
@@ -153,7 +153,7 @@ export const routes: Routes = [
       {
         path: ':slug',
         loadComponent: () => import('./pages/collection-detail/collection-detail').then(c => c.CollectionDetailComponent),
-  title: 'Collection - Motherworld'
+  title: 'Collection - Xandar'
       }
     ]
   },
@@ -162,7 +162,7 @@ export const routes: Routes = [
     path: 'collections',
     canActivate: [authGuard],
     loadComponent: () => import('./pages/collections/collections').then(c => c.CollectionsComponent),
-  title: 'My Collections - Motherworld'
+  title: 'My Collections - Xandar'
   },
 
   // Settings Routes
@@ -178,17 +178,17 @@ export const routes: Routes = [
       {
         path: 'profile',
         loadComponent: () => import('./pages/settings/profile-settings/profile-settings').then(c => c.ProfileSettingsComponent),
-  title: 'Profile Settings - Motherworld'
+  title: 'Profile Settings - Xandar'
       },
       {
         path: 'account',
         loadComponent: () => import('./pages/settings/account-settings/account-settings').then(c => c.AccountSettingsComponent),
-          title: 'Account Settings - Motherworld'
+          title: 'Account Settings - Xandar'
       },
       {
         path: 'notifications',
         loadComponent: () => import('./pages/settings/notification-settings/notification-settings').then(c => c.NotificationSettingsComponent),
-  title: 'Notification Settings - Motherworld'
+  title: 'Notification Settings - Xandar'
       }
     ]
   },
@@ -207,27 +207,27 @@ export const routes: Routes = [
       {
         path: 'dashboard',
         loadComponent: () => import('./pages/admin/dashboard/dashboard').then(c => c.AdminDashboardComponent),
-  title: 'Admin Dashboard - Motherworld'
+  title: 'Admin Dashboard - Xandar'
       },
       {
         path: 'posts',
         loadComponent: () => import('./pages/admin/posts/posts').then(c => c.AdminPostsComponent),
-  title: 'Manage Posts - Motherworld'
+  title: 'Manage Posts - Xandar'
       },
       {
         path: 'users',
         loadComponent: () => import('./pages/admin/users/users').then(c => c.AdminUsersComponent),
-  title: 'Manage Users - Motherworld'
+  title: 'Manage Users - Xandar'
       },
       {
         path: 'tags',
         loadComponent: () => import('./pages/admin/tags/tags').then(c => c.AdminTagsComponent),
-  title: 'Manage Tags - Motherworld'
+  title: 'Manage Tags - Xandar'
       },
       {
         path: 'media',
         loadComponent: () => import('./pages/admin/media/media').then(c => c.AdminMediaComponent),
-  title: 'Media Library - Motherworld'
+  title: 'Media Library - Xandar'
       }
     ]
   },
@@ -236,13 +236,13 @@ export const routes: Routes = [
   {
     path: 'privacy',
     loadComponent: () => import('./pages/legal/privacy/privacy').then(c => c.PrivacyComponent),
-  title: 'Privacy Policy - Motherworld'
+  title: 'Privacy Policy - Xandar'
   },
 
   {
     path: 'terms',
     loadComponent: () => import('./pages/legal/terms/terms').then(c => c.TermsComponent),
-  title: 'Terms of Service - Motherworld'
+  title: 'Terms of Service - Xandar'
   },
 
   // RSS Feed (handled by backend, but route for UI)
@@ -256,7 +256,7 @@ export const routes: Routes = [
   {
     path: '404',
     loadComponent: () => import('./pages/not-found/not-found').then(c => c.NotFoundComponent),
-  title: 'Page Not Found - Motherworld'
+  title: 'Page Not Found - Xandar'
   },
 
   // Wildcard route - must be last

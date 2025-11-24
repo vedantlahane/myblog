@@ -127,9 +127,9 @@ export class AppComponent implements OnInit, AfterViewInit {
   private readonly ngZone = inject(NgZone);
   private intersectionObserver: IntersectionObserver | null = null;
 
-  readonly blogTitle = 'Motherworld';
+  readonly blogTitle = 'Xandar';
   readonly blogSubtitle = 'Personal learning journal';
-  readonly footerDescription = 'Motherworld is a progressive library of ideas, tutorials, and experiments designed to guide you from curiosity to mastery—one focused insight at a time.';
+  readonly footerDescription = 'Xandar is a progressive library of ideas, tutorials, and experiments designed to guide you from curiosity to mastery—one focused insight at a time.';
   readonly currentYear = new Date().getFullYear();
 
   readonly primaryNav: NavLink[] = [
@@ -146,7 +146,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     { label: 'Bookmarks', path: '/bookmarks' },
   ];
 
-  private readonly themeStorageKey = 'Motherworld:theme';
+  private readonly themeStorageKey = 'Xandar:theme';
   private readonly copyStateTimers = new Map<HTMLButtonElement, number>();
 
   loading = signal(false);
@@ -178,7 +178,7 @@ export class AppComponent implements OnInit, AfterViewInit {
       return;
     }
 
-    let preferred: ThemeMode = 'light';
+  let preferred: ThemeMode = 'dark';
 
     if (isPlatformBrowser(this.platformId)) {
       const stored = window.localStorage.getItem(this.themeStorageKey) as ThemeMode | null;

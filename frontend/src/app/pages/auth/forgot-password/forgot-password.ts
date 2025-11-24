@@ -12,11 +12,11 @@ import { ApiService } from '../../../services/api.service';
     <div class="min-h-screen flex items-center justify-center bg-gradient-to-b from-amber-25 to-orange-25 py-12">
       <div class="max-w-md w-full mx-4">
         <!-- Forgot Password Card with Retro Styling -->
-        <div class="bg-amber-50 border-4 border-amber-800 shadow-2xl">
+          <div class="bg-surface border-4 border-brand-accent-gold shadow-2xl">
           <!-- Header -->
           <div class="bg-amber-800 text-amber-100 p-6 text-center border-b-2 border-amber-700">
             <h1 class="font-serif text-2xl font-bold mb-2">Reset Password</h1>
-            <p class="text-amber-200 text-sm font-mono">Recover access to your Motherworld account</p>
+            <p class="text-amber-200 text-sm font-mono">Recover access to your Xandar account</p>
           </div>
 
           <!-- Form -->
@@ -36,7 +36,7 @@ import { ApiService } from '../../../services/api.service';
 
               <div class="mb-6">
                 <h3 class="font-serif text-lg font-bold text-amber-900 mb-3">Forgot Your Password?</h3>
-                <p class="text-amber-700 text-sm leading-relaxed mb-6">
+                  <p class="text-brand-accent-gold text-sm leading-relaxed mb-6">
                   No worries! Enter your email address below and we'll send you a link to reset your password.
                 </p>
               </div>
@@ -72,7 +72,7 @@ import { ApiService } from '../../../services/api.service';
                 <button
                   type="submit"
                   [disabled]="forgotPasswordForm.invalid || loading()"
-                  class="w-full bg-amber-800 text-amber-100 py-3 px-6 font-mono text-sm uppercase tracking-wider hover:bg-amber-700 transition-colors border-2 border-amber-700 hover:border-amber-600 disabled:opacity-50 disabled:cursor-not-allowed"
+                   class="w-full bg-brand-accent-gold text-brand-navy py-3 px-6 font-mono text-sm uppercase tracking-wider hover:bg-brand-accent-gold/90 transition-colors border-2 border-brand-accent-gold hover:border-brand-accent-gold disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   @if (loading()) {
                     <div class="flex items-center justify-center gap-2">
@@ -115,7 +115,7 @@ import { ApiService } from '../../../services/api.service';
                 <button
                   (click)="resendEmail()"
                   [disabled]="resendLoading() || resendCooldown() > 0"
-                  class="w-full bg-amber-200 text-amber-800 py-3 px-6 font-mono text-sm uppercase tracking-wider hover:bg-amber-300 transition-colors border-2 border-amber-400 hover:border-amber-500 disabled:opacity-50 disabled:cursor-not-allowed mb-4"
+                   class="w-full bg-brand-accent-gold/10 text-brand-accent-gold py-3 px-6 font-mono text-sm uppercase tracking-wider hover:bg-brand-accent-gold/20 transition-colors border-2 border-brand-accent-gold hover:border-brand-accent-gold disabled:opacity-50 disabled:cursor-not-allowed mb-4"
                 >
                   @if (resendLoading()) {
                     <div class="flex items-center justify-center gap-2">
@@ -149,7 +149,7 @@ import { ApiService } from '../../../services/api.service';
             <div class="text-center">
               <a 
                 routerLink="/auth/login"
-                class="inline-block bg-amber-100 text-amber-900 py-3 px-8 font-mono text-sm uppercase tracking-wider hover:bg-amber-200 transition-colors border-2 border-amber-300 hover:border-amber-400"
+                 class="inline-block bg-surface text-brand-navy py-3 px-8 font-mono text-sm uppercase tracking-wider hover:bg-brand-accent-gold/10 transition-colors border-2 border-brand-accent-gold hover:border-brand-accent-gold"
               >
                 Back to Login
               </a>
@@ -166,15 +166,15 @@ import { ApiService } from '../../../services/api.service';
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
             </svg>
-            Back to Motherworld
+            Back to Xandar
           </a>
         </div>
 
         <!-- Security Notice -->
         <div class="mt-8 text-center">
           <div class="bg-amber-100 border-2 border-dotted border-amber-400 p-4">
-            <h4 class="font-bold text-amber-900 text-sm mb-2">🔒 Security Notice</h4>
-            <p class="text-amber-700 text-xs">
+              <h4 class="font-bold text-brand-navy text-sm mb-2">🔒 Security Notice</h4>
+              <p class="text-brand-accent-gold text-xs">
               For your security, password reset links expire after 1 hour. 
               If you didn't request this reset, you can safely ignore this email.
             </p>

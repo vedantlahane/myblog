@@ -12,7 +12,7 @@ import { Post, Tag } from '../../../types/api';
   },
   template: `
     <article
-      class="group flex h-full flex-col overflow-hidden rounded-2xl border border-border-default bg-surface shadow-card transition-transform duration-200 ease-out hover:-translate-y-0.5 hover:shadow-card-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue/30 dark:border-border-dark dark:bg-surface-dark"
+      class="group flex h-full flex-col overflow-hidden rounded-[12px] border border-border-default bg-surface shadow-card transition-transform duration-200 ease-out hover:-translate-y-0.5 hover:shadow-card-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent-violet/20 dark:border-border-dark dark:bg-surface-dark"
     >
       @if (post.coverImage) {
         <div class="relative aspect-[16/9] w-full overflow-hidden">
@@ -60,9 +60,9 @@ import { Post, Tag } from '../../../types/api';
         @if (showTags && displayTags.length > 0) {
           <div class="flex flex-wrap gap-2">
             @for (tag of displayTags; track trackTag(tag, $index)) {
-              <a
+                <a
                 [routerLink]="['/tag', toSlug(tag)]"
-                class="inline-flex items-center gap-1 rounded-full border border-border-default bg-surface-muted px-3 py-1 text-[0.7rem] font-semibold uppercase tracking-[0.25em] text-text-secondary transition-colors duration-200 hover:border-brand-blue hover:text-brand-blue focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue/30 dark:border-white/10 dark:bg-white/10 dark:text-slate-200 dark:hover:border-brand-accent dark:hover:text-brand-accent"
+                class="inline-flex items-center gap-1 rounded-full tag-pill-sci px-3 py-1 text-[0.7rem] font-semibold uppercase tracking-[0.25em] text-text-secondary transition-colors duration-200 hover:border-brand-blue hover:text-brand-cyan focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent-violet/30 dark:border-white/10 dark:bg-white/10 dark:text-slate-200 dark:hover:border-brand-accent dark:hover:text-brand-accent"
               >
                 {{ toName(tag) }}
               </a>

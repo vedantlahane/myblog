@@ -14,7 +14,7 @@ import { RouterLink } from '@angular/router';
       <div class="mx-auto grid w-full max-w-6xl gap-10 px-4 md:grid-cols-[2fr,1fr] md:px-6">
         <div class="space-y-4">
           <div class="flex items-center gap-3">
-            <span class="flex h-10 w-10 items-center justify-center rounded-full bg-brand-blue text-sm font-bold tracking-tight text-white shadow-card">MW</span>
+            <img src="/mw-logo.svg" alt="Xandar" class="h-10 w-10 rounded-full object-cover shadow-card border border-transparent" style="box-shadow: var(--glow-violet), var(--shadow-card);" />
             <div>
               <p class="text-sm font-semibold text-text-primary dark:text-white">{{ blogTitle }}</p>
               <p class="text-xs text-text-secondary dark:text-slate-300">{{ blogTagline }}</p>
@@ -47,7 +47,7 @@ import { RouterLink } from '@angular/router';
             />
             <button
               type="submit"
-              class="inline-flex items-center justify-center gap-2 rounded-xl bg-brand-blue px-5 py-3 text-sm font-semibold uppercase tracking-wide text-white transition-all duration-200 hover:bg-brand-blue-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue/30"
+              class="inline-flex items-center justify-center gap-2 rounded-xl bg-brand-accent-gold px-5 py-3 text-sm font-semibold uppercase tracking-wide text-brand-navy transition-all duration-200 hover:bg-brand-accent-gold/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent-gold/30"
             >
               Subscribe
             </button>
@@ -98,7 +98,7 @@ export class SiteFooterComponent {
   @Input({ required: true }) blogTagline!: string;
   @Input({ required: true }) description!: string;
   @Input({ required: true }) currentYear!: number;
-  @Input() contactEmail = 'hello@Motherworld.com';
+  @Input() contactEmail = 'hello@Xandar.com';
 
   get contactHref(): string {
     return `mailto:${this.contactEmail}`;

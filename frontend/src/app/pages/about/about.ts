@@ -11,7 +11,7 @@ import { ApiService } from '../../services/api.service';
     <div class="min-h-screen bg-ui-background py-12">
       <header class="mx-auto max-w-5xl rounded-3xl border border-ui-border bg-ui-surface px-6 py-16 text-center shadow-sm">
         <div class="inline-flex items-center rounded-full bg-brand-blue/10 px-6 py-2 text-sm font-mono uppercase tracking-[0.35em] text-brand-blue">
-            About Motherworld
+            About Xandar
         </div>
 
         <h1 class="mt-6 text-4xl font-semibold leading-tight text-text-primary md:text-5xl">
@@ -46,7 +46,7 @@ import { ApiService } from '../../services/api.service';
         <div class="grid gap-8 md:grid-cols-2 md:items-center">
           <div class="space-y-6 text-left text-text-secondary">
             <p class="text-lg">
-                Motherworld was born from a simple belief: <strong class="text-text-primary">great ideas deserve great presentation</strong>. In an era of information overload, we wanted to create a space where thoughts could breathe, where stories could unfold naturally, and where readers could truly connect with content.
+                Xandar was born from a simple belief: <strong class="text-text-primary">great ideas deserve great presentation</strong>. In an era of information overload, we wanted to create a space where thoughts could breathe, where stories could unfold naturally, and where readers could truly connect with content.
             </p>
             <p>
               Founded in <strong class="text-text-primary">2024</strong>, our platform combines the timeless appeal of traditional print media with the accessibility and interactivity of modern web technology. Every element, from our typography to our carefully curated color palette, reflects our commitment to thoughtful design.
@@ -136,7 +136,7 @@ import { ApiService } from '../../services/api.service';
       </section>
 
       <section class="mx-auto mt-16 max-w-5xl rounded-3xl bg-brand-navy p-8 text-white shadow-md">
-  <h2 class="mb-8 text-center text-3xl font-semibold">Why Motherworld is Different</h2>
+  <h2 class="mb-8 text-center text-3xl font-semibold">Why Xandar is Different</h2>
         <div class="grid gap-8 md:grid-cols-2">
           <div class="space-y-6">
             <div>
@@ -172,7 +172,7 @@ import { ApiService } from '../../services/api.service';
       <section class="mx-auto mt-16 max-w-5xl rounded-3xl border border-ui-border bg-ui-surface p-8 text-center shadow-sm">
         <h2 class="mb-6 text-3xl font-semibold text-text-primary">Join Our Community</h2>
         <p class="mx-auto mb-8 max-w-3xl text-lg leading-relaxed text-text-secondary">
-          Motherworld is more than a platform—it's a community of curious minds, thoughtful writers, and engaged readers who believe in the power of meaningful conversation.
+          Xandar is more than a platform—it's a community of curious minds, thoughtful writers, and engaged readers who believe in the power of meaningful conversation.
         </p>
 
         @if (!isAuthenticated()) {
@@ -230,7 +230,7 @@ import { ApiService } from '../../services/api.service';
               </svg>
               <div>
                 <div class="font-mono text-xs uppercase tracking-wide text-text-secondary">Email</div>
-                <a href="mailto:hello@Motherworld.com" class="text-brand-blue hover:text-brand-blue/80">hello&#64;Motherworld.com</a>
+                <a href="mailto:hello@Xandar.com" class="text-brand-blue hover:text-brand-blue/80">hello&#64;Xandar.com</a>
               </div>
             </div>
             <div class="flex items-start gap-3">
@@ -239,7 +239,7 @@ import { ApiService } from '../../services/api.service';
               </svg>
               <div>
                 <div class="font-mono text-xs uppercase tracking-wide text-text-secondary">Website</div>
-                <span class="text-text-primary">www.Motherworld.com</span>
+                <span class="text-text-primary">www.Xandar.com</span>
               </div>
             </div>
             <div class="flex items-start gap-3">
@@ -258,11 +258,11 @@ import { ApiService } from '../../services/api.service';
           <h3 class="mb-6 text-center text-2xl font-semibold text-text-primary">Quick Questions</h3>
           <div class="space-y-4 text-left">
             <div>
-              <h4 class="mb-2 text-lg font-semibold text-text-primary">Can anyone write for Motherworld?</h4>
+              <h4 class="mb-2 text-lg font-semibold text-text-primary">Can anyone write for Xandar?</h4>
               <p class="text-sm leading-relaxed text-text-secondary">Absolutely! Create an account and start sharing your thoughts with our community.</p>
             </div>
             <div>
-              <h4 class="mb-2 text-lg font-semibold text-text-primary">Is Motherworld free?</h4>
+              <h4 class="mb-2 text-lg font-semibold text-text-primary">Is Xandar free?</h4>
               <p class="text-sm leading-relaxed text-text-secondary">Yes, creating an account and reading articles is completely free. Always.</p>
             </div>
             <div>

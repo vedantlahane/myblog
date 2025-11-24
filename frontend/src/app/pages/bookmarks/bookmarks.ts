@@ -11,18 +11,18 @@ import { Bookmark, Post, UserCollection, UpdateBookmarkRequest, BookmarkQueryPar
   standalone: true,
   imports: [CommonModule, RouterLink, ReactiveFormsModule],
   template: `
-    <div class="min-h-screen bg-gradient-to-b from-amber-25 to-orange-25">
+  <div class="min-h-screen bg-gradient-to-b from-brand-accent-gold/6 to-brand-cyan/6">
       <!-- Header -->
-      <header class="bg-amber-100 border-4 border-amber-800 p-8 mb-12">
-        <div class="text-center border-2 border-dotted border-amber-700 p-6">
-          <div class="inline-block bg-amber-800 text-amber-100 px-4 py-1 text-xs font-mono uppercase tracking-widest mb-4">
+  <header class="bg-surface border-4 border-brand-accent-gold p-8 mb-12">
+  <div class="text-center border-2 border-dotted border-brand-accent-gold p-6">
+          <div class="inline-block bg-brand-accent-gold text-brand-navy px-4 py-1 text-xs font-mono uppercase tracking-widest mb-4">
             My Reading List
           </div>
           
-          <h1 class="font-serif text-3xl md:text-4xl font-bold text-amber-900 mb-3">
+          <h1 class="font-serif text-3xl md:text-4xl font-bold text-brand-navy mb-3">
             My Bookmarks
           </h1>
-          <p class="text-amber-700 text-lg font-mono">
+          <p class="text-brand-accent-gold text-lg font-mono">
             {{ totalBookmarks() }} articles saved for later reading
           </p>
         </div>
@@ -31,11 +31,11 @@ import { Bookmark, Post, UserCollection, UpdateBookmarkRequest, BookmarkQueryPar
       <div class="max-w-6xl mx-auto px-4">
         <!-- Filters & Search -->
         <section class="mb-8">
-          <div class="bg-amber-50 border-4 border-amber-300 p-6">
+          <div class="bg-surface border-4 border-brand-accent-gold/20 p-6">
             <div class="grid md:grid-cols-3 gap-6">
               <!-- Search -->
               <div>
-                <label class="block text-amber-900 font-mono text-sm font-bold mb-2">
+                <label class="block text-brand-navy font-mono text-sm font-bold mb-2">
                   Search Bookmarks
                 </label>
                 <div class="relative">
@@ -43,9 +43,9 @@ import { Bookmark, Post, UserCollection, UpdateBookmarkRequest, BookmarkQueryPar
                     [formControl]="searchControl"
                     type="text"
                     placeholder="Search by title, author, or notes..."
-                    class="w-full px-4 py-3 pl-10 border-2 border-amber-300 focus:border-amber-600 focus:outline-none bg-white font-mono text-sm"
+                    class="w-full px-4 py-3 pl-10 border-2 border-brand-accent-gold focus:border-brand-accent-gold focus:outline-none bg-white font-mono text-sm"
                   />
-                  <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-brand-accent-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                   </svg>
                 </div>
@@ -53,12 +53,12 @@ import { Bookmark, Post, UserCollection, UpdateBookmarkRequest, BookmarkQueryPar
 
               <!-- Collection Filter -->
               <div>
-                <label class="block text-amber-900 font-mono text-sm font-bold mb-2">
+                <label class="block text-brand-navy font-mono text-sm font-bold mb-2">
                   Filter by Collection
                 </label>
                 <select 
                   [formControl]="collectionControl"
-                  class="w-full px-4 py-3 border-2 border-amber-300 focus:border-amber-600 focus:outline-none bg-white font-mono text-sm"
+                  class="w-full px-4 py-3 border-2 border-brand-accent-gold focus:border-brand-accent-gold focus:outline-none bg-white font-mono text-sm"
                 >
                   <option value="">All Bookmarks</option>
                   @for (collection of bookmarkCollections(); track collection._id) {
@@ -69,12 +69,12 @@ import { Bookmark, Post, UserCollection, UpdateBookmarkRequest, BookmarkQueryPar
 
               <!-- Sort -->
               <div>
-                <label class="block text-amber-900 font-mono text-sm font-bold mb-2">
+                <label class="block text-brand-navy font-mono text-sm font-bold mb-2">
                   Sort By
                 </label>
                 <select 
                   [formControl]="sortControl"
-                  class="w-full px-4 py-3 border-2 border-amber-300 focus:border-amber-600 focus:outline-none bg-white font-mono text-sm"
+                  class="w-full px-4 py-3 border-2 border-brand-accent-gold focus:border-brand-accent-gold focus:outline-none bg-white font-mono text-sm"
                 >
                   <option value="-createdAt">Recently Bookmarked</option>
                   <option value="createdAt">Oldest Bookmarks</option>
@@ -86,27 +86,27 @@ import { Bookmark, Post, UserCollection, UpdateBookmarkRequest, BookmarkQueryPar
 
             <!-- Active Filters -->
             @if (hasActiveFilters()) {
-              <div class="mt-6 pt-4 border-t-2 border-dotted border-amber-300">
+                  <div class="mt-6 pt-4 border-t-2 border-dotted border-brand-accent-gold">
                 <div class="flex flex-wrap items-center gap-2">
-                  <span class="text-amber-700 font-mono text-sm font-bold">Active filters:</span>
+                  <span class="text-brand-accent-gold font-mono text-sm font-bold">Active filters:</span>
                   
                   @if (searchQuery()) {
-                    <span class="inline-flex items-center gap-1 bg-amber-200 text-amber-800 px-3 py-1 text-xs font-mono">
+                    <span class="inline-flex items-center gap-1 bg-brand-accent-gold/10 text-brand-accent-gold px-3 py-1 text-xs font-mono">
                       Search: {{ searchQuery() }}
-                      <button (click)="clearSearch()" class="hover:text-amber-900">×</button>
+                      <button (click)="clearSearch()" class="hover:text-brand-navy">×</button>
                     </span>
                   }
                   
                   @if (collectionFilter()) {
-                    <span class="inline-flex items-center gap-1 bg-amber-200 text-amber-800 px-3 py-1 text-xs font-mono">
+                    <span class="inline-flex items-center gap-1 bg-brand-accent-gold/10 text-brand-accent-gold px-3 py-1 text-xs font-mono">
                       Collection: {{ getCollectionName(collectionFilter()) }}
-                      <button (click)="clearCollectionFilter()" class="hover:text-amber-900">×</button>
+                      <button (click)="clearCollectionFilter()" class="hover:text-brand-navy">×</button>
                     </span>
                   }
                   
                   <button
                     (click)="clearAllFilters()"
-                    class="text-amber-600 hover:text-amber-800 text-xs font-mono underline ml-2"
+                    class="text-brand-accent-gold hover:text-brand-navy text-xs font-mono underline ml-2"
                   >
                     Clear All
                   </button>
@@ -122,13 +122,13 @@ import { Bookmark, Post, UserCollection, UpdateBookmarkRequest, BookmarkQueryPar
             <!-- Loading Skeleton -->
             <div class="space-y-6">
               @for (i of [1,2,3]; track i) {
-                <div class="bg-amber-50 border-2 border-amber-200 p-6 animate-pulse">
+                <div class="bg-surface border-2 border-brand-accent-gold/20 p-6 animate-pulse">
                   <div class="flex gap-6">
-                    <div class="w-32 h-24 bg-amber-200"></div>
+                    <div class="w-32 h-24 bg-brand-accent-gold/10"></div>
                     <div class="flex-1 space-y-3">
-                      <div class="h-6 bg-amber-200 rounded"></div>
-                      <div class="h-4 bg-amber-200 rounded w-5/6"></div>
-                      <div class="h-4 bg-amber-200 rounded w-2/3"></div>
+                      <div class="h-6 bg-brand-accent-gold/10 rounded"></div>
+                      <div class="h-4 bg-brand-accent-gold/10 rounded w-5/6"></div>
+                      <div class="h-4 bg-brand-accent-gold/10 rounded w-2/3"></div>
                     </div>
                   </div>
                 </div>
@@ -137,9 +137,9 @@ import { Bookmark, Post, UserCollection, UpdateBookmarkRequest, BookmarkQueryPar
           } @else if (filteredBookmarks().length === 0) {
             <!-- Empty State -->
             <div class="text-center py-16">
-              <div class="inline-block border-4 border-amber-300 p-12 bg-amber-100">
-                <div class="text-amber-600 font-mono text-lg mb-4">📚 EMPTY BOOKSHELF</div>
-                <p class="text-amber-700 mb-6">
+              <div class="inline-block border-4 border-brand-accent-gold p-12 bg-surface">
+                <div class="text-brand-accent-gold font-mono text-lg mb-4">📚 EMPTY BOOKSHELF</div>
+                <p class="text-brand-accent-gold mb-6">
                   @if (hasActiveFilters()) {
                     No bookmarks match your current filters.
                   } @else {
@@ -147,16 +147,16 @@ import { Bookmark, Post, UserCollection, UpdateBookmarkRequest, BookmarkQueryPar
                   }
                 </p>
                 @if (hasActiveFilters()) {
-                  <button
+                    <button
                     (click)="clearAllFilters()"
-                    class="bg-amber-600 text-amber-100 px-6 py-2 font-mono text-sm uppercase tracking-wider hover:bg-amber-500 transition-colors"
+                    class="bg-brand-accent-gold text-brand-navy px-6 py-2 font-mono text-sm uppercase tracking-wider hover:bg-brand-accent-gold/90 transition-colors"
                   >
                     Clear Filters
                   </button>
                 } @else {
                   <a
                     routerLink="/"
-                    class="inline-block bg-amber-800 text-amber-100 px-8 py-3 font-mono text-sm uppercase tracking-wider hover:bg-amber-700 transition-colors border-2 border-amber-700"
+                    class="inline-block bg-brand-accent-gold text-brand-navy px-8 py-3 font-mono text-sm uppercase tracking-wider hover:bg-brand-accent-gold/90 transition-colors border-2 border-brand-accent-gold"
                   >
                     Discover Articles
                   </a>
@@ -168,25 +168,25 @@ import { Bookmark, Post, UserCollection, UpdateBookmarkRequest, BookmarkQueryPar
             <div class="space-y-6">
               @for (bookmark of filteredBookmarks(); track bookmark._id) {
                 @if (getPost(bookmark)) {
-                  <article class="bg-amber-50 border-2 border-amber-200 hover:border-amber-400 transition-all duration-300 group">
+                  <article class="bg-surface border-2 border-brand-accent-gold/20 hover:border-brand-accent-gold transition-all duration-300 group">
                     <div class="p-6">
                       <div class="flex items-start gap-6">
                         <!-- Post Cover Image -->
                         <div class="w-48 h-32 flex-shrink-0">
-                          <img 
+                            <img 
                             [src]="getPost(bookmark)?.coverImage || '/assets/placeholder-image.png'" 
                             [alt]="getPost(bookmark)?.title"
-                            class="w-full h-full object-cover border-2 border-amber-300 group-hover:sepia-[20%] transition-all"
+                            class="w-full h-full object-cover border-2 border-brand-accent-gold group-hover:sepia-[20%] transition-all"
                           >
                         </div>
                         
                         <!-- Bookmark Content -->
                         <div class="flex-1">
                           <div class="flex items-start justify-between mb-2">
-                            <h3 class="font-serif text-xl font-bold text-amber-900 leading-tight">
+                            <h3 class="font-serif text-xl font-bold text-brand-navy leading-tight">
                               <a 
                                 [routerLink]="['/post', getPost(bookmark)?.slug]"
-                                class="hover:text-amber-700 transition-colors"
+                                class="hover:text-brand-accent-gold transition-colors"
                               >
                                 {{ getPost(bookmark)?.title }}
                               </a>
@@ -196,7 +196,7 @@ import { Bookmark, Post, UserCollection, UpdateBookmarkRequest, BookmarkQueryPar
                             <div class="flex items-center gap-2">
                               <button
                                 (click)="editBookmark(bookmark)"
-                                class="inline-flex items-center justify-center w-8 h-8 bg-amber-200 text-amber-800 hover:bg-amber-300 transition-colors"
+                                class="inline-flex items-center justify-center w-8 h-8 bg-brand-accent-gold/10 text-brand-accent-gold hover:bg-brand-accent-gold/20 transition-colors"
                                 title="Edit Notes/Collections"
                               >
                                 <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
@@ -223,7 +223,7 @@ import { Bookmark, Post, UserCollection, UpdateBookmarkRequest, BookmarkQueryPar
                           </div>
 
                           <!-- Post Meta -->
-                          <div class="flex items-center gap-4 text-xs font-mono text-amber-600 mb-4">
+                          <div class="flex items-center gap-4 text-xs font-mono text-brand-accent-gold mb-4">
                             <span>By {{ getPostAuthor(bookmark) }}</span>
                             <span>•</span>
                             <span>{{ getPost(bookmark)?.readingTime || 1 }} min read</span>
@@ -232,18 +232,18 @@ import { Bookmark, Post, UserCollection, UpdateBookmarkRequest, BookmarkQueryPar
                           </div>
                           
                           @if (bookmark.notes) {
-                            <div class="p-3 bg-yellow-50 border-2 border-dotted border-yellow-300 mb-4">
-                              <h4 class="font-bold text-yellow-900 text-sm mb-1">My Notes:</h4>
-                              <p class="text-yellow-800 text-sm italic">"{{ bookmark.notes }}"</p>
+                            <div class="p-3 bg-brand-accent-gold/10 border-2 border-dotted border-brand-accent-gold/20 mb-4">
+                              <h4 class="font-bold text-brand-navy text-sm mb-1">My Notes:</h4>
+                              <p class="text-brand-accent-gold text-sm italic">"{{ bookmark.notes }}"</p>
                             </div>
                           }
 
                           <!-- Collections -->
                           @if (bookmark.collections && bookmark.collections.length > 0) {
                             <div class="flex flex-wrap items-center gap-2">
-                              <span class="text-amber-700 font-mono text-xs">In collections:</span>
+                              <span class="text-brand-accent-gold font-mono text-xs">In collections:</span>
                               @for (collectionId of bookmark.collections; track collectionId) {
-                                <span class="inline-block bg-amber-200 text-amber-800 px-2 py-1 text-xs font-mono">
+                                <span class="inline-block bg-brand-accent-gold/10 text-brand-accent-gold px-2 py-1 text-xs font-mono">
                                   {{ getCollectionName(collectionId) }}
                                 </span>
                               }
@@ -264,14 +264,14 @@ import { Bookmark, Post, UserCollection, UpdateBookmarkRequest, BookmarkQueryPar
                   <button
                     (click)="goToPage(currentPage() - 1)"
                     [disabled]="currentPage() === 1"
-                    class="px-4 py-2 bg-amber-100 text-amber-900 font-mono text-sm hover:bg-amber-200 transition-colors border-2 border-amber-300 disabled:opacity-50"
+                    class="px-4 py-2 bg-surface text-brand-navy font-mono text-sm hover:bg-brand-accent-gold/10 transition-colors border-2 border-brand-accent-gold disabled:opacity-50"
                   >
                     ← Previous
                   </button>
                   
                   @for (page of getPaginationPages(); track page) {
                     @if (page === '...') {
-                      <span class="px-3 py-2 text-amber-600 font-mono text-sm">...</span>
+                      <span class="px-3 py-2 text-brand-accent-gold font-mono text-sm">...</span>
                     } @else {
                       <button
                         (click)="goToPage(+page)"
@@ -285,7 +285,7 @@ import { Bookmark, Post, UserCollection, UpdateBookmarkRequest, BookmarkQueryPar
                   <button
                     (click)="goToPage(currentPage() + 1)"
                     [disabled]="currentPage() === totalPages()"
-                    class="px-4 py-2 bg-amber-100 text-amber-900 font-mono text-sm hover:bg-amber-200 transition-colors border-2 border-amber-300 disabled:opacity-50"
+                    class="px-4 py-2 bg-surface text-brand-navy font-mono text-sm hover:bg-brand-accent-gold/10 transition-colors border-2 border-brand-accent-gold disabled:opacity-50"
                   >
                     Next →
                   </button>
@@ -300,8 +300,8 @@ import { Bookmark, Post, UserCollection, UpdateBookmarkRequest, BookmarkQueryPar
     <!-- Edit Bookmark Modal -->
     @if (showModal()) {
       <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" (click)="closeModal()">
-        <div class="bg-amber-50 border-4 border-amber-800 p-6 max-w-lg w-full mx-4" (click)="$event.stopPropagation()">
-          <h3 class="font-serif text-xl font-bold text-amber-900 mb-4">
+    <div class="bg-surface border-4 border-brand-accent-gold p-6 max-w-lg w-full mx-4" (click)="$event.stopPropagation()">
+          <h3 class="font-serif text-xl font-bold text-brand-navy mb-4">
             Edit Bookmark
           </h3>
           
@@ -309,31 +309,31 @@ import { Bookmark, Post, UserCollection, UpdateBookmarkRequest, BookmarkQueryPar
             <div class="space-y-4">
               <!-- Notes -->
               <div>
-                <label class="block text-amber-900 font-mono text-sm font-bold mb-2">My Notes</label>
+                <label class="block text-brand-navy font-mono text-sm font-bold mb-2">My Notes</label>
                 <textarea
                   formControlName="notes"
                   rows="3"
                   placeholder="Add your thoughts about this article..."
-                  class="w-full px-4 py-3 border-2 border-amber-300 focus:border-amber-600 focus:outline-none bg-white resize-none"
+                  class="w-full px-4 py-3 border-2 border-brand-accent-gold focus:border-brand-accent-gold focus:outline-none bg-white resize-none"
                 ></textarea>
               </div>
               
               <!-- Collections -->
               <div>
-                <label class="block text-amber-900 font-mono text-sm font-bold mb-2">Add to Collections</label>
-                <div class="max-h-40 overflow-y-auto space-y-2 p-2 border-2 border-amber-300 bg-white">
+                <label class="block text-brand-navy font-mono text-sm font-bold mb-2">Add to Collections</label>
+                <div class="max-h-40 overflow-y-auto space-y-2 p-2 border-2 border-brand-accent-gold bg-white">
                   @if (userCollections().length === 0) {
-                    <p class="text-amber-600 text-sm italic">No collections available.</p>
+                    <p class="text-brand-accent-gold text-sm italic">No collections available.</p>
                   } @else {
                     @for (collection of userCollections(); track collection._id) {
-                      <label class="flex items-center p-2 hover:bg-amber-100 transition-colors">
+                      <label class="flex items-center p-2 hover:bg-surface transition-colors">
                         <input
                           type="checkbox"
                           (change)="onCollectionChange(collection._id, $event)"
                           [checked]="bookmarkForm.get('collections')?.value?.includes(collection._id) || false"
-                          class="mr-3 text-amber-600"
+                          class="mr-3 text-brand-accent-gold"
                         />
-                        <span class="text-amber-800">{{ collection.title }}</span>
+                        <span class="text-brand-navy">{{ collection.title }}</span>
                       </label>
                     }
                   }
@@ -345,7 +345,7 @@ import { Bookmark, Post, UserCollection, UpdateBookmarkRequest, BookmarkQueryPar
               <button
                 type="button"
                 (click)="closeModal()"
-                class="bg-amber-200 text-amber-800 px-4 py-2 font-mono text-sm hover:bg-amber-300 transition-colors"
+                class="bg-brand-accent-gold/10 text-brand-accent-gold px-4 py-2 font-mono text-sm hover:bg-brand-accent-gold/20 transition-colors"
               >
                 Cancel
               </button>
@@ -353,7 +353,7 @@ import { Bookmark, Post, UserCollection, UpdateBookmarkRequest, BookmarkQueryPar
               <button
                 type="submit"
                 [disabled]="bookmarkForm.invalid || saving()"
-                class="bg-amber-800 text-amber-100 px-4 py-2 font-mono text-sm hover:bg-amber-700 transition-colors disabled:opacity-50"
+                class="bg-brand-accent-gold text-brand-navy px-4 py-2 font-mono text-sm hover:bg-brand-accent-gold/90 transition-colors disabled:opacity-50"
               >
                 {{ saving() ? 'Saving...' : 'Save Changes' }}
               </button>
@@ -368,7 +368,7 @@ import { Bookmark, Post, UserCollection, UpdateBookmarkRequest, BookmarkQueryPar
     input[type="checkbox"] {
       appearance: none;
       background-color: white;
-      border: 2px solid #d97706;
+      border: 2px solid #D4A761; /* brand-accent-gold */
       width: 1rem;
       height: 1rem;
       position: relative;
@@ -376,7 +376,7 @@ import { Bookmark, Post, UserCollection, UpdateBookmarkRequest, BookmarkQueryPar
     }
 
     input[type="checkbox"]:checked {
-      background-color: #d97706;
+      background-color: #D4A761; /* brand-accent-gold */
     }
 
     input[type="checkbox"]:checked::before {
@@ -667,8 +667,8 @@ export class BookmarksComponent implements OnInit {
   getPageButtonClass(page: number): string {
     const baseClass = "px-3 py-2 font-mono text-sm border-2 transition-colors";
     return page === this.currentPage()
-      ? `${baseClass} bg-amber-800 text-amber-100 border-amber-700`
-      : `${baseClass} bg-amber-100 text-amber-900 border-amber-300 hover:bg-amber-200 hover:border-amber-400`;
+      ? `${baseClass} bg-brand-accent-gold text-brand-navy border-brand-accent-gold`
+      : `${baseClass} bg-surface text-brand-navy border-brand-accent-gold hover:bg-brand-accent-gold/10 hover:border-brand-accent-gold`;
   }
 
   // Helper Methods

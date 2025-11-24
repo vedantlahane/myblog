@@ -12,7 +12,7 @@ import { BlogCardComponent } from '../../ui/common/blog-card.component';
   template: `
     <!-- Hero Section with Featured Post -->
     @if (featuredPost()) {
-      <section class="mb-12 rounded-2xl border border-border-default bg-surface p-8 shadow-card dark:border-border-dark dark:bg-surface-dark">
+      <section class="mb-12 rounded-2xl border border-border-default overflow-hidden relative shadow-card dark:border-border-dark dark:bg-surface-dark">
         <div class="rounded-xl border border-dashed border-border-default/70 bg-surface-muted/80 p-6 dark:border-white/10 dark:bg-surface-dark">
           <div class="mb-6 text-center">
             <div class="inline-flex items-center rounded-full bg-brand-blue/10 px-4 py-1 text-xs font-mono uppercase tracking-[0.35em] text-brand-blue">
@@ -28,11 +28,45 @@ import { BlogCardComponent } from '../../ui/common/blog-card.component';
 
           <article class="space-y-6 text-center">
             @if (featuredPost()?.coverImage) {
-              <img
-                [src]="featuredPost()?.coverImage"
-                [alt]="featuredPost()?.title"
-                class="mx-auto h-64 w-full max-w-4xl rounded-xl object-cover"
-              >
+              <div class="relative h-[420px] w-full rounded-xl overflow-hidden">
+                <img
+                  [src]="featuredPost()?.coverImage"
+                  [alt]="featuredPost()?.title"
+                  class="absolute inset-0 h-full w-full object-cover transform transition-transform duration-500 ease-out group-hover:scale-105"
+                >
+                <div class="absolute inset-0 hero-overlay"></div>
+                <div class="absolute bottom-6 left-6 right-6 z-10 rounded-lg bg-gradient-to-r from-black/60 via-transparent to-black/20 p-6 text-left">
+                  <h1 class="text-3xl font-semibold leading-tight text-white transition-colors duration-200 md:text-4xl">
+                    <a
+                      [routerLink]="['/post', featuredPost()?.slug]"
+                      class="transition-colors duration-200 hover:text-brand-blue"
+                    >
+                      {{ featuredPost()?.title }}
+                    </a>
+                  </h1>
+
+                  <p class="mt-3 max-w-3xl text-sm leading-relaxed text-text-secondary/80">
+                    {{ featuredPost()?.excerpt }}
+                  </p>
+
+                  <div class="mt-4 flex items-center gap-4 text-xs font-mono uppercase tracking-[0.2em] text-text-subtle">
+                    <span>{{ getAuthorName(featuredPost()?.author) }}</span>
+                    <span aria-hidden="true">•</span>
+                    <span>{{ formatDate(featuredPost()?.publishedAt || featuredPost()?.createdAt) }}</span>
+                    <span aria-hidden="true">•</span>
+                    <span>{{ featuredPost()?.readingTime || 5 }} min read</span>
+                  </div>
+
+                  <div class="mt-4">
+                    <a
+                      [routerLink]="['/post', featuredPost()?.slug]"
+                      class="inline-flex items-center justify-center gap-2 rounded-xl bg-brand-blue px-6 py-2 text-sm font-semibold uppercase tracking-wide text-white transition-all duration-200 hover:bg-brand-blue-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue/30"
+                    >
+                      Read Full Article
+                    </a>
+                  </div>
+                </div>
+              </div>
             }
 
             <h1 class="text-3xl font-semibold leading-tight text-text-primary transition-colors duration-200 dark:text-white md:text-4xl">
@@ -168,7 +202,7 @@ import { BlogCardComponent } from '../../ui/common/blog-card.component';
               routerLink="/auth/register"
               class="inline-flex items-center justify-center gap-2 rounded-xl bg-white px-8 py-3 text-sm font-semibold uppercase tracking-wide text-brand-navy transition-all duration-200 hover:bg-white/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40"
             >
-              Join Motherworld
+              Join Xandar
             </a>
           </div>
         </div>
