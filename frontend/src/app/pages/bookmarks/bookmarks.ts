@@ -3,7 +3,7 @@ import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { RouterLink, Router } from '@angular/router';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
-import { ApiService } from '../../services/api.service';
+import { ApiService } from '../../services/api';
 import { Bookmark, Post, UserCollection, UpdateBookmarkRequest, BookmarkQueryParams } from '../../../types/api';
 
 @Component({

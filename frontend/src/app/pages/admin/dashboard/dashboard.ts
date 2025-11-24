@@ -1,7 +1,7 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 
 import { RouterLink } from '@angular/router';
-import { ApiService } from '../../../services/api.service';
+import { ApiService } from '../../../services/api';
 
 interface DashboardStats {
   totalPosts: number;

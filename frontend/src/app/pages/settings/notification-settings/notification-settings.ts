@@ -2,7 +2,7 @@ import { Component, OnInit, inject, signal } from '@angular/core';
 
 import { RouterLink, Router } from '@angular/router';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { ApiService } from '../../../services/api.service';
+import { ApiService } from '../../../services/api';
 import { User, NotificationQueryParams } from '../../../../types/api';
 import { async } from 'rxjs';
 

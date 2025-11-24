@@ -2,7 +2,7 @@ import { Component, OnInit, inject, signal } from '@angular/core';
 
 import { RouterLink, Router } from '@angular/router';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ApiService } from '../../../services/api.service';
+import { ApiService } from '../../../services/api';
 import { LoginRequest } from '../../../../types/api';
 import { environment } from '../../../environments/environment';
 

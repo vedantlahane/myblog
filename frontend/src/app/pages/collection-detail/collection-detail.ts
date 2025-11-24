@@ -3,7 +3,7 @@ import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { RouterLink, ActivatedRoute, Router } from '@angular/router';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
-import { ApiService } from '../../services/api.service';
+import { ApiService } from '../../services/api';
 import { Collection, Post, CollectionPost, ReorderCollectionPostsRequest, AddPostToCollectionRequest } from '../../../types/api';
 
 @Component({

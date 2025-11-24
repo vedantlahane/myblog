@@ -1,7 +1,7 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import {  } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { ApiService } from '../../services/api.service';
+import { ApiService } from '../../services/api';
 
 @Component({
   selector: 'app-about',

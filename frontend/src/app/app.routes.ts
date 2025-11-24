@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
 import { inject } from '@angular/core';
-import { ApiService } from './services/api.service';
+import { ApiService } from './services/api';
 
 // Auth Guard
 const authGuard = () => {

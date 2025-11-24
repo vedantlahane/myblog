@@ -4,7 +4,7 @@ import { RouterLink, ActivatedRoute, Router } from '@angular/router';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { ApiService } from '../../services/api.service';
+import { ApiService } from '../../services/api';
 import { Post, Tag, PostQueryParams } from '../../../types/api';
 
 @Component({

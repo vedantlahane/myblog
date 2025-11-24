@@ -1,7 +1,7 @@
 import { Component, OnInit, inject, signal, computed } from '@angular/core';
 
 import { RouterLink } from '@angular/router';
-import { ApiService } from '../../services/api.service';
+import { ApiService } from '../../services/api';
 import { Post, Tag, PostsResponse } from '../../../types/api';
 import { BlogCardComponent } from '../../ui/common/blog-card.component';
 

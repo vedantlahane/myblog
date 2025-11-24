@@ -2,7 +2,7 @@ import { Component, OnInit, inject, signal, computed } from '@angular/core';
 
 import { Router } from '@angular/router';
 import { FormControl, FormGroup, ReactiveFormsModule, FormsModule, Validators } from '@angular/forms';
-import { ApiService } from '../../../services/api.service';
+import { ApiService } from '../../../services/api';
 import { User, UpdateProfileRequest, ChangePasswordRequest } from '../../../../types/api';
 
 // Custom Validators

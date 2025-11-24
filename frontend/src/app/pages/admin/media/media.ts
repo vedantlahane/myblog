@@ -3,7 +3,7 @@ import { Component, OnInit, inject, signal, computed, effect } from '@angular/co
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { ApiService } from '../../../services/api.service';
+import { ApiService } from '../../../services/api';
 import { Media, MediaQueryParams, MediaResponse, UpdateMediaRequest } from '../../../../types/api';
 
 @Component({

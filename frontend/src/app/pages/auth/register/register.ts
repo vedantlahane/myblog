@@ -2,7 +2,7 @@ import { Component, OnInit, inject, signal, effect } from '@angular/core';
 
 import { RouterLink, Router } from '@angular/router';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ApiService } from '../../../services/api.service';
+import { ApiService } from '../../../services/api';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { RegisterRequest } from '../../../../types/api';
 

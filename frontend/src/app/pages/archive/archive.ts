@@ -5,7 +5,7 @@ import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { effect } from '@angular/core';
-import { ApiService } from '../../services/api.service';
+import { ApiService } from '../../services/api';
 import { Post, Tag, PostQueryParams, PostsResponse } from '../../../types/api';
 
 @Component({

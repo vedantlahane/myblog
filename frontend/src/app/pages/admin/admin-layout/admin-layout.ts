@@ -1,7 +1,7 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 
 import { RouterOutlet, RouterLink, RouterLinkActive, Router, ActivatedRoute } from '@angular/router';
-import { ApiService } from '../../../services/api.service';
+import { ApiService } from '../../../services/api';
 import { User } from '../../../../types/api';
 
 @Component({

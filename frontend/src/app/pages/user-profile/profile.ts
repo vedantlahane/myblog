@@ -2,7 +2,7 @@ import { Component, OnInit, inject, signal, computed } from '@angular/core';
 
 import { RouterLink, ActivatedRoute, Router } from '@angular/router';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ApiService } from '../../services/api.service';
+import { ApiService } from '../../services/api';
 import { User, Post, UpdateProfileRequest } from '../../../types/api';
 
 @Component({

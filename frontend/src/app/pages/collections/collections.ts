@@ -4,7 +4,7 @@ import { RouterLink, Router } from '@angular/router';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { ApiService } from '../../services/api.service';
+import { ApiService } from '../../services/api';
 import { Collection, CollectionsResponse, CreateCollectionRequest, UpdateCollectionRequest, CollectionQueryParams } from '../../../types/api';
 
 @Component({

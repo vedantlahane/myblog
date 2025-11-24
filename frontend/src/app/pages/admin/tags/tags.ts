@@ -4,7 +4,7 @@ import { RouterLink } from '@angular/router';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { ApiService } from '../../../services/api.service';
+import { ApiService } from '../../../services/api';
 import { Tag, CreateTagRequest, UpdateTagRequest, Post } from '../../../../types/api';
 
 @Component({

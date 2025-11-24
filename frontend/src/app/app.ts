@@ -4,7 +4,7 @@ import { Router, RouterOutlet, NavigationEnd } from '@angular/router';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { filter, fromEvent, throttleTime } from 'rxjs';
 
-import { ApiService } from './services/api.service';
+import { ApiService } from './services/api';
 import { User } from '../types/api';
 import { SiteHeaderComponent, NavLink } from './ui/layout/header';
 import { SiteFooterComponent } from './ui/layout/footer';

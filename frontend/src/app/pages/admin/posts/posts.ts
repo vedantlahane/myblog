@@ -3,7 +3,7 @@ import { CommonModule, TitleCasePipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
-import { ApiService } from '../../../services/api.service';
+import { ApiService } from '../../../services/api';
 import { Post, PostQueryParams, PostsResponse, User, Tag } from '../../../../types/api';
 
 @Component({
